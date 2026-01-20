@@ -13,6 +13,11 @@ namespace StorageBot.Domain.ContainerEntries
 
         public EntryQuantityType(string unitName)
         {
+            if (string.IsNullOrEmpty(unitName))
+            {
+                throw new ArgumentNullException("Unit name cannot be empty or null");
+            }
+
             UnitName = unitName;
         }
 

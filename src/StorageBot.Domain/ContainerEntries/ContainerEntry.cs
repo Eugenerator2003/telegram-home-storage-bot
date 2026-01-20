@@ -18,9 +18,20 @@ namespace StorageBot.Domain.ContainerEntries
 
         public ContainerEntry(string name, EntryQuantity quantity)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Entry name cannot be empty or null");
+            }
+
+            Name = name;
             EntryQuantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
             _categories = new List<EntryCategory>();
+        }
+
+        protected ContainerEntry(string name, EntryQuantity quantity, IEnumerable<EntryCategory> categories)
+            : this(name, quantity)
+        {
+            _categories = categories.ToList();
         }
 
         protected ContainerEntry()
