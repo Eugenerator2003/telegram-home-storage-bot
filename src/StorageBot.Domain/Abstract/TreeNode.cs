@@ -27,34 +27,59 @@ namespace StorageBot.Domain.Abstract
         {
             ArgumentNullException.ThrowIfNull(parent);
 
-            AttachChild(this, parent);
+            AttachChild(this);
             _parentId = parent.Id;
+        }
+
+        public bool IsAncestor(TreeNodeModel<T> parent)
+        {
+            if (this.parent == null)
+                return false;
+            if (this.parent.Equals(parent))
+                return true;
+            else
+                return this.parent.IsAncestor(parent);
+        }
+
+        public bool IsDescendant(TreeNodeModel<T> descendant)
+        {
+            if (children.Count == 0)
+                return false;
+            if (children.Contains(descendant))
+                return true;
+            else
+                return children.Any(c => c.IsDescendant(descendant));
         }
 
         protected void AddChild(TreeNodeModel<T> child)
         {
-            AttachChild(child, this);
+            AttachChild(child);
         }
 
         protected void RemoveChild(TreeNodeModel<T> child)
         {
-            DetachChild(child);
+            DetachFromParent(child);
         }
 
-        protected void AttachChild(TreeNodeModel<T> child, TreeNodeModel<T> parent)
+        protected void AttachChild(TreeNodeModel<T> child)
         {
-            if (parent.children.Contains(child))
-                throw new InvalidOperationException("Node already have the child");
-            DetachChild(child);
-            child.parent = parent;
-            child._parentId = parent.Id;
-            parent.children.Add(child);
+            if (IsAncestor(child))
+                throw new InvalidOperationException("Cannot attach ancestor node as a child");
+            if (IsDescendant(child))
+                throw new InvalidOperationException("Сannot attach node that is already a descendant");
+            if (child.parent != null)
+            {
+                DetachFromParent(child);
+            }
+            child.parent = this;
+            child._parentId = Id;
+            children.Add(child);
         }
 
-        protected void DetachChild(TreeNodeModel<T> child)
+        protected void DetachFromParent(TreeNodeModel<T> child)
         {
             if (child.parent == null)
-                throw new InvalidOperationException("Node have no parent");
+                throw new InvalidOperationException("Cannot detach node without a parent");
             child.parent.children.Remove(child);
             child.parent = null;
             child._parentId = 0;
