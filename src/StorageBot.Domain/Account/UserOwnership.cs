@@ -18,14 +18,21 @@ namespace StorageBot.Domain.Account
         private int _personalStorageId;
         private List<Storage> _otherStorages;
 
-        public UserOwnership(User user, Storage personalStorage)
+        public UserOwnership(User user)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
-            PersonalStorage = personalStorage ?? throw new ArgumentNullException(nameof(personalStorage));
+            PersonalStorage = new Storage(this);
             _otherStorages = new List<Storage>();
 
             _userId = user.Id;
-            _personalStorageId = personalStorage.Id;
+            _personalStorageId = PersonalStorage.Id;
+        }
+
+        protected UserOwnership()
+        {
+            User = null!;
+            PersonalStorage = null!;
+            _otherStorages = new List<Storage>();
         }
 
         public void AddOtherStorage(Storage storage)
