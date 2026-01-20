@@ -27,7 +27,7 @@ namespace StorageBot.Domain.Abstract
         {
             ArgumentNullException.ThrowIfNull(parent);
 
-            AttachChild(this);
+            parent.AttachChild(this);
             _parentId = parent.Id;
         }
 
@@ -58,7 +58,7 @@ namespace StorageBot.Domain.Abstract
 
         protected void RemoveChild(TreeNodeModel<T> child)
         {
-            DetachFromParent(child);
+            child.DetachFromParent();
         }
 
         protected void AttachChild(TreeNodeModel<T> child)
@@ -69,20 +69,20 @@ namespace StorageBot.Domain.Abstract
                 throw new InvalidOperationException("Сannot attach node that is already a descendant");
             if (child.parent != null)
             {
-                DetachFromParent(child);
+                DetachFromParent();
             }
             child.parent = this;
             child._parentId = Id;
             children.Add(child);
         }
 
-        protected void DetachFromParent(TreeNodeModel<T> child)
+        protected void DetachFromParent()
         {
-            if (child.parent == null)
+            if (parent == null)
                 throw new InvalidOperationException("Cannot detach node without a parent");
-            child.parent.children.Remove(child);
-            child.parent = null;
-            child._parentId = 0;
+            parent.children.Remove(this);
+            parent = null;
+            _parentId = 0;
         }
 
         protected T? GetParent()
