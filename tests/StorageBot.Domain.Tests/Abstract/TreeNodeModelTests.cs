@@ -11,8 +11,10 @@ namespace StorageBot.Domain.Tests.Abstract
     [TestClass]
     public class TreeNodeModelTests
     {
-        private class TestTreeNodeModel : TreeNodeModel<TestTreeNodeModel>
+        private sealed class TestTreeNodeModel : TreeNodeModel<TestTreeNodeModel>
         {
+            public TestTreeNodeModel? Parent => (TestTreeNodeModel)parent!;
+
             public TestTreeNodeModel(string name) : base(name)
             {
             }
@@ -38,9 +40,28 @@ namespace StorageBot.Domain.Tests.Abstract
         private TreeNodeTester<TestTreeNodeModel> tester = null!;
 
         [TestInitialize]
-        public void Setup()
+        public void TestInitialize()
         {
             tester = new TreeNodeTester<TestTreeNodeModel>(new TestTreeNodeModelFactory());
+        }
+
+        [TestMethod]
+        public void InitializeTest()
+        {
+            var name = "node";
+            var node = new TestTreeNodeModel(name);
+            Assert.AreEqual(name, node.Name);
+            Assert.IsNull(node.Parent);
+        }
+
+        [TestMethod]
+        public void InitializeParentTest()
+        {
+            var parent = new TestTreeNodeModel("parent-node");
+            var name = "node";
+            var node = new TestTreeNodeModel(name, parent);
+            Assert.AreEqual(name, node.Name);
+            Assert.AreEqual(parent, node.Parent);
         }
 
         [TestMethod]
