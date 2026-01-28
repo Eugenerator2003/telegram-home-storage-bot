@@ -58,19 +58,6 @@ namespace StorageBot.Domain.ContainerEntries
             return new EntryQuantity(QuantityType, Value + other.Value);
         }
 
-        protected void ValidateDecimalValue(decimal value)
-        {
-            if (value < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value), "Quantity cannot be negative");
-            }
-
-            if (QuantityType.IsInteger && value % 1 != 0)
-            {
-                throw new ArgumentException($"Quantity of type {QuantityType.UnitName} must be integer");
-            }
-        }
-
         public override bool Equals(object? obj)
         {
             return obj is EntryQuantity quantity &&
@@ -86,6 +73,19 @@ namespace StorageBot.Domain.ContainerEntries
         public override string? ToString()
         {
             return $"Quantity {(QuantityType.IsInteger ? (int)Math.Truncate(Value) : Value)} {QuantityType.UnitName}";
+        }
+
+        protected void ValidateDecimalValue(decimal value)
+        {
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Quantity cannot be negative");
+            }
+
+            if (QuantityType.IsInteger && value % 1 != 0)
+            {
+                throw new ArgumentException($"Quantity of type {QuantityType.UnitName} must be integer");
+            }
         }
     }
 }
