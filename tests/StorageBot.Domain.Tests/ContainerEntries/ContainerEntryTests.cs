@@ -18,16 +18,6 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             {
 
             }
-
-            protected override EntryQuantity AddQuantity(EntryQuantity quantity)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void SetValue(string value)
-            {
-                throw new NotImplementedException();
-            }
         }
 
         private class TestContainerEntry : ContainerEntry
