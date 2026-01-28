@@ -1,0 +1,148 @@
+﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Tests.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StorageBot.Domain.Tests.ContainerEntries
+{
+    [TestClass]
+    public class EntryCategoryTests
+    {
+        private class TestEntryCategoryFactory : ITreeNodeModelFactory<EntryCategory>
+        {
+            public override EntryCategory GetTreeNode()
+            {
+                return new EntryCategory("category");
+            }
+
+            public override EntryCategory GetTreeNodeWithParent(EntryCategory parent)
+            {
+                return new EntryCategory("category", parent);
+            }
+        }
+
+        private TreeNodeTester<EntryCategory> tester = null!;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            tester = new TreeNodeTester<EntryCategory>(new TestEntryCategoryFactory());
+        }
+
+        [TestMethod]
+        public void InitializeNoParentTest()
+        {
+            string name = "category";
+            var category = new EntryCategory(name);
+            Assert.IsNull(category.MainCategory);
+            Assert.AreEqual(name, category.Name);
+        }
+
+        [TestMethod]
+        public void InitializeParentTest()
+        {
+            string name = "category";
+            var mainCategory = new EntryCategory("mainCategory");
+            var category = new EntryCategory(name, mainCategory);
+            Assert.IsNotNull(category.MainCategory);
+            Assert.AreEqual(mainCategory, category.MainCategory);
+            Assert.AreEqual(name, category.Name);
+        }
+
+        [TestMethod]
+        public void AddSubcategorySuccessTest()
+        {
+            var category = new EntryCategory("category");
+            var subcategory = new EntryCategory("subcategory");
+            Assert.HasCount(0, category.Subcategories);
+            category.AddSubcategory(subcategory);
+            Assert.HasCount(1, category.Subcategories);
+            Assert.AreEqual(subcategory, category.Subcategories.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void AddSubcategoryAncestorFailTest()
+        {
+            var category = new EntryCategory("category");
+            var subcategory = new EntryCategory("subcategory", category);
+            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                subcategory.AddSubcategory(category);
+            });
+        }
+
+        [TestMethod]
+        public void AddSubcategoryDescendantFailTest()
+        {
+            var category = new EntryCategory("category");
+            var subcategory1 = new EntryCategory("subcategory1", category);
+            var subcategory2 = new EntryCategory("subcategory2", subcategory1);
+            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                category.AddSubcategory(subcategory2);
+            });
+        }
+
+        [TestMethod] 
+        public void AddRemoveSubcategory()
+        {
+            var category = new EntryCategory("category");
+            var subcategory = new EntryCategory("subcategory");
+            Assert.HasCount(0, category.Subcategories);
+            category.AddSubcategory(subcategory);
+            Assert.HasCount(1, category.Subcategories);
+            Assert.AreEqual(subcategory, category.Subcategories.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void IsAncestorParentSuccessTest()
+        {
+            tester.IsAncestorParentSuccessTest();
+        }
+
+        [TestMethod]
+        public void IsAncestorDeepSuccessTest()
+        {
+            tester.IsAncestorDeepSuccessTest();
+        }
+
+        [TestMethod]
+        public void IsAncestorFromParentFailTest()
+        {
+            tester.IsAncestorFromParentFailTest();
+        }
+
+        [TestMethod]
+        public void IsAncestorFailTest()
+        {
+            tester.IsAncestorFailTest();
+        }
+
+        [TestMethod]
+        public void IsDescendantChildSuccessTest()
+        {
+            tester.IsDescendantChildSuccessTest();
+        }
+
+        [TestMethod]
+        public void IsDescendantDeepSuccessTest()
+        {
+            tester.IsDescendantDeepSuccessTest();
+        }
+
+        [TestMethod]
+        public void IsDesdendantFromChildFailTest()
+        {
+            tester.IsDesdendantFromChildFailTest();
+        }
+
+        [TestMethod]
+        public void IsDesdentantFailTest()
+        {
+            tester.IsDesdentantFailTest();
+        }
+    }
+}
