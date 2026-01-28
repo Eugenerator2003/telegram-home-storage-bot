@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Domain.ContainerEntries
 {
-    public abstract class EntryQuantity
+    public class EntryQuantity
     {
+        public decimal Value { get; private set; }
         public EntryQuantityType QuantityType { get; protected set; }
 
         private int _entryQuantityTypeId;
@@ -20,10 +21,23 @@ namespace StorageBot.Domain.ContainerEntries
             _entryQuantityTypeId = quantityType.Id;
         }
 
-        public EntryQuantity(EntryQuantityType quantityType, string value)
+        public EntryQuantity(EntryQuantityType quantityType, decimal value)
             : this(quantityType)
         {
-            SetValue(value);
+            ValidateDecimalValue(value);
+            Value = value;
+        }
+
+        public EntryQuantity(EntryQuantityType quantityType, string stringValue)
+            : this(quantityType)
+        {
+            if (!decimal.TryParse(stringValue, out var decimalValue))
+            {
+                throw new ArgumentException($"{stringValue}' is not a valid number");
+            }
+
+            ValidateDecimalValue(decimalValue);
+            Value = decimalValue;
         }
 
         protected EntryQuantity()
@@ -31,20 +45,47 @@ namespace StorageBot.Domain.ContainerEntries
             QuantityType = null!;
         }
 
-        public EntryQuantity Add(EntryQuantity quantity)
+        public EntryQuantity Add(EntryQuantity other)
         {
-            Type thisType = GetType();
-            Type anotherType = quantity.GetType();
-            if (thisType != anotherType)
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            if (!QuantityType.Equals(other.QuantityType))
             {
-                throw new InvalidOperationException($"Can not add quantity of another type. {thisType.Name} and {anotherType.Name} are not the same");
+                throw new InvalidOperationException($"Cannot add different units: {QuantityType.UnitName} and {other.QuantityType.UnitName}");
             }
 
-            return AddQuantity(quantity);
+            return new EntryQuantity(QuantityType, Value + other.Value);
         }
 
-        protected abstract EntryQuantity AddQuantity(EntryQuantity quantity);
+        protected void ValidateDecimalValue(decimal value)
+        {
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Quantity cannot be negative");
+            }
 
-        protected abstract void SetValue(string value);
+            if (QuantityType.IsInteger && value % 1 != 0)
+            {
+                throw new ArgumentException($"Quantity of type {QuantityType.UnitName} must be integer");
+            }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is EntryQuantity quantity &&
+                   Value == quantity.Value &&
+                   _entryQuantityTypeId == quantity._entryQuantityTypeId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Value, _entryQuantityTypeId);
+        }
+
+        public override string? ToString()
+        {
+            return $"Quantity {(QuantityType.IsInteger ? (int)Math.Truncate(Value) : Value)} {QuantityType.UnitName}";
+        }
     }
 }
