@@ -69,7 +69,7 @@ namespace StorageBot.Domain.Abstract
                 throw new InvalidOperationException("Сannot attach node that is already a descendant");
             if (child.parent != null)
             {
-                DetachFromParent();
+                child.DetachFromParent();
             }
             child.parent = this;
             child._parentId = Id;
@@ -82,7 +82,7 @@ namespace StorageBot.Domain.Abstract
                 throw new InvalidOperationException("Cannot detach node without a parent");
             parent.children.Remove(this);
             parent = null;
-            _parentId = 0;
+            _parentId = null;
         }
 
         protected T? GetParent()
@@ -92,7 +92,7 @@ namespace StorageBot.Domain.Abstract
             return (T)parent;
         }
 
-        protected IEnumerable<T> GetChildrens()
+        protected IEnumerable<T> GetChildren()
         {
             return children.Select(c => (T)c);
         }
