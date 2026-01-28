@@ -10,7 +10,7 @@ namespace StorageBot.Domain.ContainerEntries
     public sealed class EntryCategory : TreeNodeModel<EntryCategory>
     {
         public EntryCategory? MainCategory => GetParent();
-        public IEnumerable<EntryCategory> Subcategories => GetChildrens();
+        public IEnumerable<EntryCategory> Subcategories => GetChildren();
 
         public EntryCategory(string categoryName)
             : base(categoryName)

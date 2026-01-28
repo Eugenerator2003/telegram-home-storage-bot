@@ -12,7 +12,7 @@ namespace StorageBot.Domain.Storing
     {
         public Container? OuterContainer => GetParent();
 
-        public IEnumerable<Container> InnerContainers => GetChildrens();
+        public IEnumerable<Container> InnerContainers => GetChildren();
 
         public List<ContainerEntry> Entries { get; private set; }
 
