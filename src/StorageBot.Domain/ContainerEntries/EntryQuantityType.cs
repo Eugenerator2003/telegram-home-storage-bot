@@ -10,13 +10,15 @@ namespace StorageBot.Domain.ContainerEntries
     public class EntryQuantityType : BaseStorageModel
     {
         public string UnitName { get; set; }
+        public bool IsInteger { get; set; }
 
-        public EntryQuantityType(string unitName)
+        public EntryQuantityType(bool isInteger, string unitName)
         {
             if (string.IsNullOrEmpty(unitName))
             {
                 throw new ArgumentNullException("Unit name cannot be empty or null");
             }
+            IsInteger = isInteger;
 
             UnitName = unitName;
         }
