@@ -62,7 +62,7 @@ namespace StorageBot.Domain.ContainerEntries
         {
             return obj is EntryQuantity quantity &&
                    Value == quantity.Value &&
-                   _entryQuantityTypeId == quantity._entryQuantityTypeId;
+                   QuantityType.Equals(quantity.QuantityType);
         }
 
         public override int GetHashCode()
