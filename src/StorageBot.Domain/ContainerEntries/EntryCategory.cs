@@ -1,6 +1,7 @@
 ﻿using StorageBot.Domain.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace StorageBot.Domain.ContainerEntries
     public sealed class EntryCategory : TreeNodeModel<EntryCategory>
     {
         public EntryCategory? MainCategory => GetParent();
-        public IEnumerable<EntryCategory> Subcategories => GetChildren();
+        public IReadOnlyCollection<EntryCategory> Subcategories => GetChildren();
 
         public EntryCategory(string categoryName)
             : base(categoryName)

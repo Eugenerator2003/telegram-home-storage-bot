@@ -92,9 +92,9 @@ namespace StorageBot.Domain.Abstract
             return (T)parent;
         }
 
-        protected IEnumerable<T> GetChildren()
+        protected IReadOnlyCollection<T> GetChildren()
         {
-            return children.Select(c => (T)c);
+            return children.Select(c => (T)c).ToList();
         }
     }
 }
