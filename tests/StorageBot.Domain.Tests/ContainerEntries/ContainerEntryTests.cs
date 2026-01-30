@@ -11,15 +11,6 @@ namespace StorageBot.Domain.Tests.ContainerEntries
     [TestClass]
     public class ContainerEntryTests
     {
-        private class TestEntryQuantity : EntryQuantity
-        {
-            public TestEntryQuantity()
-                : base()
-            {
-
-            }
-        }
-
         private class TestContainerEntry : ContainerEntry
         {
             public TestContainerEntry(string name, EntryQuantity quantity, IEnumerable<EntryCategory> categories)
@@ -33,7 +24,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void InitializeTest()
         {
             string name = "Entry1";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
 
             Assert.AreEqual(name, containerEntry.Name);
@@ -45,7 +36,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void InitializeEmptyNameTest()
         {
             string name = "";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var exception = Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 var containerEntry = new ContainerEntry(name, quantity);
@@ -57,7 +48,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void InitializeNullNameTest()
         {
             string? name = null!;
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var exception = Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 var containerEntry = new ContainerEntry(name, quantity);
@@ -69,7 +60,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void InitializeNullQuantityTest()
         {
             string? name = null!;
-            TestEntryQuantity? quantity = null!;
+            EntryQuantity quantity = null!;
             var exception = Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 var containerEntry = new ContainerEntry(name, quantity);
@@ -81,7 +72,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void AddCategoryTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
             containerEntry.AddCategory(category);
@@ -93,7 +84,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void AddAssignedCategoryTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
             containerEntry.AddCategory(category);
@@ -108,7 +99,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void AddDescendantCategoryTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
             var descendantCategory = new EntryCategory("descendantCategorys", category);
@@ -124,7 +115,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void AddAncestorCategoryTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var ancestorCategory = new EntryCategory("ancestorCategory");
             var category = new EntryCategory("category", ancestorCategory);
@@ -140,7 +131,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void AddRemoveCategoryTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
             containerEntry.AddCategory(category);
@@ -154,7 +145,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void RemoveNonAssignedCategoryTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
             var exception = Assert.ThrowsExactly<ArgumentException>(() =>
@@ -168,7 +159,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void RemoveCategoriesTest()
         {
             string name = "Entry";
-            var quantity = new TestEntryQuantity();
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             List<EntryCategory> categories = [new EntryCategory("category1"), new EntryCategory("category2"), new EntryCategory("category3")];
             var containerEntry = new TestContainerEntry(name, quantity, categories);
             int[] indices = [2, 1, 0];
