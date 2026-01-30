@@ -95,6 +95,8 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             category.AddSubcategory(subcategory);
             Assert.HasCount(1, category.Subcategories);
             Assert.AreEqual(subcategory, category.Subcategories.ElementAt(0));
+            category.RemoveSubcategory(subcategory);
+            Assert.HasCount(0, subcategory.Subcategories);
         }
 
         [TestMethod]
