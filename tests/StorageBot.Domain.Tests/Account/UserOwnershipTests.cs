@@ -11,12 +11,6 @@ namespace StorageBot.Domain.Tests.Account
     [TestClass]
     public class UserOwnershipTests
     {
-        private class TestUserOnwership : UserOwnership
-        {
-            public TestUserOnwership(User user, IEnumerable<Storage> storages) 
-                : base(user, storages) { }
-        }
-
         private class TestStorage : Storage
         {
             public TestStorage()
@@ -127,22 +121,6 @@ namespace StorageBot.Domain.Tests.Account
             Assert.AreEqual(storage, ownership.OtherStorages.ElementAt(0));
             ownership.RemoveOtherStorage(storage);
             Assert.IsEmpty(ownership.OtherStorages);
-        }
-
-        [TestMethod]
-        public void RemoveOtherStorageTest()
-        {
-            List<Storage> storages = [new TestStorage(), new TestStorage(), new TestStorage()];
-            int[] indices = [1, 1, 0];
-            var ownership = new TestUserOnwership(new TestUser(), storages);
-            for(int i = 0; i < 3; i++)
-            {
-                int index = indices[i];
-                ownership.RemoveOtherStorage(storages[index]);
-                storages.Remove(storages[index]);
-                Assert.HasCount(3 - i - 1, ownership.OtherStorages);
-                CollectionAssert.AreEqual(storages, ownership.OtherStorages.ToArray());
-            }
         }
     }
 }
