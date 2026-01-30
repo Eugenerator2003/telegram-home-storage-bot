@@ -28,12 +28,6 @@ namespace StorageBot.Domain.ContainerEntries
             _categories = new List<EntryCategory>();
         }
 
-        protected ContainerEntry(string name, EntryQuantity quantity, IEnumerable<EntryCategory> categories)
-            : this(name, quantity)
-        {
-            _categories = categories.ToList();
-        }
-
         protected ContainerEntry()
         {
             Name = string.Empty;

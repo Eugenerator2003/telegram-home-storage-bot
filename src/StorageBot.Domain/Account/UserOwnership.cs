@@ -28,16 +28,6 @@ namespace StorageBot.Domain.Account
             _personalStorageId = PersonalStorage.Id;
         }
 
-        protected UserOwnership(User user, IEnumerable<Storage> storages)
-        {
-            User = user ?? throw new ArgumentNullException(nameof(user));
-            PersonalStorage = new Storage(this);
-            _otherStorages = storages.ToList();
-
-            _userId = user.Id;
-            _personalStorageId = PersonalStorage.Id;
-        }
-
         protected UserOwnership()
         {
             User = null!;
