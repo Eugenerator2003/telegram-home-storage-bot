@@ -11,21 +11,21 @@ namespace StorageBot.Domain.Storing
     public sealed class Container : TreeNodeModel<Container>
     {
         public Container? OuterContainer => GetParent();
-
         public IReadOnlyCollection<Container> InnerContainers => GetChildren();
+        public IReadOnlyCollection<ContainerEntry> Entries => _entries.AsReadOnly();
 
-        public List<ContainerEntry> Entries { get; private set; }
+        private List<ContainerEntry> _entries;
 
         public Container(string containerName)
             : base(containerName)
         {
-            Entries = new List<ContainerEntry>();
+            _entries = new List<ContainerEntry>();
         }
 
         public Container(string containerName, Container outerContainer) 
             : base(containerName, outerContainer)
         {
-            Entries = new List<ContainerEntry>();
+            _entries = new List<ContainerEntry>();
         }
 
         public void AddInnerContainer(Container innerContainer)
@@ -36,6 +36,20 @@ namespace StorageBot.Domain.Storing
         public void RemoveInnerContainer(Container innerContainer)
         {
             RemoveChild(innerContainer);
+        }
+
+        public void AddEntry(ContainerEntry entry)
+        {
+            if (_entries.Contains(entry))
+                throw new ArgumentException("Container already contains entry", nameof(entry));
+            _entries.Add(entry);
+        }
+
+        public void RemoveEntry(ContainerEntry entry)
+        {
+            if (!_entries.Contains(entry))
+                throw new ArgumentException("Container does not contain entry", nameof(entry));
+            _entries.Add(entry);
         }
     }
 }
