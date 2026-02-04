@@ -13,6 +13,7 @@ namespace StorageBot.Domain.Storing
     {
         private static void CheckItemForException<T>(List<T> values, T value, bool itemExpectation, string valueName)
         {
+            ArgumentNullException.ThrowIfNull(value);
             bool has = values.Contains(value);
             if (has == itemExpectation)
             {

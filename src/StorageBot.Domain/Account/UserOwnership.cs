@@ -37,23 +37,21 @@ namespace StorageBot.Domain.Account
 
         public void AddOtherStorage(Storage storage)
         {
+            ArgumentNullException.ThrowIfNull(storage);
             if (PersonalStorage.Equals(storage))
                 throw new ArgumentException("Cannot add personal storage as a shared storage", nameof(storage));
-
             if (_otherStorages.Contains(storage))
                 throw new ArgumentException("User already has access to this storage", nameof(storage));
-
             _otherStorages.Add(storage);
         }
 
         public void RemoveOtherStorage(Storage storage)
         {
+            ArgumentNullException.ThrowIfNull(storage);
             if (PersonalStorage.Equals(storage))
                 throw new ArgumentException("Cannot remove personal storage from other storages list", nameof(storage));
-
             if (!_otherStorages.Contains(storage))
                 throw new ArgumentException("Storage not found in shared list", nameof(storage));
-
             _otherStorages.Remove(storage);
         }
 

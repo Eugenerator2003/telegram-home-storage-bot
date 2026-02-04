@@ -37,21 +37,20 @@ namespace StorageBot.Domain.ContainerEntries
 
         public void AddCategory(EntryCategory category)
         {
+            ArgumentNullException.ThrowIfNull(category);
             if (_categories.Contains(category))
                 throw new ArgumentException("Entry is already assigned to this category", nameof(category));
-
             if (_categories.Any(c => c.IsDescendant(category)) || 
                 _categories.Any(c => c.IsAncestor(category)))
                 throw new ArgumentException("Category cannot be ancestor or descendant of assigned category");
-
             _categories.Add(category);
         }
 
         public void RemoveCategory(EntryCategory category)
         {
+            ArgumentNullException.ThrowIfNull(category);
             if (!_categories.Contains(category))
-                throw new ArgumentException("Entry is not assigned to this category", nameof(category));
-
+                throw new InvalidOperationException("Entry is not assigned to this category");
             _categories.Remove(category);
         }
 

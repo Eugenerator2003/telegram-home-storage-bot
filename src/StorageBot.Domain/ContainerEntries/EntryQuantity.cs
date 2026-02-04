@@ -47,9 +47,7 @@ namespace StorageBot.Domain.ContainerEntries
 
         public EntryQuantity Add(EntryQuantity other)
         {
-            if (other == null)
-                throw new ArgumentNullException(nameof(other));
-
+            ArgumentNullException.ThrowIfNull(other);
             if (!QuantityType.Equals(other.QuantityType))
             {
                 throw new InvalidOperationException($"Cannot add different units: {QuantityType.UnitName} and {other.QuantityType.UnitName}");

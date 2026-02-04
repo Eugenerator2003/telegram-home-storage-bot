@@ -40,6 +40,7 @@ namespace StorageBot.Domain.Storing
 
         public void AddEntry(ContainerEntry entry)
         {
+            ArgumentNullException.ThrowIfNull(entry);
             if (_entries.Contains(entry))
                 throw new ArgumentException("Container already contains entry", nameof(entry));
             _entries.Add(entry);
@@ -47,6 +48,7 @@ namespace StorageBot.Domain.Storing
 
         public void RemoveEntry(ContainerEntry entry)
         {
+            ArgumentNullException.ThrowIfNull(entry);
             if (!_entries.Contains(entry))
                 throw new ArgumentException("Container does not contain entry", nameof(entry));
             _entries.Add(entry);

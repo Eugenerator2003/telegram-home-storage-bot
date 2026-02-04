@@ -33,6 +33,7 @@ namespace StorageBot.Domain.Abstract
 
         public bool IsAncestor(TreeNodeModel<T> parent)
         {
+            ArgumentNullException.ThrowIfNull(parent);
             if (this.parent == null)
                 return false;
             if (this.parent.Equals(parent))
@@ -43,6 +44,7 @@ namespace StorageBot.Domain.Abstract
 
         public bool IsDescendant(TreeNodeModel<T> descendant)
         {
+            ArgumentNullException.ThrowIfNull(descendant);
             if (children.Count == 0)
                 return false;
             if (children.Contains(descendant))
@@ -58,15 +60,17 @@ namespace StorageBot.Domain.Abstract
 
         protected void RemoveChild(TreeNodeModel<T> child)
         {
+            ArgumentNullException.ThrowIfNull(child);
             child.DetachFromParent();
         }
 
         protected void AttachChild(TreeNodeModel<T> child)
         {
+            ArgumentNullException.ThrowIfNull(child);
             if (IsAncestor(child))
-                throw new InvalidOperationException("Cannot attach ancestor node as a child");
+                throw new ArgumentException("Cannot attach ancestor node as a child");
             if (IsDescendant(child))
-                throw new InvalidOperationException("Сannot attach node that is already a descendant");
+                throw new ArgumentException("Сannot attach node that is already a descendant");
             if (child.parent != null)
             {
                 child.DetachFromParent();

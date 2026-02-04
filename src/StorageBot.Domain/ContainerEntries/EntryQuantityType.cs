@@ -14,10 +14,7 @@ namespace StorageBot.Domain.ContainerEntries
 
         public EntryQuantityType(bool isInteger, string unitName)
         {
-            if (string.IsNullOrEmpty(unitName))
-            {
-                throw new ArgumentNullException("Unit name cannot be empty or null");
-            }
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(unitName);
             IsInteger = isInteger;
 
             UnitName = unitName;
