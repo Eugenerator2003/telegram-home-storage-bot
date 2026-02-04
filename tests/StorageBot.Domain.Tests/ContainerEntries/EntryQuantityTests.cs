@@ -27,7 +27,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeIntegerValue()
+        public void InitializeIntegerValueTest()
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = 2;
@@ -37,7 +37,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeRealWithIntegerValue()
+        public void InitializeRealWithIntegerValueTest()
         {
             var type = new EntryQuantityType(isInteger: false, "unit");
             decimal value = 1m;
@@ -47,7 +47,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeRealWithRealValue()
+        public void InitializeRealWithRealValueTest()
         {
             var type = new EntryQuantityType(isInteger: false, "unit");
             decimal value = 1.63m;
@@ -57,7 +57,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeNegativeValue()
+        public void InitializeNegativeValueTest()
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = -10;
@@ -68,7 +68,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeIntegerWithRealValue()
+        public void InitializeIntegerWithRealValueTest()
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = 2.1m;
@@ -79,7 +79,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InititalizeIntegerWithIntegerValueString()
+        public void InititalizeIntegerWithIntegerValueStringTest()
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = 1;
@@ -89,7 +89,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InititalizeRealWithIntegerValueString()
+        public void InititalizeRealWithIntegerValueStringTest()
         {
             var type = new EntryQuantityType(isInteger: false, "unit");
             decimal value = 31;
@@ -99,7 +99,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InititalizeRealWithRealValueString()
+        public void InititalizeRealWithRealValueStringTest()
         {
             var type = new EntryQuantityType(isInteger: false, "unit");
             decimal value = 172.311m;
@@ -109,7 +109,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeIntegerWithRealValueString()
+        public void InitializeIntegerWithRealValueStringTest()
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = 2.1m;
@@ -120,7 +120,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void InitializeWithNotValidValueString()
+        public void InitializeWithNotValidValueStringTest()
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             string value = "value";

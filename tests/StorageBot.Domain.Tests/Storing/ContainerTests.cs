@@ -88,7 +88,7 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
-        public void AddRemoveInnerContainer()
+        public void AddRemoveInnerContainerTest()
         {
             var container = new Container("container");
             var innerContainer = new Container("inner-container");
@@ -101,7 +101,7 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
-        public void RemoveNotIncludedContainer()
+        public void RemoveNotIncludedContainerTest()
         {
             var container = new Container("container");
             var innerContainer = new Container("inner-container");

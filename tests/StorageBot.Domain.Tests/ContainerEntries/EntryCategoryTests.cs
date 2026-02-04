@@ -87,7 +87,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod] 
-        public void AddRemoveSubcategory()
+        public void AddRemoveSubcategoryTest()
         {
             var category = new EntryCategory("category");
             var subcategory = new EntryCategory("subcategory");
@@ -100,7 +100,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
-        public void RemoveNotIncludedSubcategory()
+        public void RemoveNotIncludedSubcategoryTest()
         {
             var category = new EntryCategory("category");
             var subcategory = new EntryCategory("subcategory");
