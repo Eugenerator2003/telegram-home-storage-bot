@@ -17,7 +17,7 @@ namespace StorageBot.Domain.Storing
             if (has == itemExpectation)
             {
                 string text = itemExpectation ? $"Storage already contains this {valueName}"
-                                              : $"Storage does not contains this {valueName}";
+                                              : $"Storage does not contain this {valueName}";
                 throw new ArgumentException(text);
             }
         }
