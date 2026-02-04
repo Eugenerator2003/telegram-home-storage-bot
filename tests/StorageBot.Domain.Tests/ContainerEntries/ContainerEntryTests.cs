@@ -139,11 +139,35 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
             {
                 containerEntry.RemoveCategory(category);
             });
             Assert.Contains(nameof(category), exception.Message);
+        }
+
+        [TestMethod]
+        public void AddCategoryNullTest()
+        {
+            string name = "Entry";
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
+            var containerEntry = new ContainerEntry(name, quantity);
+            var exception = Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                containerEntry.AddCategory(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveCategoryNullTest()
+        {
+            string name = "Entry";
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
+            var containerEntry = new ContainerEntry(name, quantity);
+            var exception = Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                containerEntry.RemoveCategory(null!);
+            });
         }
     }
 }

@@ -156,6 +156,14 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
+        public void AddNullTest()
+        {
+            var type = new EntryQuantityType(isInteger: false, "unit");
+            var quantity = new EntryQuantity(type, 1m);
+            Assert.ThrowsExactly<ArgumentNullException>(() => quantity.Add(null!));
+        }
+
+        [TestMethod]
         public void EqualsTest()
         {
             var type = new EntryQuantityType(isInteger: false, "unit");

@@ -114,13 +114,32 @@ namespace StorageBot.Domain.Tests.Account
         {
             var ownership = new UserOwnership(new TestUser());
             var storage = new Storage(ownership);
-
             Assert.IsEmpty(ownership.OtherStorages);
             ownership.AddOtherStorage(storage);
             Assert.HasCount(1, ownership.OtherStorages);
             Assert.AreEqual(storage, ownership.OtherStorages.ElementAt(0));
             ownership.RemoveOtherStorage(storage);
             Assert.IsEmpty(ownership.OtherStorages);
+        }
+
+        [TestMethod]
+        public void AddOtherStorageNullTest()
+        {
+            var ownership = new UserOwnership(new TestUser());
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                ownership.AddOtherStorage(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveOtherStorageNullTest()
+        {
+            var ownership = new UserOwnership(new TestUser());
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                ownership.RemoveOtherStorage(null!);
+            });
         }
     }
 }

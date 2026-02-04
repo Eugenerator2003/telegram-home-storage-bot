@@ -92,6 +92,16 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
+        public void AddContainerNullTest()
+        {
+            var storage = new Storage(ownership);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                storage.AddContainer(null!);
+            });
+        }
+
+        [TestMethod]
         public void AddCategoryTest()
         {
             var storage = new Storage(ownership);
@@ -137,6 +147,16 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
+        public void AddCategoryrNullTest()
+        {
+            var storage = new Storage(ownership);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                storage.AddEntryCategory(null!);
+            });
+        }
+
+        [TestMethod]
         public void AddQuantityTypeTest()
         {
             var storage = new Storage(ownership);
@@ -178,6 +198,16 @@ namespace StorageBot.Domain.Tests.Storing
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 storage.RemoveEntryQuantityType(quantityType);
+            });
+        }
+
+        [TestMethod]
+        public void AddQuantityTypeNullTest()
+        {
+            var storage = new Storage(ownership);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                storage.AddEntryQuantityType(null!);
             });
         }
     }

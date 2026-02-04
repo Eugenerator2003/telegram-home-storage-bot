@@ -68,7 +68,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var category = new EntryCategory("category");
             var subcategory = new EntryCategory("subcategory", category);
-            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 subcategory.AddSubcategory(category);
             });
@@ -80,7 +80,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var category = new EntryCategory("category");
             var subcategory1 = new EntryCategory("subcategory1", category);
             var subcategory2 = new EntryCategory("subcategory2", subcategory1);
-            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 category.AddSubcategory(subcategory2);
             });
@@ -97,6 +97,37 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             Assert.AreEqual(subcategory, category.Subcategories.ElementAt(0));
             category.RemoveSubcategory(subcategory);
             Assert.HasCount(0, subcategory.Subcategories);
+        }
+
+        [TestMethod]
+        public void RemoveNotIncludedSubcategory()
+        {
+            var category = new EntryCategory("category");
+            var subcategory = new EntryCategory("subcategory");
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                category.RemoveSubcategory(category);
+            });
+        }
+
+        [TestMethod]
+        public void AddSubcategoryNullTest()
+        {
+            var category = new EntryCategory("category");
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                category.AddSubcategory(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveSubcategoryNullTest()
+        {
+            var category = new EntryCategory("category");
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                category.RemoveSubcategory(null!);
+            });
         }
 
         [TestMethod]
@@ -145,6 +176,18 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         public void IsDesdentantFailTest()
         {
             tester.IsDesdentantFailTest();
+        }
+
+        [TestMethod]
+        public void IsDescendantNullTest()
+        {
+            tester.IsDescendantNullTest();
+        }
+
+        [TestMethod]
+        public void IsAncestorNullTest()
+        {
+            tester.IsAncestorNullTest();
         }
     }
 }

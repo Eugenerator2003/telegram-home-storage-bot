@@ -69,7 +69,7 @@ namespace StorageBot.Domain.Tests.Storing
         {
             var container = new Container("container");
             var innerContainer = new Container("inner-container", container);
-            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 innerContainer.AddInnerContainer(container);
             });
@@ -81,7 +81,7 @@ namespace StorageBot.Domain.Tests.Storing
             var container = new Container("container");
             var innerContainer1 = new Container("inner-container1", container);
             var innerContainer2 = new Container("inner-container2", innerContainer1);
-            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 container.AddInnerContainer(innerContainer2);
             });
@@ -98,6 +98,37 @@ namespace StorageBot.Domain.Tests.Storing
             Assert.AreEqual(innerContainer, container.InnerContainers.ElementAt(0));
             container.RemoveInnerContainer(innerContainer);
             Assert.HasCount(0, container.InnerContainers);
+        }
+
+        [TestMethod]
+        public void RemoveNotIncludedContainer()
+        {
+            var container = new Container("container");
+            var innerContainer = new Container("inner-container");
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                container.RemoveInnerContainer(innerContainer);
+            });
+        }
+
+        [TestMethod]
+        public void AddInnerContainerNullTest()
+        {
+            var container = new Container("container");
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                container.AddInnerContainer(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveInnerContainerNullTest()
+        {
+            var container = new Container("container");
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                container.RemoveInnerContainer(null!);
+            });
         }
 
         [TestMethod]
@@ -146,6 +177,18 @@ namespace StorageBot.Domain.Tests.Storing
         public void IsDesdentantFailTest()
         {
             tester.IsDesdentantFailTest();
+        }
+
+        [TestMethod]
+        public void IsDescendantNullTest()
+        {
+            tester.IsDescendantNullTest();
+        }
+
+        [TestMethod]
+        public void IsAncestorNullTest()
+        {
+            tester.IsAncestorNullTest();
         }
     }
 }

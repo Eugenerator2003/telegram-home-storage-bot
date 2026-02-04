@@ -46,6 +46,15 @@ namespace StorageBot.Domain.Tests.Utils
             Assert.IsFalse(child.IsAncestor(parent));
         }
 
+        public void IsAncestorNullTest()
+        {
+            var child = _factory.GetTreeNode();
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                child.IsAncestor(null!);
+            });
+        }
+
         public void IsDescendantChildSuccessTest()
         {
             var parent = _factory.GetTreeNode();
@@ -89,6 +98,15 @@ namespace StorageBot.Domain.Tests.Utils
             var parent = _factory.GetTreeNode();
             var child = _factory.GetTreeNode();
             Assert.IsFalse(parent.IsDescendant(child));
+        }
+
+        public void IsDescendantNullTest()
+        {
+            var parent = _factory.GetTreeNode();
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                parent.IsDescendant(null!);
+            });
         }
     }
 }
