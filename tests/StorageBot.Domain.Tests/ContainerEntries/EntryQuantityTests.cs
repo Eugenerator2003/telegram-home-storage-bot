@@ -164,6 +164,54 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         }
 
         [TestMethod]
+        public void SubtractSameTypeTest()
+        {
+            var type = new EntryQuantityType(isInteger: false, "unit");
+            var quantity1 = new EntryQuantity(type, 41.2m);
+            var quantity2 = new EntryQuantity(type, 41.0m);
+            var quantity3 = quantity1.Subtract(quantity2);
+            var expectedValue = quantity1.Value - quantity2.Value;
+            Assert.AreEqual(type, quantity3.QuantityType);
+            Assert.AreEqual(expectedValue, quantity3.Value);
+        }
+
+        [TestMethod]
+        public void SubtractDifferentTypeTest()
+        {
+            var type1 = new EntryQuantityType(isInteger: false, "unit1");
+            var type2 = new EntryQuantityType(isInteger: false, "unit2");
+            var quantity1 = new EntryQuantity(type1, 41.2m);
+            var quantity2 = new EntryQuantity(type2, 41.0m);
+            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Subtract(quantity2));
+        }
+
+        [TestMethod]
+        public void SubtractNegativeResultTest()
+        {
+            var type = new EntryQuantityType(isInteger: false, "unit");
+            var quantity1 = new EntryQuantity(type, 30m);
+            var quantity2 = new EntryQuantity(type, 100.2m);
+            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Subtract(quantity2));
+        }
+
+        [TestMethod]
+        public void SubtractZeroResultTest()
+        {
+            var type = new EntryQuantityType(isInteger: false, "unit");
+            var quantity1 = new EntryQuantity(type, 1m);
+            var quantity2 = new EntryQuantity(type, 1m);
+            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Subtract(quantity2));
+        }
+
+        [TestMethod]
+        public void SubtractNullTest()
+        {
+            var type = new EntryQuantityType(isInteger: false, "unit");
+            var quantity = new EntryQuantity(type, 1m);
+            Assert.ThrowsExactly<ArgumentNullException>(() => quantity.Subtract(null!));
+        }
+
+        [TestMethod]
         public void EqualsTest()
         {
             var type = new EntryQuantityType(isInteger: false, "unit");
