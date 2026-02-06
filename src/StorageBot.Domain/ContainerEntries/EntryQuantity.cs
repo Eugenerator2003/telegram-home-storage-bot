@@ -56,6 +56,21 @@ namespace StorageBot.Domain.ContainerEntries
             return new EntryQuantity(QuantityType, Value + other.Value);
         }
 
+        public EntryQuantity Subtract(EntryQuantity other)
+        {
+            ArgumentNullException.ThrowIfNull(other);
+            if (!QuantityType.Equals(other.QuantityType))
+            {
+                throw new InvalidOperationException($"Cannot add different units: {QuantityType.UnitName} and {other.QuantityType.UnitName}");
+            }
+            decimal value = Value - other.Value;
+            if (value <= 0)
+            {
+                throw new InvalidOperationException($"Quantity value cannot be negative");
+            }
+            return new EntryQuantity(QuantityType, value);
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is EntryQuantity quantity &&
