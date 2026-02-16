@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StorageBot.Domain.Exceptions.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,9 +69,9 @@ namespace StorageBot.Domain.Abstract
         {
             ArgumentNullException.ThrowIfNull(child);
             if (IsAncestor(child))
-                throw new ArgumentException("Cannot attach ancestor node as a child");
+                throw new AncestorNodeAsChildException();
             if (IsDescendant(child))
-                throw new ArgumentException("Сannot attach node that is already a descendant");
+                throw new AlreadyDescendantNodeException();
             if (child.parent != null)
             {
                 child.DetachFromParent();
@@ -83,7 +84,7 @@ namespace StorageBot.Domain.Abstract
         protected void DetachFromParent()
         {
             if (parent == null)
-                throw new InvalidOperationException("Cannot detach node without a parent");
+                throw new NoTreeNodeParentException();
             parent.children.Remove(this);
             parent = null;
             _parentId = null;

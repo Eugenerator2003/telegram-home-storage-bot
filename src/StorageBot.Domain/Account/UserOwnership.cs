@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.Abstract;
+using StorageBot.Domain.Exceptions.Account;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -39,9 +40,9 @@ namespace StorageBot.Domain.Account
         {
             ArgumentNullException.ThrowIfNull(storage);
             if (PersonalStorage.Equals(storage))
-                throw new ArgumentException("Cannot add personal storage as a shared storage", nameof(storage));
+                throw new AddPersonalStorageAsSharedException();
             if (_otherStorages.Contains(storage))
-                throw new ArgumentException("User already has access to this storage", nameof(storage));
+                throw new UserAlreadyHaveStorageAccessException();
             _otherStorages.Add(storage);
         }
 
@@ -49,9 +50,9 @@ namespace StorageBot.Domain.Account
         {
             ArgumentNullException.ThrowIfNull(storage);
             if (PersonalStorage.Equals(storage))
-                throw new ArgumentException("Cannot remove personal storage from other storages list", nameof(storage));
+                throw new RemovePersonalStorageException();
             if (!_otherStorages.Contains(storage))
-                throw new ArgumentException("Storage not found in shared list", nameof(storage));
+                throw new NoStorageToRemoveException();
             _otherStorages.Remove(storage);
         }
 

@@ -1,5 +1,6 @@
 ﻿using StorageBot.Domain.Abstract;
 using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace StorageBot.Domain.Storing
         {
             ArgumentNullException.ThrowIfNull(entry);
             if (_entries.Contains(entry))
-                throw new ArgumentException("Container already contains entry", nameof(entry));
+                throw new ContainerAlreadyContainsEntryException();
             _entries.Add(entry);
         }
 
@@ -50,7 +51,7 @@ namespace StorageBot.Domain.Storing
         {
             ArgumentNullException.ThrowIfNull(entry);
             if (!_entries.Contains(entry))
-                throw new ArgumentException("Container does not contain entry", nameof(entry));
+                throw new ContainerNotContainsEntryException();
             _entries.Add(entry);
         }
     }

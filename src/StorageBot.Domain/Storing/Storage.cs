@@ -1,6 +1,8 @@
 ﻿using StorageBot.Domain.Abstract;
 using StorageBot.Domain.Account;
 using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions;
+using StorageBot.Domain.Exceptions.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +13,23 @@ namespace StorageBot.Domain.Storing
 {
     public class Storage : BaseStorageModel
     {
-        private static void CheckItemForException<T>(List<T> values, T value, bool itemExpectation, string valueName)
+        private static void ThrowIfContains<TItem, TException>(List<TItem> values, TItem value)
+            where TException: StorageException, new()
         {
             ArgumentNullException.ThrowIfNull(value);
-            bool has = values.Contains(value);
-            if (has == itemExpectation)
+            if (values.Contains(value))
             {
-                string text = itemExpectation ? $"Storage already contains this {valueName}"
-                                              : $"Storage does not contain this {valueName}";
-                throw new ArgumentException(text);
+                throw new TException();
+            }
+        }
+
+        private static void ThrowIfNotContains<TItem, TException>(List<TItem> values, TItem value)
+            where TException : StorageException, new()
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            if (!values.Contains(value))
+            {
+                throw new TException();
             }
         }
 
@@ -52,37 +62,37 @@ namespace StorageBot.Domain.Storing
 
         public void AddContainer(Container container)
         {
-            CheckItemForException(_containers, container, true, "container");
+            ThrowIfContains<Container, StorageAlreadyContainsContainerException>(_containers, container);
             _containers.Add(container);
         }
 
         public void RemoveContainer(Container container)
         {
-            CheckItemForException(_containers, container, false, "container");
+            ThrowIfNotContains<Container, StorageNotContainsContainerException>(_containers, container);
             _containers.Remove(container);
         }
 
         public void AddEntryCategory(EntryCategory category)
         {
-            CheckItemForException(_categories, category, true, "category");
+            ThrowIfContains<EntryCategory, StorageAlreadyContainsEntryCategoryException>(_categories, category);
             _categories.Add(category);
         }
 
         public void RemoveEntryCategory(EntryCategory category)
         {
-            CheckItemForException(_categories, category, false, "category");
+            ThrowIfNotContains<EntryCategory, StorageNotContainsEntryCategoryException>(_categories, category);
             _categories.Remove(category);
         }
 
         public void AddEntryQuantityType(EntryQuantityType quantityType)
         {
-            CheckItemForException(_quantityTypes, quantityType, true, "quantity type");
+            ThrowIfContains<EntryQuantityType, StorageAlreadyContainsQuantityTypeException>(_quantityTypes, quantityType);
             _quantityTypes.Add(quantityType);
         }
 
         public void RemoveEntryQuantityType(EntryQuantityType quantityType)
         {
-            CheckItemForException(_quantityTypes, quantityType, false, "quantity type");
+            ThrowIfNotContains<EntryQuantityType, StorageNotContainsQuantityTypeException>(_quantityTypes, quantityType);
             _quantityTypes.Remove(quantityType);
         }
     }

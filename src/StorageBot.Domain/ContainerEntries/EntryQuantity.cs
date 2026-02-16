@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.Abstract;
+using StorageBot.Domain.Exceptions.ContainerEntries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace StorageBot.Domain.ContainerEntries
         {
             if (!decimal.TryParse(stringValue, out var decimalValue))
             {
-                throw new ArgumentException($"{stringValue}' is not a valid number");
+                throw new InvalidQuantityValueException();
             }
 
             ValidateDecimalValue(decimalValue);
@@ -50,7 +51,7 @@ namespace StorageBot.Domain.ContainerEntries
             ArgumentNullException.ThrowIfNull(other);
             if (!QuantityType.Equals(other.QuantityType))
             {
-                throw new InvalidOperationException($"Cannot add different units: {QuantityType.UnitName} and {other.QuantityType.UnitName}");
+                throw new DifferentQuantityTypeException();
             }
 
             return new EntryQuantity(QuantityType, Value + other.Value);
@@ -61,12 +62,12 @@ namespace StorageBot.Domain.ContainerEntries
             ArgumentNullException.ThrowIfNull(other);
             if (!QuantityType.Equals(other.QuantityType))
             {
-                throw new InvalidOperationException($"Cannot add different units: {QuantityType.UnitName} and {other.QuantityType.UnitName}");
+                throw new DifferentQuantityTypeException();
             }
             decimal value = Value - other.Value;
             if (value <= 0)
             {
-                throw new InvalidOperationException($"Quantity value cannot be negative");
+                throw new NotPositiveQuantityValueException();
             }
             return new EntryQuantity(QuantityType, value);
         }
@@ -90,14 +91,14 @@ namespace StorageBot.Domain.ContainerEntries
 
         protected void ValidateDecimalValue(decimal value)
         {
-            if (value < 0)
+            if (value <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), "Quantity cannot be negative");
+                throw new NotPositiveQuantityValueException();
             }
 
             if (QuantityType.IsInteger && value % 1 != 0)
             {
-                throw new ArgumentException($"Quantity of type {QuantityType.UnitName} must be integer");
+                throw new NotIntegerValueException();
             }
         }
     }

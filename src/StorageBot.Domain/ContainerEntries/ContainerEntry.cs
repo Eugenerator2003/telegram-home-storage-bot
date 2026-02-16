@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.Abstract;
+using StorageBot.Domain.Exceptions.ContainerEntries;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -39,10 +40,10 @@ namespace StorageBot.Domain.ContainerEntries
         {
             ArgumentNullException.ThrowIfNull(category);
             if (_categories.Contains(category))
-                throw new ArgumentException("Entry is already assigned to this category", nameof(category));
-            if (_categories.Any(c => c.IsDescendant(category)) || 
+                throw new EntryAlreadyAssignedToCategoryException();
+            if (_categories.Any(c => c.IsDescendant(category)) ||
                 _categories.Any(c => c.IsAncestor(category)))
-                throw new ArgumentException("Category cannot be ancestor or descendant of assigned category");
+                throw new AssignedCategoryHierarchyException();
             _categories.Add(category);
         }
 
@@ -50,7 +51,7 @@ namespace StorageBot.Domain.ContainerEntries
         {
             ArgumentNullException.ThrowIfNull(category);
             if (!_categories.Contains(category))
-                throw new InvalidOperationException("Entry is not assigned to this category");
+                throw new EntryNotAssignedToCategoryException();
             _categories.Remove(category);
         }
 
