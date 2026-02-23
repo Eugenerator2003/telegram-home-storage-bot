@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Abstract;
 using StorageBot.Domain.Tests.Utils;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var category = new EntryCategory("category");
             var subcategory = new EntryCategory("subcategory", category);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AncestorNodeAsChildException>(() =>
             {
                 subcategory.AddSubcategory(category);
             });
@@ -80,7 +81,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var category = new EntryCategory("category");
             var subcategory1 = new EntryCategory("subcategory1", category);
             var subcategory2 = new EntryCategory("subcategory2", subcategory1);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AlreadyDescendantNodeException>(() =>
             {
                 category.AddSubcategory(subcategory2);
             });
@@ -104,7 +105,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var category = new EntryCategory("category");
             var subcategory = new EntryCategory("subcategory");
-            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<NoTreeNodeParentException>(() =>
             {
                 category.RemoveSubcategory(category);
             });

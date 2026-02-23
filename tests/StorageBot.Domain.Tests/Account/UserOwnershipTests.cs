@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.Account;
+using StorageBot.Domain.Exceptions.Account;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,6 @@ namespace StorageBot.Domain.Tests.Account
                 var ownership = new UserOwnership(user!);
             });
             Assert.IsNotNull(exception);
-            Assert.Contains(nameof(user), exception.Message);
         }
 
         [TestMethod]
@@ -51,12 +51,11 @@ namespace StorageBot.Domain.Tests.Account
         {
             var ownership = new UserOwnership(new TestUser());
             var storage = ownership.PersonalStorage;
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AddPersonalStorageAsSharedException>(() =>
             {
                 ownership.AddOtherStorage(storage);
             });
             Assert.IsNotNull(exception);
-            Assert.Contains(nameof(storage), exception.Message);
         }
 
         [TestMethod]
@@ -65,12 +64,11 @@ namespace StorageBot.Domain.Tests.Account
             var ownership = new UserOwnership(new TestUser());
             var storage = new Storage(ownership);
             ownership.AddOtherStorage(storage);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<UserAlreadyHaveStorageAccessException>(() =>
             {
                 ownership.AddOtherStorage(storage);
             });
             Assert.IsNotNull(exception);
-            Assert.Contains(nameof(storage), exception.Message);
         }
 
         [TestMethod]
@@ -78,12 +76,11 @@ namespace StorageBot.Domain.Tests.Account
         {
             var ownership = new UserOwnership(new TestUser());
             var storage = ownership.PersonalStorage;
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<RemovePersonalStorageException>(() =>
             {
                 ownership.RemoveOtherStorage(storage);
             });
             Assert.IsNotNull(exception);
-            Assert.Contains(nameof(storage), exception.Message);
         }
 
         [TestMethod]
@@ -91,12 +88,11 @@ namespace StorageBot.Domain.Tests.Account
         {
             var ownership = new UserOwnership(new TestUser());
             var storage = new Storage(ownership);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<NoStorageToRemoveException>(() =>
             {
                 ownership.RemoveOtherStorage(storage);
             });
             Assert.IsNotNull(exception);
-            Assert.Contains(nameof(storage), exception.Message);
         }
 
         [TestMethod]

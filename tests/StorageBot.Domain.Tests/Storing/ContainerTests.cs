@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Abstract;
 using StorageBot.Domain.Storing;
 using StorageBot.Domain.Tests.Utils;
 using System;
@@ -69,7 +70,7 @@ namespace StorageBot.Domain.Tests.Storing
         {
             var container = new Container("container");
             var innerContainer = new Container("inner-container", container);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AncestorNodeAsChildException>(() =>
             {
                 innerContainer.AddInnerContainer(container);
             });
@@ -81,7 +82,7 @@ namespace StorageBot.Domain.Tests.Storing
             var container = new Container("container");
             var innerContainer1 = new Container("inner-container1", container);
             var innerContainer2 = new Container("inner-container2", innerContainer1);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AlreadyDescendantNodeException>(() =>
             {
                 container.AddInnerContainer(innerContainer2);
             });
@@ -105,7 +106,7 @@ namespace StorageBot.Domain.Tests.Storing
         {
             var container = new Container("container");
             var innerContainer = new Container("inner-container");
-            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<NoTreeNodeParentException>(() =>
             {
                 container.RemoveInnerContainer(innerContainer);
             });

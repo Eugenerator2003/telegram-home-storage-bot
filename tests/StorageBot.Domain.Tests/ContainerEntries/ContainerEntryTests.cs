@@ -1,5 +1,6 @@
 ﻿using Moq;
 using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.ContainerEntries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,11 +80,10 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
             containerEntry.AddCategory(category);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<EntryAlreadyAssignedToCategoryException>(() =>
             {
                 containerEntry.AddCategory(category);
             });
-            Assert.Contains(nameof(category), exception.Message);
         }
 
         [TestMethod]
@@ -95,11 +95,10 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var category = new EntryCategory("category");
             var descendantCategory = new EntryCategory("descendantCategorys", category);
             containerEntry.AddCategory(category);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AssignedCategoryHierarchyException>(() =>
             {
                 containerEntry.AddCategory(descendantCategory);
             });
-            Assert.Contains(nameof(category), exception.Message);
         }
 
         [TestMethod]
@@ -111,11 +110,10 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var ancestorCategory = new EntryCategory("ancestorCategory");
             var category = new EntryCategory("category", ancestorCategory);
             containerEntry.AddCategory(category);
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<AssignedCategoryHierarchyException>(() =>
             {
                 containerEntry.AddCategory(ancestorCategory);
             });
-            Assert.Contains(nameof(category), exception.Message);
         }
 
         [TestMethod]
@@ -139,11 +137,10 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var quantity = new EntryQuantity(new EntryQuantityType(isInteger: true, "unit1"));
             var containerEntry = new ContainerEntry(name, quantity);
             var category = new EntryCategory("category");
-            var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+            var exception = Assert.ThrowsExactly<EntryNotAssignedToCategoryException>(() =>
             {
                 containerEntry.RemoveCategory(category);
             });
-            Assert.Contains(nameof(category), exception.Message);
         }
 
         [TestMethod]

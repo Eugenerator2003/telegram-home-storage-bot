@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.ContainerEntries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = -10;
-            var exception = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            var exception = Assert.ThrowsExactly<NotPositiveQuantityValueException>(() =>
             {
                 var quantity = new EntryQuantity(type, value);
             });
@@ -72,7 +73,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = 2.1m;
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<NotIntegerValueException>(() =>
             {
                 var quantity = new EntryQuantity(type, value);
             });
@@ -113,7 +114,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             decimal value = 2.1m;
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<NotIntegerValueException>(() =>
             {
                 var quantity = new EntryQuantity(type, value.ToString());
             });
@@ -124,7 +125,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
         {
             var type = new EntryQuantityType(isInteger: true, "unit");
             string value = "value";
-            var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+            var exception = Assert.ThrowsExactly<InvalidQuantityValueException>(() =>
             {
                 var quantity = new EntryQuantity(type, value);
             });
@@ -152,7 +153,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var quantity1 = new EntryQuantity(type1, 1m);
             var type2 = new EntryQuantityType(isInteger: false, "unit2");
             var quantity2 = new EntryQuantity(type2, 10.2m);
-            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Add(quantity2));
+            Assert.ThrowsExactly<DifferentQuantityTypeException>(() => quantity1.Add(quantity2));
         }
 
         [TestMethod]
@@ -182,7 +183,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var type2 = new EntryQuantityType(isInteger: false, "unit2");
             var quantity1 = new EntryQuantity(type1, 41.2m);
             var quantity2 = new EntryQuantity(type2, 41.0m);
-            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Subtract(quantity2));
+            Assert.ThrowsExactly<DifferentQuantityTypeException>(() => quantity1.Subtract(quantity2));
         }
 
         [TestMethod]
@@ -191,7 +192,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var type = new EntryQuantityType(isInteger: false, "unit");
             var quantity1 = new EntryQuantity(type, 30m);
             var quantity2 = new EntryQuantity(type, 100.2m);
-            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Subtract(quantity2));
+            Assert.ThrowsExactly<NotPositiveQuantityValueException>(() => quantity1.Subtract(quantity2));
         }
 
         [TestMethod]
@@ -200,7 +201,7 @@ namespace StorageBot.Domain.Tests.ContainerEntries
             var type = new EntryQuantityType(isInteger: false, "unit");
             var quantity1 = new EntryQuantity(type, 1m);
             var quantity2 = new EntryQuantity(type, 1m);
-            Assert.ThrowsExactly<InvalidOperationException>(() => quantity1.Subtract(quantity2));
+            Assert.ThrowsExactly<NotPositiveQuantityValueException>(() => quantity1.Subtract(quantity2));
         }
 
         [TestMethod]

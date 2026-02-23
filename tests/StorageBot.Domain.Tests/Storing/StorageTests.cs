@@ -1,5 +1,6 @@
 ﻿using StorageBot.Domain.Account;
 using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Storing;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace StorageBot.Domain.Tests.Storing
             var storage = new Storage(ownership);
             var container = new Container("container");
             storage.AddContainer(container);
-            Assert.ThrowsExactly<ArgumentException>(() =>
+            Assert.ThrowsExactly<StorageAlreadyContainsContainerException>(() =>
             {
                 storage.AddContainer(container);
             });
@@ -85,7 +86,7 @@ namespace StorageBot.Domain.Tests.Storing
             var storage = new Storage(ownership);
             Assert.HasCount(0, storage.Containers);
             var container = new Container("container");
-            Assert.ThrowsExactly<ArgumentException>(() =>
+            Assert.ThrowsExactly<StorageNotContainsContainerException>(() =>
             {
                 storage.RemoveContainer(container);
             });
@@ -129,7 +130,7 @@ namespace StorageBot.Domain.Tests.Storing
             var storage = new Storage(ownership);
             var category = new EntryCategory("category");
             storage.AddEntryCategory(category);
-            Assert.ThrowsExactly<ArgumentException>(() =>
+            Assert.ThrowsExactly<StorageAlreadyContainsEntryCategoryException>(() =>
             {
                 storage.AddEntryCategory(category);
             });
@@ -140,7 +141,7 @@ namespace StorageBot.Domain.Tests.Storing
         {
             var storage = new Storage(ownership);
             var category = new EntryCategory("category");
-            Assert.ThrowsExactly<ArgumentException>(() =>
+            Assert.ThrowsExactly<StorageNotContainsEntryCategoryException>(() =>
             {
                 storage.RemoveEntryCategory(category);
             });
@@ -184,7 +185,7 @@ namespace StorageBot.Domain.Tests.Storing
             var storage = new Storage(ownership);
             var quantityType = new EntryQuantityType(true, "quantity-type");
             storage.AddEntryQuantityType(quantityType);
-            Assert.ThrowsExactly<ArgumentException>(() =>
+            Assert.ThrowsExactly<StorageAlreadyContainsQuantityTypeException>(() =>
             {
                 storage.AddEntryQuantityType(quantityType);
             });
@@ -195,7 +196,7 @@ namespace StorageBot.Domain.Tests.Storing
         {
             var storage = new Storage(ownership);
             var quantityType = new EntryQuantityType(true, "quantity-type");
-            Assert.ThrowsExactly<ArgumentException>(() =>
+            Assert.ThrowsExactly<StorageNotContainsQuantityTypeException>(() =>
             {
                 storage.RemoveEntryQuantityType(quantityType);
             });
