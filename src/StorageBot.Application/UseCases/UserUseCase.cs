@@ -28,7 +28,7 @@ namespace StorageBot.Application.UseCases
             User? user = userRepository.GetById(input.UserId);
             if (user == null)
             {
-                return GenerateUserNotFoundOutput();
+                return GenerateUserNotFoundOutputWithLog(input);
             }
             return ExecuteWithUser(input, user);
         }
@@ -36,5 +36,11 @@ namespace StorageBot.Application.UseCases
         protected abstract TOutput ExecuteWithUser(TInput input, User user);
 
         protected abstract TOutput GenerateUserNotFoundOutput();
+
+        private TOutput GenerateUserNotFoundOutputWithLog(TInput input)
+        {
+            _logger.LogError("User with id {userId} not found", input.UserId);
+            return GenerateUserNotFoundOutput();
+        }
     }
 }

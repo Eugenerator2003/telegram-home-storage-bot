@@ -29,7 +29,7 @@ namespace StorageBot.Application.UseCases
             UserOwnership? ownership = ownershipRepository.GetByUser(user);
             if (ownership == null)
             {
-                return GenerateOwnershipNotFoundOutput();
+                return GenerateOwnershipNotFoundOutputWithLog(input);
             }
             return ExecuteWithUserOwnership(input, user, ownership);
         }
@@ -37,5 +37,11 @@ namespace StorageBot.Application.UseCases
         protected abstract TOutput ExecuteWithUserOwnership(TInput input, User user, UserOwnership ownership);
 
         protected abstract TOutput GenerateOwnershipNotFoundOutput();
+
+        private TOutput GenerateOwnershipNotFoundOutputWithLog(TInput input)
+        {
+            _logger.LogError("Ownership of user with id {userId} not found", input.UserId);
+            return GenerateOwnershipNotFoundOutput();
+        }
     }
 }
