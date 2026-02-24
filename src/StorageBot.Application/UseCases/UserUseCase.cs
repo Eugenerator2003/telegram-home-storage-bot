@@ -1,4 +1,6 @@
-﻿using StorageBot.Application.Data.Repositories;
+﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using StorageBot.Application.Data.Repositories;
 using StorageBot.Domain.Account;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,8 @@ namespace StorageBot.Application.UseCases
     {
         protected readonly UserRepository userRepository;
 
-        protected UserUseCase(UserRepository userRepository)
+        protected UserUseCase(ILogger<UserUseCase<TInput, TOutput>> logger, IStringLocalizer localizer, UserRepository userRepository)
+            : base(logger, localizer)
         {
             this.userRepository = userRepository;
         }

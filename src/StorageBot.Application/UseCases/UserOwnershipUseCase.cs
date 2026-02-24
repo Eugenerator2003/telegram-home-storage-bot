@@ -1,4 +1,6 @@
-﻿using StorageBot.Application.Data.Repositories;
+﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using StorageBot.Application.Data.Repositories;
 using StorageBot.Domain.Account;
 using System;
 using System.Collections.Generic;
@@ -15,8 +17,9 @@ namespace StorageBot.Application.UseCases
     {
         protected readonly UserOwnershipRepository ownershipRepository;
 
-        protected UserOwnershipUseCase(UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
-            : base(userRepository)
+        protected UserOwnershipUseCase(ILogger<UserOwnershipUseCase<TInput, TOutput>> logger, IStringLocalizer localizer, 
+                                       UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
+            : base(logger, localizer, userRepository)
         {
             this.ownershipRepository = ownershipRepository;
         }
