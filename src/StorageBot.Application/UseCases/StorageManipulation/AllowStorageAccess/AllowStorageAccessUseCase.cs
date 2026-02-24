@@ -26,11 +26,13 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             var allowUser = userRepository.GetById(input.AllowUserId);
             if (allowUser == null)
             {
+                _logger.LogError("User to allow with id {userId} not found", input.AllowUserId);
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowNotFound", input.AllowUserId]);
             }
             var allowOwnership = ownershipRepository.GetByUser(user);
             if (allowOwnership == null)
             {
+                _logger.LogError("Ownership of user to allow with id {userId} not found", input.AllowUserId);
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowOwnershipNotFound", input.AllowUserId]);
             }
             Output.OutputResult result;

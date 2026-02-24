@@ -25,11 +25,13 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
             var disallowUser = userRepository.GetById(input.DisallowUserId);
             if (disallowUser == null)
             {
+                _logger.LogError("User to disallow with id {userId} not found", input.DisallowUserId);
                 return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToDisallowNotFound", input.DisallowUserId]);
             }
             var allowOwnership = ownershipRepository.GetByUser(user);
             if (allowOwnership == null)
             {
+                _logger.LogError("Ownership of user to disallow with id {userId} not found", input.DisallowUserId);
                 return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToDisallownNotFound", input.DisallowUserId]);
             }
             Output.OutputResult result;
