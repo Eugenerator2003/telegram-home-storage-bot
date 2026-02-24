@@ -1,4 +1,6 @@
-﻿using StorageBot.Application.Data.Repositories;
+﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.UseCases.StorageManipulation.InitializeStorage;
 using StorageBot.Domain.Account;
 using System;
@@ -12,25 +14,28 @@ namespace StorageBot.Application.UseCases.StorageManipulation.GetAccessibleStora
     public class GetAccessibleStoragesUseCase : 
         UserOwnershipUseCase<GetAccessibleStoragesInput, GetAccessibleStoragesOutput>
     {
-        public GetAccessibleStoragesUseCase(UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
-            : base(userRepository, ownershipRepository)
+        public GetAccessibleStoragesUseCase(ILogger<GetAccessibleStoragesUseCase> logger, IStringLocalizer localizer, 
+                                            UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
+            : base(logger, localizer, userRepository, ownershipRepository)
         {
         }
 
         protected override GetAccessibleStoragesOutput ExecuteWithUserOwnership(GetAccessibleStoragesInput input, User user, UserOwnership ownership)
         {
-            var userIds = ownership.OtherStorages.Select(s => s.UserOwnership.User.Id).ToList();
+            var userIds = ownership.OtherStorages.Select(s => s.UserOwnership.User.Id)
+                                                 .ToList();
+            userIds.Insert(0, ownership.PersonalStorage.Id);
             return new GetAccessibleStoragesOutput(Output.OutputResult.Success, userIds, "");
         }
 
         protected override GetAccessibleStoragesOutput GenerateOwnershipNotFoundOutput()
         {
-            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, "User does not have a ownership");
+            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, "Case.UserOwnershipNotFound");
         }
 
         protected override GetAccessibleStoragesOutput GenerateUserNotFoundOutput()
         {
-            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, "User not found");
+            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, "Case.UserNotFound");
         }
     }
 }

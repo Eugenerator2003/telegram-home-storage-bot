@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 
 namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
 {
@@ -13,8 +15,9 @@ namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
     {
         protected UserOwnershipRepository ownershipRepository;
 
-        public InitializeStorageUseCase(UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
-            : base(userRepository)
+        public InitializeStorageUseCase(ILogger<InitializeStorageUseCase> logger,IStringLocalizer localizer, 
+                                        UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
+            : base(logger, localizer, userRepository)
         {
             this.ownershipRepository = ownershipRepository;
         }
@@ -24,7 +27,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
             var ownership = ownershipRepository.GetByUser(user);
             if (ownership != null)
             {
-                return new InitializeStorageOutput(Output.OutputResult.FatalFail, "User already have a personal storage");
+                return new InitializeStorageOutput(Output.OutputResult.FatalFail, "Case.UserAlreadyHaveStorage");
             }
             ownership = new UserOwnership(user);
             ownershipRepository.Create(ownership);
@@ -33,7 +36,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
 
         protected override InitializeStorageOutput GenerateUserNotFoundOutput()
         {
-            return new InitializeStorageOutput(Output.OutputResult.FatalFail, "User not found");
+            return new InitializeStorageOutput(Output.OutputResult.FatalFail, "Case.UserNotFound");
         }
     }
 }

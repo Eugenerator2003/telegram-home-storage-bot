@@ -1,4 +1,6 @@
-﻿using StorageBot.Application.Data.Repositories;
+﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.UseCases.StorageManipulation.GetAccessibleStorages;
 using StorageBot.Domain.Account;
 using System;
@@ -13,8 +15,9 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
         : UserOwnershipUseCase<AllowStorageAccessInput, AllowStorageAccessOutput>
     {
 
-        public AllowStorageAccessUseCase(UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
-            : base(userRepository, ownershipRepository)
+        public AllowStorageAccessUseCase(ILogger<AllowStorageAccessUseCase> logger, IStringLocalizer localizer, 
+                                         UserRepository userRepository, UserOwnershipRepository ownershipRepository) 
+            : base(logger, localizer, userRepository, ownershipRepository)
         {
         }
 
@@ -23,12 +26,12 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             var allowUser = userRepository.GetById(input.AllowUserId);
             if (allowUser == null)
             {
-                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, "User to allow not found");
+                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowNotFound"]);
             }
             var allowOwnership = ownershipRepository.GetByUser(user);
             if (allowOwnership == null)
             {
-                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, "User does not have a ownership");
+                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowOwnershipNotFound"]);
             }
             Output.OutputResult result;
             string message = "";
@@ -47,12 +50,12 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
 
         protected override AllowStorageAccessOutput GenerateOwnershipNotFoundOutput()
         {
-            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, "User does not have a ownership");
+            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override AllowStorageAccessOutput GenerateUserNotFoundOutput()
         {
-            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, "User not found");
+            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 
