@@ -36,12 +36,12 @@ namespace StorageBot.Application.UseCases
 
         protected abstract TOutput ExecuteWithUserOwnership(TInput input, User user, UserOwnership ownership);
 
-        protected abstract TOutput GenerateOwnershipNotFoundOutput();
+        protected abstract TOutput GenerateOwnershipNotFoundOutput(TInput input);
 
         private TOutput GenerateOwnershipNotFoundOutputWithLog(TInput input)
         {
             _logger.LogError("Ownership of user with id {userId} not found", input.UserId);
-            return GenerateOwnershipNotFoundOutput();
+            return GenerateOwnershipNotFoundOutput(input);
         }
     }
 }

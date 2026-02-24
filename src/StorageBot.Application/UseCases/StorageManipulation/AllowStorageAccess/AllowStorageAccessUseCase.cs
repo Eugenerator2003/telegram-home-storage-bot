@@ -26,12 +26,12 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             var allowUser = userRepository.GetById(input.AllowUserId);
             if (allowUser == null)
             {
-                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowNotFound"]);
+                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowNotFound", input.AllowUserId]);
             }
             var allowOwnership = ownershipRepository.GetByUser(user);
             if (allowOwnership == null)
             {
-                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowOwnershipNotFound"]);
+                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowOwnershipNotFound", input.AllowUserId]);
             }
             Output.OutputResult result;
             string message = "";
@@ -48,14 +48,14 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             return new AllowStorageAccessOutput(result, message);
         }
 
-        protected override AllowStorageAccessOutput GenerateOwnershipNotFoundOutput()
+        protected override AllowStorageAccessOutput GenerateOwnershipNotFoundOutput(AllowStorageAccessInput input)
         {
-            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
+            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound", input.UserId]);
         }
 
-        protected override AllowStorageAccessOutput GenerateUserNotFoundOutput()
+        protected override AllowStorageAccessOutput GenerateUserNotFoundOutput(AllowStorageAccessInput input)
         {
-            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
+            return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
         }
     }
 

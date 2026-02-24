@@ -25,12 +25,12 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
             var disallowUser = userRepository.GetById(input.DisallowUserId);
             if (disallowUser == null)
             {
-                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToDisallowNotFound"]);
+                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToDisallowNotFound", input.DisallowUserId]);
             }
             var allowOwnership = ownershipRepository.GetByUser(user);
             if (allowOwnership == null)
             {
-                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToDisallownNotFound"]);
+                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToDisallownNotFound", input.DisallowUserId]);
             }
             Output.OutputResult result;
             string message = "";
@@ -47,14 +47,14 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
             return new DisallowStorageAccessOutput(result, message);
         }
 
-        protected override DisallowStorageAccessOutput GenerateOwnershipNotFoundOutput()
+        protected override DisallowStorageAccessOutput GenerateOwnershipNotFoundOutput(DisallowStorageAccessInput input)
         {
-            return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
+            return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound", input.UserId]);
         }
 
-        protected override DisallowStorageAccessOutput GenerateUserNotFoundOutput()
+        protected override DisallowStorageAccessOutput GenerateUserNotFoundOutput(DisallowStorageAccessInput input)
         {
-            return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
+            return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
         }
     }
 }

@@ -27,16 +27,16 @@ namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
             var ownership = ownershipRepository.GetByUser(user);
             if (ownership != null)
             {
-                return new InitializeStorageOutput(Output.OutputResult.FatalFail, "Case.UserAlreadyHaveStorage");
+                return new InitializeStorageOutput(Output.OutputResult.FatalFail, _localizer["Case.UserAlreadyHaveStorage", input.UserId]);
             }
             ownership = new UserOwnership(user);
             ownershipRepository.Create(ownership);
             return new InitializeStorageOutput(Output.OutputResult.Success);
         }
 
-        protected override InitializeStorageOutput GenerateUserNotFoundOutput()
+        protected override InitializeStorageOutput GenerateUserNotFoundOutput(InitializeStorageInput input)
         {
-            return new InitializeStorageOutput(Output.OutputResult.FatalFail, "Case.UserNotFound");
+            return new InitializeStorageOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
         }
     }
 }

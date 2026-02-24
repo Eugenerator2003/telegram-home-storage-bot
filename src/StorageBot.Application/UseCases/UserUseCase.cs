@@ -35,12 +35,12 @@ namespace StorageBot.Application.UseCases
 
         protected abstract TOutput ExecuteWithUser(TInput input, User user);
 
-        protected abstract TOutput GenerateUserNotFoundOutput();
+        protected abstract TOutput GenerateUserNotFoundOutput(TInput input);
 
         private TOutput GenerateUserNotFoundOutputWithLog(TInput input)
         {
             _logger.LogError("User with id {userId} not found", input.UserId);
-            return GenerateUserNotFoundOutput();
+            return GenerateUserNotFoundOutput(input);
         }
     }
 }

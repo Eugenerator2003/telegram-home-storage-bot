@@ -28,14 +28,14 @@ namespace StorageBot.Application.UseCases.StorageManipulation.GetAccessibleStora
             return new GetAccessibleStoragesOutput(Output.OutputResult.Success, userIds, "");
         }
 
-        protected override GetAccessibleStoragesOutput GenerateOwnershipNotFoundOutput()
+        protected override GetAccessibleStoragesOutput GenerateOwnershipNotFoundOutput(GetAccessibleStoragesInput input)
         {
-            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, "Case.UserOwnershipNotFound");
+            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound", input.UserId]);
         }
 
-        protected override GetAccessibleStoragesOutput GenerateUserNotFoundOutput()
+        protected override GetAccessibleStoragesOutput GenerateUserNotFoundOutput(GetAccessibleStoragesInput input)
         {
-            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, "Case.UserNotFound");
+            return new GetAccessibleStoragesOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
         }
     }
 }
