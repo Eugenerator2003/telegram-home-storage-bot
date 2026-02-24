@@ -24,7 +24,7 @@ namespace StorageBot.Application.UseCases
             this.ownershipRepository = ownershipRepository;
         }
 
-        protected override TOutput ExecuteWithUser(TInput input, User user)
+        protected override sealed TOutput ExecuteWithUser(TInput input, User user)
         {
             UserOwnership? ownership = ownershipRepository.GetByUser(user);
             if (ownership == null)

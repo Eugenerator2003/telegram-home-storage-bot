@@ -23,7 +23,7 @@ namespace StorageBot.Application.UseCases
             this.userRepository = userRepository;
         }
 
-        public override TOutput Execute(TInput input)
+        protected override sealed TOutput ExecuteAfterValidation(TInput input)
         {
             User? user = userRepository.GetById(input.UserId);
             if (user == null)

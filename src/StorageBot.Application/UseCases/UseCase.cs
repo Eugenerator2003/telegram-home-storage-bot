@@ -24,6 +24,22 @@ namespace StorageBot.Application.UseCases
             _localizer = localizer;
         }
 
-        public abstract TOutput Execute(TInput input);
+        public TOutput Execute(TInput input)
+        {
+            ArgumentNullException.ThrowIfNull(input);
+            var output = ValidateBeforeExecute(input);
+            if (output == null)
+            {
+                return ExecuteAfterValidation(input);
+            }
+            return output;
+        }
+
+        protected virtual TOutput? ValidateBeforeExecute(TInput input) 
+        {
+            return null;
+        }
+
+        protected abstract TOutput ExecuteAfterValidation(TInput input);
     }
 }
