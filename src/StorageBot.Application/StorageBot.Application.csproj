@@ -10,8 +10,4 @@
     <ProjectReference Include="..\StorageBot.Domain\StorageBot.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RequestProcessing\" />
-  </ItemGroup>
-
 </Project>
