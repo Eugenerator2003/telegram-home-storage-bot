@@ -58,5 +58,15 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
         {
             return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
         }
+
+        protected override DisallowStorageAccessOutput? ValidateBeforeExecute(DisallowStorageAccessInput input)
+        {
+            if (input.UserId == input.DisallowUserId)
+            {
+                _logger.LogError("User with id {userId} failed to disallow personal storage as other user storage", input.UserId);
+                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.AllowPersonalStorageAsOther"]);
+            }
+            return base.ExecuteAfterValidation(input);
+        }
     }
 }
