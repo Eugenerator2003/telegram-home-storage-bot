@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.UseCases.StorageManipulation.GetAccessibleStorages;
 using StorageBot.Domain.Account;
+using StorageBot.Domain.Exceptions.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             if (allowOwnership == null)
             {
                 _logger.LogError("Ownership of user to allow with id {userId} not found", input.AllowUserId);
-                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowOwnershipNotFound", input.AllowUserId]);
+                return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToAllowNotFound", input.AllowUserId]);
             }
             Output.OutputResult result;
             string message = "";
@@ -41,11 +42,19 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             {
                 allowOwnership.AddOtherStorage(ownership.PersonalStorage);
                 result = Output.OutputResult.Success;
+                _logger.LogInformation("User with id {userId} allowed access to personal storage to user with id {otherUserId}", input.UserId, input.AllowUserId);
             }
-            catch (Exception ex) 
+            catch (UserAlreadyHaveStorageAccessException ex)
             {
                 result = Output.OutputResult.Fail;
-                message = ex.Message;
+                message = _localizer["Case.UserAlreadyHaveStorageAccess"];
+                _logger.LogInformation(ex, "User with id {userId} can't allow access to personal storage to user with id {otherUserId}", input.UserId, input.AllowUserId);
+            }
+            catch (Exception ex)
+            {
+                result = Output.OutputResult.FatalFail;
+                message = _localizer["Case.ServerError"];
+                _logger.LogInformation(ex, "User with id {userId} can't allow access to personal storage to user with id {otherUserId}", input.UserId, input.AllowUserId);
             }
             return new AllowStorageAccessOutput(result, message);
         }

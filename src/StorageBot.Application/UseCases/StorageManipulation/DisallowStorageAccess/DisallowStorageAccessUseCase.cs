@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess;
 using StorageBot.Domain.Account;
+using StorageBot.Domain.Exceptions.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,11 +41,19 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
             {
                 allowOwnership.RemoveOtherStorage(ownership.PersonalStorage);
                 result = Output.OutputResult.Success;
+                _logger.LogInformation("User with id {userId} disallowed access to personal storage to user with id {otherUserId}", input.UserId, input.DisallowUserId);
+            }
+            catch (NoStorageToRemoveException ex)
+            {
+                result = Output.OutputResult.FatalFail;
+                message = _localizer["Case.NoStorageToRemoveException"];
+                _logger.LogError(ex, "User with id {userId} can't disallow access to personal storage to user with id {otherUserId}", input.UserId, input.DisallowUserId);
             }
             catch (Exception ex)
             {
-                result = Output.OutputResult.Fail;
-                message = ex.Message;
+                result = Output.OutputResult.FatalFail;
+                message = _localizer["Case.ServerError"];
+                _logger.LogError(ex, "User with id {userId} can't disallow access to personal storage to user with id {otherUserId}", input.UserId, input.DisallowUserId);
             }
             return new DisallowStorageAccessOutput(result, message);
         }
