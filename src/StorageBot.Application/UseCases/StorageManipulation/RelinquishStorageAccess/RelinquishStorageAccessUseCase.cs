@@ -16,7 +16,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
         UserOwnershipUseCase<RelinquishStorageAccessInput, RelinquishStorageAccessOutput>
     {
         public RelinquishStorageAccessUseCase(
-            ILogger<UserOwnershipUseCase<RelinquishStorageAccessInput, RelinquishStorageAccessOutput>> logger, 
+            ILogger<RelinquishStorageAccessUseCase> logger, 
             IStringLocalizer localizer, UserRepository userRepository, 
             UserOwnershipRepository ownershipRepository) 
             : base(logger, localizer, userRepository, ownershipRepository)
