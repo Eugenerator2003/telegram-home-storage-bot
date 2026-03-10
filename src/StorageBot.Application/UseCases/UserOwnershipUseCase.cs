@@ -40,7 +40,7 @@ namespace StorageBot.Application.UseCases
 
         private TOutput GenerateOwnershipNotFoundOutputWithLog(TInput input)
         {
-            _logger.LogError("Ownership of user with id {userId} not found", input.UserId);
+            _logger.LogError("Ownership of user {userId} not found", input.UserId);
             return GenerateOwnershipNotFoundOutput(input);
         }
     }

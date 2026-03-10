@@ -27,13 +27,13 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             var allowUser = userRepository.GetById(input.AllowUserId);
             if (allowUser == null)
             {
-                _logger.LogError("User to allow with id {userId} not found", input.AllowUserId);
+                _logger.LogError("User to allow {userId} not found", input.AllowUserId);
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowNotFound", input.AllowUserId]);
             }
             var allowOwnership = ownershipRepository.GetByUser(user);
             if (allowOwnership == null)
             {
-                _logger.LogError("Ownership of user to allow with id {userId} not found", input.AllowUserId);
+                _logger.LogError("Ownership of user to allow {userId} not found", input.AllowUserId);
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToAllowNotFound", input.AllowUserId]);
             }
             Output.OutputResult result;
@@ -42,19 +42,19 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             {
                 allowOwnership.AddOtherStorage(ownership.PersonalStorage);
                 result = Output.OutputResult.Success;
-                _logger.LogInformation("User with id {userId} allowed access to personal storage to user with id {otherUserId}", input.UserId, input.AllowUserId);
+                _logger.LogInformation("User {userId} allowed access to personal storage to user {otherUserId}", input.UserId, input.AllowUserId);
             }
             catch (UserAlreadyHaveStorageAccessException ex)
             {
                 result = Output.OutputResult.Fail;
                 message = _localizer["Case.UserAlreadyHaveStorageAccess"];
-                _logger.LogInformation(ex, "User with id {userId} can't allow access to personal storage to user with id {otherUserId}", input.UserId, input.AllowUserId);
+                _logger.LogInformation(ex, "User {userId} can't allow access to personal storage to user {otherUserId}", input.UserId, input.AllowUserId);
             }
             catch (Exception ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.ServerError"];
-                _logger.LogInformation(ex, "User with id {userId} can't allow access to personal storage to user with id {otherUserId}", input.UserId, input.AllowUserId);
+                _logger.LogInformation(ex, "User {userId} can't allow access to personal storage to user {otherUserId}", input.UserId, input.AllowUserId);
             }
             return new AllowStorageAccessOutput(result, message);
         }
@@ -73,7 +73,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
         {
             if (input.UserId == input.AllowUserId)
             {
-                _logger.LogError("User with id {userId} failed to allow personal storage as other user storage", input.UserId);
+                _logger.LogError("User {userId} failed to allow personal storage as other user storage", input.UserId);
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.AllowPersonalStorageAsOther"]);
             }
             return base.ValidateBeforeExecute(input);

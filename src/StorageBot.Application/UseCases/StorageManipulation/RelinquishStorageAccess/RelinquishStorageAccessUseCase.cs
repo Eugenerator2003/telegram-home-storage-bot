@@ -28,13 +28,13 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
             var owner = userRepository.GetById(input.StorageOwnerId);
             if (owner == null)
             {
-                _logger.LogError("Storage owner with id {userId} not found", input.StorageOwnerId);
+                _logger.LogError("Storage owner {userId} not found", input.StorageOwnerId);
                 return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnerOfStorageToRelinquishNotFound", input.StorageOwnerId]);
             }
             var ownerOwnership = ownershipRepository.GetByUser(owner);
             if (ownerOwnership == null)
             {
-                _logger.LogError("Ownership of user with id {userId} not found", input.StorageOwnerId);
+                _logger.LogError("Ownership of user {userId} not found", input.StorageOwnerId);
                 return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipWithStorageToRelinquishNotFound", input.StorageOwnerId]);
             }
 
@@ -44,19 +44,19 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
             {
                 ownership.RemoveOtherStorage(ownerOwnership.PersonalStorage);
                 result = Output.OutputResult.Success;
-                _logger.LogInformation("User with id {usedId} relinquished access to personal storage of user with id {storageOwnerId}", user.Id, input.StorageOwnerId);
+                _logger.LogInformation("User {usedId} relinquished access to personal storage of user {storageOwnerId}", user.Id, input.StorageOwnerId);
             }
             catch (NoStorageToRemoveException ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.NoStorageToRemoveException"];
-                _logger.LogError(ex, "User with id {userId} can't relinquish access to personal storage to user with id {storageOwnerId}", input.UserId, input.StorageOwnerId);
+                _logger.LogError(ex, "User {userId} can't relinquish access to personal storage to user {storageOwnerId}", input.UserId, input.StorageOwnerId);
             }
             catch (Exception ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.ServerError"];
-                _logger.LogError(ex, "User with id {userId} can't relinquish access to personal storage to user with id {storageOwnerId}", input.UserId, input.StorageOwnerId);
+                _logger.LogError(ex, "User {userId} can't relinquish access to personal storage to user {storageOwnerId}", input.UserId, input.StorageOwnerId);
             }
 
             return new RelinquishStorageAccessOutput(result, message);
@@ -76,7 +76,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
         {
             if (input.UserId == input.StorageOwnerId)
             {
-                _logger.LogError("User with id {userId} failed to relinquish access to personal storage", input.UserId);
+                _logger.LogError("User {userId} failed to relinquish access to personal storage", input.UserId);
                 return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.RelinquishAccessToPersonalStorage"]);
             }
             return base.ValidateBeforeExecute(input);

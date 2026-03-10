@@ -39,7 +39,7 @@ namespace StorageBot.Application.UseCases
 
         private TOutput GenerateUserNotFoundOutputWithLog(TInput input)
         {
-            _logger.LogError("User with id {userId} not found", input.UserId);
+            _logger.LogError("User {userId} not found", input.UserId);
             return GenerateUserNotFoundOutput(input);
         }
     }
