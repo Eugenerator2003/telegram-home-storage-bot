@@ -1,5 +1,4 @@
-﻿using StorageBot.Application.Data.Repositories;
-using StorageBot.Domain.ContainerEntries;
+﻿using StorageBot.Domain.ContainerEntries;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Application.Data.Repositories.StorageRepositories
+namespace StorageBot.Domain.Repositories
 {
-    public class StorageEntryCategoryRepository : IRepository<EntryCategory>
+    public class StorageEntryCategoryRepository : StorageRepository<EntryCategory>
     {
         private static EntryCategory? GetSub(IEnumerable<EntryCategory> categories, int id)
         {
@@ -33,40 +32,31 @@ namespace StorageBot.Application.Data.Repositories.StorageRepositories
             return sub;
         }
 
-        private Storage storage;
-
         public StorageEntryCategoryRepository(Storage storage)
+            : base(storage)
         {
-            this.storage = storage;
         }
 
-        public void Create(EntryCategory entity)
+        public override  void Create(EntryCategory entity)
         {
             storage.AddEntryCategory(entity);
         }
 
-        public void Delete(int id)
+        public override void Delete(int id)
         {
             var category = GetById(id) ??
                 throw new InvalidOperationException("Category does not belong to the specified storage");
             storage.RemoveEntryCategory(category);
         }
 
-        public IEnumerable<EntryCategory> GetAll()
+        public override IEnumerable<EntryCategory> GetAll()
         {
             return storage.EntryCategories;
         }
 
-        public EntryCategory? GetById(int id)
+        public override EntryCategory? GetById(int id)
         {
             return GetSub(storage.EntryCategories, id);
-        }
-
-        public void Update(EntryCategory entity)
-        {
-            var category = GetById(entity.Id) ??
-                throw new InvalidOperationException("Category does not belong to the specified storage");
-            category.Name = entity.Name;
         }
     }
 }

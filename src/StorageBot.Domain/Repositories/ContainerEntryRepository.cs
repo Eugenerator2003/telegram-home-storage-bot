@@ -1,5 +1,4 @@
-﻿using StorageBot.Application.Data.Repositories;
-using StorageBot.Domain.ContainerEntries;
+﻿using StorageBot.Domain.ContainerEntries;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Application.Data.Repositories.StorageRepositories
+namespace StorageBot.Domain.Repositories
 {
-    public class ContainerEntryRepository : IRepository<ContainerEntry>
+    public class ContainerEntryRepository : IDomainRepository<ContainerEntry>
     {
         private Container container;
 
@@ -38,13 +37,6 @@ namespace StorageBot.Application.Data.Repositories.StorageRepositories
         public ContainerEntry? GetById(int id)
         {
             return container.Entries.FirstOrDefault(x => x.Id == id);
-        }
-
-        public void Update(ContainerEntry entity)
-        {
-            var entry = GetById(entity.Id) ??
-                throw new InvalidOperationException("Entry does not belong to the specified container");
-            entry.Name = entity.Name;
         }
     }
 }

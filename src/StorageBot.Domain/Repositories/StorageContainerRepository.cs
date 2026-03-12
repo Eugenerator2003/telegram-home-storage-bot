@@ -1,5 +1,4 @@
-﻿using StorageBot.Application.Data.Repositories;
-using StorageBot.Domain.Storing;
+﻿using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace StorageBot.Application.Data.Repositories.StorageRepositories
+namespace StorageBot.Domain.Repositories
 {
-    public class StorageContainerRepository : IRepository<Container>
+    public class StorageContainerRepository : StorageRepository<Container>
     {
         private static Container? GetInner(IEnumerable<Container> containers, int id)
         {
@@ -33,40 +32,32 @@ namespace StorageBot.Application.Data.Repositories.StorageRepositories
             return inner;
         }
 
-        private Storage storage;
-
-        public StorageContainerRepository(Storage storage)
+        public StorageContainerRepository(Storage storage) 
+            : base(storage)
         {
-            this.storage = storage;
+
         }
 
-        public void Create(Container entity)
+        public override void Create(Container entity)
         {
             storage.AddContainer(entity);
         }
 
-        public void Delete(int id)
+        public override void Delete(int id)
         {
             var container = GetById(id) ??
                 throw new InvalidOperationException("Container does not belong to the specified storage");
             storage.RemoveContainer(container);
         }
 
-        public IEnumerable<Container> GetAll()
+        public override IEnumerable<Container> GetAll()
         {
             return storage.Containers;
         }
 
-        public Container? GetById(int id)
+        public override Container? GetById(int id)
         {
             return GetInner(storage.Containers, id);
-        }
-
-        public void Update(Container entity)
-        {
-            var container = GetById(entity.Id) ??
-               throw new InvalidOperationException("Container does not belong to the specified storage");
-            container.Name = entity.Name;
         }
     }
 }
