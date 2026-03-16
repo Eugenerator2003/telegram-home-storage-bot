@@ -52,7 +52,7 @@ namespace StorageBot.Domain.Storing
             ArgumentNullException.ThrowIfNull(entry);
             if (!_entries.Contains(entry))
                 throw new ContainerNotContainsEntryException();
-            _entries.Add(entry);
+            _entries.Remove(entry);
         }
     }
 }
