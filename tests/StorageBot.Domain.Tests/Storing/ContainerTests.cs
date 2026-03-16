@@ -1,5 +1,6 @@
 ﻿using StorageBot.Domain.ContainerEntries;
 using StorageBot.Domain.Exceptions.Abstract;
+using StorageBot.Domain.Exceptions.Storing;
 using StorageBot.Domain.Storing;
 using StorageBot.Domain.Tests.Utils;
 using System;
@@ -130,6 +131,48 @@ namespace StorageBot.Domain.Tests.Storing
             {
                 container.RemoveInnerContainer(null!);
             });
+        }
+
+        [TestMethod]
+        public void AddEntryTest()
+        {
+            Container container = new Container("container");
+            ContainerEntry entry = new ContainerEntry("entry", new EntryQuantity(new EntryQuantityType(isInteger: false, "unit")));
+            Assert.HasCount(0, container.Entries);
+            container.AddEntry(entry);
+            Assert.HasCount(1, container.Entries);
+            Assert.AreEqual(entry, container.Entries.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void AddEntryExceptionTest()
+        {
+            Container container = new Container("container");
+            ContainerEntry entry = new ContainerEntry("entry", new EntryQuantity(new EntryQuantityType(isInteger: false, "unit")));
+            Assert.ThrowsExactly<ContainerAlreadyContainsEntryException>(() =>
+            {
+                container.AddEntry(entry);
+                container.AddEntry(entry);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveEntryTest()
+        {
+            Container container = new Container("container");
+            ContainerEntry entry = new ContainerEntry("entry", new EntryQuantity(new EntryQuantityType(isInteger: false, "unit")));
+            container.AddEntry(entry);
+            Assert.HasCount(1, container.Entries);
+            container.RemoveEntry(entry);
+            Assert.HasCount(0, container.Entries);
+        }
+
+        [TestMethod]
+        public void RemoveEntryExceptionTest()
+        {
+            Container container = new Container("container");
+            ContainerEntry entry = new ContainerEntry("entry", new EntryQuantity(new EntryQuantityType(isInteger: false, "unit")));
+            Assert.ThrowsExactly<ContainerNotContainsEntryException>(() => container.RemoveEntry(entry));
         }
 
         [TestMethod]
