@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Repositories;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace StorageBot.Domain.Repositories
         public void Delete(int id)
         {
             var entry = GetById(id) ??
-                throw new InvalidOperationException("Entry does not belong to the specified container");
+                throw new EntityNotFoundException(typeof(ContainerEntry));
             container.RemoveEntry(entry);
         }
 

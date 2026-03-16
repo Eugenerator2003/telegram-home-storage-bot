@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Repositories;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -22,8 +23,8 @@ namespace StorageBot.Domain.Repositories
 
         public override void Delete(int id)
         {
-            var quantityType = GetById(id) ?? 
-                throw new InvalidOperationException("Quantity type does not belong to the specified storage");
+            var quantityType = GetById(id) ??
+                throw new EntityNotFoundException(typeof(EntryQuantityType));
             storage.RemoveEntryQuantityType(quantityType);
         }
 

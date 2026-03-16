@@ -1,4 +1,5 @@
 ﻿using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.Repositories;
 using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace StorageBot.Domain.Repositories
         public override void Delete(int id)
         {
             var category = GetById(id) ??
-                throw new InvalidOperationException("Category does not belong to the specified storage");
+                throw new EntityNotFoundException(typeof(EntryCategory));
             storage.RemoveEntryCategory(category);
         }
 
