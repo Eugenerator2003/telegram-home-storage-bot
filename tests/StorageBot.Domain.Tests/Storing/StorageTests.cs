@@ -81,6 +81,18 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
+        public void AddContainerWithOuterContainerTest()
+        {
+            var storage = new Storage(ownership);
+            var outerContainer = new Container("outer-container");
+            var innerContainer = new Container("inner-container", outerContainer);
+            Assert.ThrowsExactly<StorageContainerHasOuterContainerException>(() =>
+            {
+                storage.AddContainer(innerContainer);
+            });
+        }
+
+        [TestMethod]
         public void RemoveNotIncludedContainerTest()
         {
             var storage = new Storage(ownership);
@@ -133,6 +145,18 @@ namespace StorageBot.Domain.Tests.Storing
             Assert.ThrowsExactly<StorageAlreadyContainsEntryCategoryException>(() =>
             {
                 storage.AddEntryCategory(category);
+            });
+        }
+
+        [TestMethod]
+        public void AddCategoryWithMainCategoryTest()
+        {
+            var storage = new Storage(ownership);
+            var mainCategory = new EntryCategory("main-category");
+            var subCategory = new EntryCategory("sub-category", mainCategory);
+            Assert.ThrowsExactly<StorageEntryCategoryHasMainCategoryException>(() =>
+            {
+                storage.AddEntryCategory(subCategory);
             });
         }
 
