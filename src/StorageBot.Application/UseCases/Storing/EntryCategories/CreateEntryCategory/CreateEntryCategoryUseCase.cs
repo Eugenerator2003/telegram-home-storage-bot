@@ -44,8 +44,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
                 }
                 else
                 {
-                    EntryCategory category = new EntryCategory(input.CategoryName);
-                    EntryCategoryRepository.Create(category);
+                    EntryCategoryRepository.Create(input.CategoryName);
                 }
                 _logger.LogInformation("User {userId} create entry category (ownership {storageOwnershipId}) with {categoryName} name",
                                    input.UserId,
