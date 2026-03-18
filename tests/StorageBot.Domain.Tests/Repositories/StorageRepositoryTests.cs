@@ -72,9 +72,10 @@ namespace StorageBot.Domain.Tests.Repositories
         {
             var storage = GetStorage();
             var expectedEntity = GetEntity();
+            expectedEntity.Id = 10;
             AddEntityToStorage(storage, expectedEntity);
             var repository = GetRepository(storage);
-            var entity = repository.GetById(0);
+            var entity = repository.GetById(expectedEntity.Id);
             Assert.AreEqual(expectedEntity, entity);
         }
 
