@@ -8,7 +8,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes
 {
     public class EntryQuantityTypeDTO
     {
-        public int QuantityTypeId { get; }
+        public int Id { get; }
 
         public bool IsInteger { get; }
 
@@ -16,7 +16,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes
 
         public EntryQuantityTypeDTO(int quantityTypeId, bool isInteger, string unitName)
         {
-            QuantityTypeId = quantityTypeId;
+            Id = quantityTypeId;
             IsInteger = isInteger;
             UnitName = unitName;
         }
