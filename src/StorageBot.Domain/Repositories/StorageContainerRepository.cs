@@ -39,9 +39,17 @@ namespace StorageBot.Domain.Repositories
 
         }
 
-        public override void Create(Container entity)
+        public void Create(string containerName)
         {
-            storage.AddContainer(entity);
+            Container container = new Container(containerName);
+            storage.AddContainer(container);
+        }
+
+        public void CreateWithOuterContainer(string containerName, int outerContainerId)
+        {
+            Container outerContainer = GetById(outerContainerId) ??
+                throw new EntityNotFoundException(typeof(Container));
+            Container container = new Container(containerName, outerContainer);
         }
 
         public override void Delete(int id)

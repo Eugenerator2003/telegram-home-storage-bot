@@ -16,9 +16,10 @@ namespace StorageBot.Domain.Repositories
         {
         }
 
-        public override void Create(EntryQuantityType entity)
+        public void Create(bool isInteger, string quantityName)
         {
-            storage.AddEntryQuantityType(entity);
+            EntryQuantityType type = new EntryQuantityType(isInteger, quantityName);
+            storage.AddEntryQuantityType(type);
         }
 
         public override void Delete(int id)

@@ -38,16 +38,17 @@ namespace StorageBot.Domain.Repositories
         {
         }
 
-        public void CreateWithMainCategory(string name, int mainCategoryId)
+        public void CreateWithMainCategory(string categoryName, int mainCategoryId)
         {
             EntryCategory? mainCategory = GetById(mainCategoryId) ??
                 throw new EntityNotFoundException(typeof(EntryCategory));
-            EntryCategory category = new EntryCategory(name, mainCategory);
+            EntryCategory category = new EntryCategory(categoryName, mainCategory);
         }
 
-        public override void Create(EntryCategory entity)
+        public void Create(string categoryName)
         {
-            storage.AddEntryCategory(entity);
+            EntryCategory category = new EntryCategory(categoryName);
+            storage.AddEntryCategory(category);
         }
 
         public override void Delete(int id)

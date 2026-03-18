@@ -18,9 +18,10 @@ namespace StorageBot.Domain.Repositories
             this.container = container;
         }
 
-        public void Create(ContainerEntry entity)
+        public void Create(string entryName, EntryQuantity quantity)
         {
-            container.AddEntry(entity);
+            ContainerEntry entry = new ContainerEntry(entryName, quantity);
+            container.AddEntry(entry);
         }
 
         public void Delete(int id)
