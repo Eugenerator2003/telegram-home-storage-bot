@@ -13,8 +13,6 @@ namespace StorageBot.Domain.Repositories
 
         IEnumerable<T> GetAll();
 
-        void Create(T entity);
-
         void Delete(int id);
     }
 }

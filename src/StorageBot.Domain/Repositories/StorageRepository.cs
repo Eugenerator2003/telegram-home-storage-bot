@@ -19,7 +19,6 @@ namespace StorageBot.Domain.Repositories
             this.storage = storage;
         }
 
-        public abstract void Create(T entity);
         public abstract void Delete(int id);
         public abstract IEnumerable<T> GetAll();
         public abstract T? GetById(int id);
