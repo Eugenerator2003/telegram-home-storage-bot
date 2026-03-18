@@ -21,16 +21,6 @@ namespace StorageBot.Domain.Tests.Repositories
 
         }
 
-        public virtual void GetByIdTest()
-        {
-            Storage storage = GetStorage();
-            T expectedEntity = GetEntity();
-            AddEntityToStorage(storage, expectedEntity);
-            StorageRepository<T> repository = GetRepository(storage);
-            var entity = repository.GetById(0);
-            Assert.AreEqual(expectedEntity, entity);
-        }
-
         public virtual void GetByIdNullTest()
         {
             Storage storage = GetStorage();
@@ -43,30 +33,18 @@ namespace StorageBot.Domain.Tests.Repositories
         {
             Storage storage = GetStorage();
             StorageRepository<T> repository = GetRepository(storage);
-            var expectedTs = new T[3];
-            for (int i = 0; i < expectedTs.Length; i++)
+            T[] expectedTs = new T[3];
+            for(int i = 0; i < expectedTs.Length; i++)
             {
-                var t = GetEntity(i.ToString());
-                expectedTs[i] = t;
-                repository.Create(t);
+                expectedTs[i] = GetEntity();
+                AddEntityToStorage(storage, expectedTs[i]);
             }
-            var entries = repository.GetAll();
-            for (int i = 0; i < expectedTs.Length; i++)
+            var ts = repository.GetAll().ToArray();
+            Assert.HasCount(expectedTs.Length, ts);
+            for(int i = 0; i < expectedTs.Length; i++)
             {
-                Assert.Contains(expectedTs[i], entries);
-                Assert.Contains(expectedTs[i], GetStorageTs(storage));
+                Assert.AreEqual(expectedTs[i], ts[i]);
             }
-        }
-
-        public virtual void CreateTest()
-        {
-            Storage storage = GetStorage();
-            StorageRepository<T> repository = GetRepository(storage);
-            T t = GetEntity();
-            Assert.HasCount(0, GetStorageTs(storage));
-            repository.Create(t);
-            Assert.HasCount(1, GetStorageTs(storage));
-            Assert.AreEqual(t, GetStorageTs(storage).ElementAt(0));
         }
 
         public virtual void DeleteTest()
@@ -83,13 +61,24 @@ namespace StorageBot.Domain.Tests.Repositories
         public virtual void DeleteExceptionTest()
         {
             Storage storage = GetStorage();
-            T t = GetEntity();
             StorageRepository<T> repository = GetRepository(storage);
             var exception = Assert.ThrowsExactly<EntityNotFoundException>(() =>
             {
-                repository.Delete(t.Id);
+                repository.Delete(9);
             });
         }
+
+        public virtual void GetByIdTest()
+        {
+            var storage = GetStorage();
+            var expectedEntity = GetEntity();
+            AddEntityToStorage(storage, expectedEntity);
+            var repository = GetRepository(storage);
+            var entity = repository.GetById(0);
+            Assert.AreEqual(expectedEntity, entity);
+        }
+
+        public abstract void CreateTest();
 
         protected Storage GetStorage()
         {
@@ -97,10 +86,8 @@ namespace StorageBot.Domain.Tests.Repositories
         }
 
         protected abstract T GetEntity();
-        protected abstract T GetEntity(string name);
         protected abstract StorageRepository<T> GetRepository(Storage storage);
         protected abstract void AddEntityToStorage(Storage storage, T entity);
-        protected abstract void RemoveEntityFromStorage(Storage storage, T entity);
         protected abstract IEnumerable<T> GetStorageTs(Storage storage);
     }
 }

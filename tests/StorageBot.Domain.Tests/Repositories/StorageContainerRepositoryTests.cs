@@ -18,7 +18,13 @@ namespace StorageBot.Domain.Tests.Repositories
         [TestMethod]
         public override void CreateTest()
         {
-            base.CreateTest();
+            var containerName = "container";
+            var storage = GetStorage();
+            var repository = new StorageContainerRepository(storage);
+            repository.Create(containerName);
+            Assert.HasCount(1, storage.Containers);
+            var container = storage.Containers.First();
+            Assert.AreEqual(containerName, container.Name);
         }
 
         [TestMethod]
@@ -61,11 +67,6 @@ namespace StorageBot.Domain.Tests.Repositories
             return new Container("container");
         }
 
-        protected override Container GetEntity(string name)
-        {
-            return new Container(name);
-        }
-
         protected override StorageRepository<Container> GetRepository(Storage storage)
         {
             return new StorageContainerRepository(storage);
@@ -74,11 +75,6 @@ namespace StorageBot.Domain.Tests.Repositories
         protected override IEnumerable<Container> GetStorageTs(Storage storage)
         {
             return storage.Containers;
-        }
-
-        protected override void RemoveEntityFromStorage(Storage storage, Container entity)
-        {
-            storage.RemoveContainer(entity);
         }
     }
 }

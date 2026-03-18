@@ -17,7 +17,15 @@ namespace StorageBot.Domain.Tests.Repositories
         [TestMethod]
         public override void CreateTest()
         {
-            base.CreateTest();
+            var isInteger = true;
+            var unitName = "type";
+            var storage = GetStorage();
+            var repository = new StorageEntryQuantityTypeRepository(storage);
+            repository.Create(isInteger, unitName);
+            Assert.HasCount(1, storage.EntryQuantityTypes);
+            var type = storage.EntryQuantityTypes.First();
+            Assert.AreEqual(isInteger, type.IsInteger);
+            Assert.AreEqual(unitName, type.UnitName);
         }
 
         [TestMethod]
@@ -60,11 +68,6 @@ namespace StorageBot.Domain.Tests.Repositories
             return new EntryQuantityType(isInteger: true, "unit");
         }
 
-        protected override EntryQuantityType GetEntity(string name)
-        {
-            return new EntryQuantityType(isInteger: true, name);
-        }
-
         protected override StorageRepository<EntryQuantityType> GetRepository(Storage storage)
         {
             return new StorageEntryQuantityTypeRepository(storage);
@@ -73,11 +76,6 @@ namespace StorageBot.Domain.Tests.Repositories
         protected override IEnumerable<EntryQuantityType> GetStorageTs(Storage storage)
         {
             return storage.EntryQuantityTypes;
-        }
-
-        protected override void RemoveEntityFromStorage(Storage storage, EntryQuantityType entity)
-        {
-            storage.RemoveEntryQuantityType(entity);
         }
     }
 }

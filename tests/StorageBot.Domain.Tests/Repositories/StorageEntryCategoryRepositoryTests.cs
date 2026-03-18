@@ -17,7 +17,13 @@ namespace StorageBot.Domain.Tests.Repositories
         [TestMethod]
         public override void CreateTest()
         {
-            base.CreateTest();
+            var categoryName = "category";
+            var storage = GetStorage();
+            var repository = new StorageEntryCategoryRepository(storage);
+            repository.Create(categoryName);
+            Assert.HasCount(1, storage.EntryCategories);
+            var category = storage.EntryCategories.First();
+            Assert.AreEqual(categoryName, category.Name);
         }
 
         [TestMethod]
@@ -60,11 +66,6 @@ namespace StorageBot.Domain.Tests.Repositories
             return new EntryCategory("category");
         }
 
-        protected override EntryCategory GetEntity(string name)
-        {
-            return new EntryCategory(name);
-        }
-
         protected override StorageRepository<EntryCategory> GetRepository(Storage storage)
         {
             return new StorageEntryCategoryRepository(storage);
@@ -73,11 +74,6 @@ namespace StorageBot.Domain.Tests.Repositories
         protected override IEnumerable<EntryCategory> GetStorageTs(Storage storage)
         {
             return storage.EntryCategories;
-        }
-
-        protected override void RemoveEntityFromStorage(Storage storage, EntryCategory entity)
-        {
-            storage.RemoveEntryCategory(entity);
         }
     }
 }
