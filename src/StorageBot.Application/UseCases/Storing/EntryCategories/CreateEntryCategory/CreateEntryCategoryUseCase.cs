@@ -25,7 +25,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
 
         protected override CreateEntryCategoryOutput ExecuteWithRepository(CreateEntryCategoryInput input)
         {
-            if (string.IsNullOrEmpty(input.CategoryName))
+            if (string.IsNullOrWhiteSpace(input.CategoryName))
             {
                 _logger.LogError(
                         "User {userId} failed to create entry category (ownership {storageOwnershipId}): empty name input",

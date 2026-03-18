@@ -24,7 +24,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.AddEntryQuantity
 
         protected override CreateEntryQuantityTypeOutput ExecuteWithRepository(CreateEntryQuantityTypeInput input)
         {
-            if (string.IsNullOrEmpty(input.UnitName))
+            if (string.IsNullOrWhiteSpace(input.UnitName))
             {
                 _logger.LogError("User {userId} failed to create quantity type: empty unit name", input.UserId);
                 return new CreateEntryQuantityTypeOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);

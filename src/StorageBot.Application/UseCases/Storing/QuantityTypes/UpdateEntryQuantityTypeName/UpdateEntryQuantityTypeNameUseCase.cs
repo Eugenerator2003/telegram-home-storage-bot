@@ -34,7 +34,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.UpdateEntryQuant
                                  input.StorageOwnershipId);
                 return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.FatalFail, _localizer["Case.QuantityTypeNotFound"]);
             }
-            if (string.IsNullOrEmpty(input.UnitName))
+            if (string.IsNullOrWhiteSpace(input.UnitName))
             {
                 _logger.LogError("User {userId} failed to update quantity type {quantityTypeId}: empty unit name", input.QuantityTypeId, input.UserId);
                 return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);

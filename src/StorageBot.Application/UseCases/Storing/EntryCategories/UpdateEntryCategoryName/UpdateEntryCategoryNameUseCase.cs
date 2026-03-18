@@ -32,7 +32,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.UpdateEntryCat
                                  input.StorageOwnershipId);
                 return new UpdateEntryCategoryNameOutput(Output.OutputResult.FatalFail, _localizer["Case.EntryCategoryNotFound"]);
             }
-            if (string.IsNullOrEmpty(input.CategoryName))
+            if (string.IsNullOrWhiteSpace(input.CategoryName))
             {
                 _logger.LogError("User {userId} failed to update entry category {entryCategoryId} : empty name",
                                  input.UserId,
