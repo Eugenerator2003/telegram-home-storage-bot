@@ -19,5 +19,25 @@ namespace StorageBot.Application.Utils
         {
             return logger?.BeginScope(new Dictionary<string, object> { ["StorageOwnershipId"] = storageOwnershipId });
         }
+
+        public static IDisposable? BeginTargetUserScope(this ILogger logger, int targetUserId)
+        {
+            return logger?.BeginScope(new Dictionary<string, object> { ["TagetUserId"] = targetUserId });
+        }
+
+        public static IDisposable? BeginContainerScope(this ILogger logger, int containerId)
+        {
+            return logger?.BeginScope(new Dictionary<string, object> { ["ContainerId"] = containerId });
+        }
+
+        public static IDisposable? BeginEntryCategoryScope(this ILogger logger, int entryCategoryId)
+        {
+            return logger?.BeginScope(new Dictionary<string, object> { ["EntryCategoryId"] = entryCategoryId });
+        }
+
+        public static IDisposable? BeginEntryQuantityTypeScope(this ILogger logger, int entryQuantityTypeScopeId)
+        {
+            return logger?.BeginScope(new Dictionary<string, object> { ["EntryQuantityTypeScopeId"] = entryQuantityTypeScopeId });
+        }
     }
 }
