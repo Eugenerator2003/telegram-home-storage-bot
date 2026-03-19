@@ -30,7 +30,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.AddEntryQuantity
                 return new CreateEntryQuantityTypeOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
             QuantityTypeRepository.Create(input.IsInteger, input.UnitName);
-            _logger.LogInformation("User {userId} create quantity type {unitName} to storage ownership {storageOwnershipId}", input.UserId, input.UnitName, input.StorageOwnershipId);
+            _logger.LogInformation("User {userId} create quantity type (ownership {storageOwnershipId})", input.UserId, input.UnitName);
             return new CreateEntryQuantityTypeOutput(Output.OutputResult.Success);
         }
 

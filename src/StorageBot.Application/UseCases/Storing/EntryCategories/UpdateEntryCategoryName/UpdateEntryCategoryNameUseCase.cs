@@ -40,10 +40,10 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.UpdateEntryCat
                 return new UpdateEntryCategoryNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
             entryCategory.Name = input.CategoryName;
-            _logger.LogInformation("User {userId} update entry category {entryCategoryId} with name {categoryName}", 
+            _logger.LogInformation("User {userId} update entry category {entryCategoryId} name (ownership {storageOwnershipId})", 
                                     input.UserId, 
                                     input.EntryCategoryId,
-                                    input.CategoryName);
+                                    input.StorageOwnershipId);
             return new UpdateEntryCategoryNameOutput(Output.OutputResult.Success);
         }
 

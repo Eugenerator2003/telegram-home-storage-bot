@@ -40,7 +40,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.UpdateEntryQuant
                 return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
             quantityType.UnitName = input.UnitName;
-            _logger.LogInformation("User {userId} update quantity type {quantityTypeId} with name {unitName}", input.UserId, input.QuantityTypeId, input.UnitName);
+            _logger.LogInformation("User {userId} update quantity type {quantityTypeId} name", input.UserId, input.QuantityTypeId);
             return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Success);
         }
 

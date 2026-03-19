@@ -46,10 +46,9 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
                 {
                     EntryCategoryRepository.Create(input.CategoryName);
                 }
-                _logger.LogInformation("User {userId} create entry category (ownership {storageOwnershipId}) with {categoryName} name",
+                _logger.LogInformation("User {userId} create entry category (ownership {storageOwnershipId})",
                                    input.UserId,
-                                   input.StorageOwnershipId,
-                                   input.CategoryName);
+                                   input.StorageOwnershipId);
             }
             catch (EntityNotFoundException ex)
             {
