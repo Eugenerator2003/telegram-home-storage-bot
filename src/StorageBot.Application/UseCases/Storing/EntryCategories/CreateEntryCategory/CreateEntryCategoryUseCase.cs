@@ -31,7 +31,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
                         "User {userId} failed to create entry category (ownership {storageOwnershipId}): empty name input",
                         input.UserId,
                         input.StorageOwnershipId);
-                return new CreateEntryCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.EmptyInputString"]);
+                return new CreateEntryCategoryOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
 
             Output.OutputResult result = Output.OutputResult.Success;
