@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.UseCases.Storing.QuantityTypes.AddEntryQuantityType;
+using StorageBot.Application.Utils;
 using StorageBot.Domain.ContainerEntries;
 using System;
 using System.Collections.Generic;
@@ -25,23 +26,23 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.UpdateEntryQuant
 
         protected override UpdateEntryQuantityTypeNameOutput ExecuteWithRepository(UpdateEntryQuantityTypeNameInput input)
         {
-            var quantityType = QuantityTypeRepository.GetById(input.QuantityTypeId);
-            if (quantityType == null)
+            using (_logger.BeginEntryQuantityTypeScope(input.QuantityTypeId))
             {
-                _logger.LogError("User {userId} failed to update quantity type {quantityTypeId} (ownership {storageOwnershipId}): quantity type not found",
-                                 input.UserId, 
-                                 input.QuantityTypeId, 
-                                 input.StorageOwnershipId);
-                return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.FatalFail, _localizer["Case.QuantityTypeNotFound"]);
+                var quantityType = QuantityTypeRepository.GetById(input.QuantityTypeId);
+                if (quantityType == null)
+                {
+                    _logger.LogError("User failed to update quantity type: quantity type not found");
+                    return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.FatalFail, _localizer["Case.QuantityTypeNotFound"]);
+                }
+                if (string.IsNullOrWhiteSpace(input.UnitName))
+                {
+                    _logger.LogError("User failed to update quantity type: empty unit name");
+                    return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
+                }
+                quantityType.UnitName = input.UnitName;
+                _logger.LogInformation("User update quantity type name");
+                return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Success);
             }
-            if (string.IsNullOrWhiteSpace(input.UnitName))
-            {
-                _logger.LogError("User {userId} failed to update quantity type {quantityTypeId}: empty unit name", input.QuantityTypeId, input.UserId);
-                return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
-            }
-            quantityType.UnitName = input.UnitName;
-            _logger.LogInformation("User {userId} update quantity type {quantityTypeId} name", input.UserId, input.QuantityTypeId);
-            return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.Success);
         }
 
         protected override UpdateEntryQuantityTypeNameOutput GenerateNoAccessOutput(UpdateEntryQuantityTypeNameInput input)

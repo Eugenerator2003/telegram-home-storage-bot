@@ -41,19 +41,19 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
             {
                 allowOwnership.RemoveOtherStorage(ownership.PersonalStorage);
                 result = Output.OutputResult.Success;
-                _logger.LogInformation("User {userId} disallowed access to personal storage to user {otherUserId}", input.UserId, input.DisallowUserId);
+                _logger.LogInformation("User disallowed access to personal storage to user {otherUserId}", input.DisallowUserId);
             }
             catch (NoStorageToRemoveException ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.NoStorageToRemoveException"];
-                _logger.LogError(ex, "User {userId} can't disallow access to personal storage to user {otherUserId}", input.UserId, input.DisallowUserId);
+                _logger.LogError(ex, "User can't disallow access to personal storage to user {otherUserId}: target user doesn't have a storage access", input.DisallowUserId);
             }
             catch (Exception ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.ServerError"];
-                _logger.LogError(ex, "User {userId} can't disallow access to personal storage to user {otherUserId}", input.UserId, input.DisallowUserId);
+                _logger.LogError(ex, "User can't disallow access to personal storage to user {otherUserId}", input.DisallowUserId);
             }
             return new DisallowStorageAccessOutput(result, message);
         }
@@ -72,7 +72,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
         {
             if (input.UserId == input.DisallowUserId)
             {
-                _logger.LogError("User {userId} failed to disallow personal storage as other user storage", input.UserId);
+                _logger.LogError("User failed to disallow personal storage as other user storage");
                 return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.DisallowPersonalStorage"]);
             }
             return base.ExecuteAfterValidation(input);

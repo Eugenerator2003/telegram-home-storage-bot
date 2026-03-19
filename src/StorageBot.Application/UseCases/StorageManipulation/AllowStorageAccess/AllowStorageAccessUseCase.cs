@@ -42,19 +42,19 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
             {
                 allowOwnership.AddOtherStorage(ownership.PersonalStorage);
                 result = Output.OutputResult.Success;
-                _logger.LogInformation("User {userId} allowed access to personal storage to user {otherUserId}", input.UserId, input.AllowUserId);
+                _logger.LogInformation("User allowed access to personal storage to user {otherUserId}", input.AllowUserId);
             }
             catch (UserAlreadyHaveStorageAccessException ex)
             {
                 result = Output.OutputResult.Fail;
                 message = _localizer["Case.UserAlreadyHaveStorageAccess"];
-                _logger.LogInformation(ex, "User {userId} can't allow access to personal storage to user {otherUserId}", input.UserId, input.AllowUserId);
+                _logger.LogError(ex, "User can't allow access to personal storage to user {otherUserId}: target user already has access", input.AllowUserId);
             }
             catch (Exception ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.ServerError"];
-                _logger.LogInformation(ex, "User {userId} can't allow access to personal storage to user {otherUserId}", input.UserId, input.AllowUserId);
+                _logger.LogError(ex, "User can't allow access to personal storage to user {otherUserId}", input.AllowUserId);
             }
             return new AllowStorageAccessOutput(result, message);
         }
@@ -73,7 +73,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
         {
             if (input.UserId == input.AllowUserId)
             {
-                _logger.LogError("User {userId} failed to allow personal storage as other user storage", input.UserId);
+                _logger.LogError("User failed to allow personal storage as other user storage");
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.AllowPersonalStorageAsOther"]);
             }
             return base.ValidateBeforeExecute(input);

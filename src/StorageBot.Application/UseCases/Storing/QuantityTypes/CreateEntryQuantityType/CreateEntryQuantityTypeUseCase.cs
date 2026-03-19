@@ -26,11 +26,11 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.AddEntryQuantity
         {
             if (string.IsNullOrWhiteSpace(input.UnitName))
             {
-                _logger.LogError("User {userId} failed to create quantity type: empty unit name", input.UserId);
+                _logger.LogError("User failed to create quantity type: empty unit name");
                 return new CreateEntryQuantityTypeOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
             QuantityTypeRepository.Create(input.IsInteger, input.UnitName);
-            _logger.LogInformation("User {userId} create quantity type (ownership {storageOwnershipId})", input.UserId, input.UnitName);
+            _logger.LogInformation("User create quantity type");
             return new CreateEntryQuantityTypeOutput(Output.OutputResult.Success);
         }
 

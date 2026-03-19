@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
+using StorageBot.Application.Utils;
 using StorageBot.Domain.Account;
 using StorageBot.Domain.Storing;
 using System;
@@ -27,18 +28,21 @@ namespace StorageBot.Application.UseCases.Storing
 
         protected sealed override TOutput ExecuteWithUserOwnership(TInput input, User user, UserOwnership ownership)
         {
-            var storageOwnership = ownershipRepository.GetById(input.StorageOwnershipId);
-            if (storageOwnership == null)
+            using (_logger.BeginStorageOwnershipScope(input.StorageOwnershipId))
             {
-                _logger.LogError("Storage ownership {owneshipId} not found", input.StorageOwnershipId);
-                return GenerateStorageOwnershipNotFoundOutput(input);
+                var storageOwnership = ownershipRepository.GetById(input.StorageOwnershipId);
+                if (storageOwnership == null)
+                {
+                    _logger.LogError("Storage ownership not found");
+                    return GenerateStorageOwnershipNotFoundOutput(input);
+                }
+                if (!ownership.OtherStorages.Contains(storageOwnership.PersonalStorage))
+                {
+                    _logger.LogError("User has no access to personal storage");
+                    return GenerateNoAccessOutput(input);
+                }
+                return ExecuteWithStorage(input, storageOwnership.PersonalStorage);
             }
-            if (!ownership.OtherStorages.Contains(storageOwnership.PersonalStorage))
-            {
-                _logger.LogError("User {userId} has no access to personal storage of user {storageUserId}", user.Id, storageOwnership.User.Id);
-                return GenerateNoAccessOutput(input);
-            }
-            return ExecuteWithStorage(input, storageOwnership.PersonalStorage);
         }
 
         protected abstract TOutput ExecuteWithStorage(TInput input, Storage storage);

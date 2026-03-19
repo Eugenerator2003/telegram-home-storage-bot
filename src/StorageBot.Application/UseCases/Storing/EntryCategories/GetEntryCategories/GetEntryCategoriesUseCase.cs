@@ -52,9 +52,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetEntryCatego
                 mainCategory = EntryCategoryRepository.GetById(input.MainCategoryId.Value);
                 if (mainCategory == null)
                 {
-                    _logger.LogError("User {userId} failed to get entry categories (ownership {storageOwnershipId}): main category {mainCategoryId} not found",
-                                     input.UserId,
-                                     input.StorageOwnershipId,
+                    _logger.LogError("User failed to get entry categories: main category {mainCategoryId} not found",
                                      input.MainCategoryId);
                     return new GetEntryCategoriesOutput(Output.OutputResult.FatalFail, _localizer["Case.MainCategoryNotFound"]);
                 }
@@ -77,10 +75,8 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetEntryCatego
                                                         mainCategoryDto, 
                                                         TakePage(categories, pageSize, page),
                                                         new PaginationDTO(page, pageSize, count));
-            _logger.LogInformation("User {userId} get entry categories from {categoriesLocation} (ownership {storageOwnershipId})",
-                                   input.UserId,
-                                   input.MainCategoryId.HasValue ? $"main category {input.MainCategoryId.Value}" : "storage",
-                                   input.StorageOwnershipId);
+            _logger.LogInformation("User get entry categories from {categoriesLocation}",
+                                   input.MainCategoryId.HasValue ? $"main category {input.MainCategoryId.Value}" : "storage");
             return output;
         }
 

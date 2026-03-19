@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
+using StorageBot.Application.Utils;
 using StorageBot.Domain.Exceptions.Repositories;
 using System;
 using System.Collections.Generic;
@@ -24,38 +25,30 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.DeleteEntryQuant
 
         protected override DeleteEntryQuantityTypeOutput ExecuteWithRepository(DeleteEntryQuantityTypeInput input)
         {
-            Output.OutputResult result;
-            string message = "";
-            try
+            using (_logger.BeginEntryQuantityTypeScope(input.QuantityTypeId))
             {
-                QuantityTypeRepository.Delete(input.QuantityTypeId);
-                result = Output.OutputResult.Success;
-                _logger.LogInformation("User {userId} delete quantity type {quantityTypeId} (ownership {storageOwnershipId})",
-                                        input.UserId,
-                                        input.QuantityTypeId,
-                                        input.StorageOwnershipId);
+                Output.OutputResult result;
+                string message = "";
+                try
+                {
+                    QuantityTypeRepository.Delete(input.QuantityTypeId);
+                    result = Output.OutputResult.Success;
+                    _logger.LogInformation("User delete quantity type");
+                }
+                catch (EntityNotFoundException ex)
+                {
+                    result = Output.OutputResult.FatalFail;
+                    message = _localizer["Case.QuantityTypeNotFound"];
+                    _logger.LogError(ex, "User failed to delete quantity type: quantity type not found");
+                }
+                catch (Exception ex)
+                {
+                    result = Output.OutputResult.FatalFail;
+                    message = _localizer["Case.ServerError"];
+                    _logger.LogError(ex, "User failed to delete quantity type");
+                }
+                return new DeleteEntryQuantityTypeOutput(result, message);
             }
-            catch (EntityNotFoundException ex)
-            {
-                result = Output.OutputResult.FatalFail;
-                message = _localizer["Case.QuantityTypeNotFound"];
-                _logger.LogError(ex, 
-                                 "User {userId} failed to delete quantity type {quantityTypeId} (ownership {storageOwnershipId}): quantity type not found",
-                                 input.UserId,
-                                 input.QuantityTypeId,
-                                 input.StorageOwnershipId);
-            }
-            catch (Exception ex)
-            {
-                result = Output.OutputResult.FatalFail;
-                message = _localizer["Case.ServerError"];
-                _logger.LogError(ex,
-                                 "User {userId} failed to delete quantity type {quantityTypeId} (ownership {storageOwnershipId})",
-                                 input.UserId,
-                                 input.QuantityTypeId,
-                                 input.StorageOwnershipId);
-            }
-            return new DeleteEntryQuantityTypeOutput(result, message);
         }
 
         protected override DeleteEntryQuantityTypeOutput GenerateNoAccessOutput(DeleteEntryQuantityTypeInput input)

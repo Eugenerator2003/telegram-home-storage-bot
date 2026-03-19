@@ -2,6 +2,7 @@ using System;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
+using StorageBot.Application.Utils;
 
 namespace StorageBot.Application.UseCases.Storing.Containers.UpdateContainerName
 {
@@ -9,39 +10,33 @@ namespace StorageBot.Application.UseCases.Storing.Containers.UpdateContainerName
         : StorageContainerUseCase<UpdateContainerNameInput, UpdateContainerNameOutput>
     {
         public UpdateContainerNameUseCase(
-            ILogger<UpdateContainerNameUseCase> logger, 
-            IStringLocalizer localizer, 
-            UserRepository userRepository, 
-            UserOwnershipRepository ownershipRepository) 
+            ILogger<UpdateContainerNameUseCase> logger,
+            IStringLocalizer localizer,
+            UserRepository userRepository,
+            UserOwnershipRepository ownershipRepository)
             : base(logger, localizer, userRepository, ownershipRepository)
         {
         }
 
         protected override UpdateContainerNameOutput ExecuteWithRepository(UpdateContainerNameInput input)
         {
-            var container = StorageContainerRepository.GetById(input.ContainerId);
-            if (container == null) 
+            using (_logger.BeginContainerScope(input.ContainerId))
             {
-                _logger.LogError("User {userId} failed to update container {containerId} (ownership {storageOwnershipId}): container not found",
-                                 input.UserId,
-                                 input.ContainerId,
-                                 input.StorageOwnershipId);
-                return new UpdateContainerNameOutput(Output.OutputResult.FatalFail, _localizer["Case.ContainerNotFound"]);
+                var container = StorageContainerRepository.GetById(input.ContainerId);
+                if (container == null)
+                {
+                    _logger.LogError("User failed to update container: container not found");
+                    return new UpdateContainerNameOutput(Output.OutputResult.FatalFail, _localizer["Case.ContainerNotFound"]);
+                }
+                if (string.IsNullOrWhiteSpace(input.ContainerName))
+                {
+                    _logger.LogError("User failed to update container: empty input string");
+                    return new UpdateContainerNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
+                }
+                container.Name = input.ContainerName;
+                _logger.LogInformation("User update container name");
+                return new UpdateContainerNameOutput(Output.OutputResult.Success);
             }
-            if (string.IsNullOrWhiteSpace(input.ContainerName)) 
-            {
-                _logger.LogError("User {userId} failed to update container {containerId} (ownership {storageOwnershipId}): empty input string",
-                                 input.UserId,
-                                 input.ContainerId,
-                                 input.StorageOwnershipId);
-                return new UpdateContainerNameOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);                
-            }
-            container.Name = input.ContainerName;
-            _logger.LogInformation("User {userId} update container {containerId} name (ownership {storageOwnershipId})",
-                                    input.UserId,
-                                    input.ContainerId,
-                                    input.StorageOwnershipId);
-            return new UpdateContainerNameOutput(Output.OutputResult.Success);
         }
 
         protected override UpdateContainerNameOutput GenerateNoAccessOutput(UpdateContainerNameInput input)

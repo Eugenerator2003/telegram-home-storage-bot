@@ -27,10 +27,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
         {
             if (string.IsNullOrWhiteSpace(input.CategoryName))
             {
-                _logger.LogError(
-                        "User {userId} failed to create entry category (ownership {storageOwnershipId}): empty name input",
-                        input.UserId,
-                        input.StorageOwnershipId);
+                _logger.LogError("User failed to create entry category: empty name input");
                 return new CreateEntryCategoryOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
 
@@ -46,28 +43,20 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
                 {
                     EntryCategoryRepository.Create(input.CategoryName);
                 }
-                _logger.LogInformation("User {userId} create entry category (ownership {storageOwnershipId})",
-                                   input.UserId,
-                                   input.StorageOwnershipId);
+                _logger.LogInformation("User create entry category");
             }
             catch (EntityNotFoundException ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.MainCategoryNotFound"];
-                _logger.LogError(ex,
-                                "User {userId} failed to create entry category (ownership {storageOwnershipId}): main category {mainCategoryId} not found",
-                                input.UserId,
-                                input.StorageOwnershipId,
+                _logger.LogError(ex, "User failed to create entry category: main category {mainCategoryId} not found",
                                 input.MainCategoryId);
             }
             catch (Exception ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.ServerError"];
-                _logger.LogError(ex,
-                                "User {userId} failed to create entry category (ownership {storageOwnershipId})",
-                                input.UserId,
-                                input.StorageOwnershipId);
+                _logger.LogError(ex, "User failed to create entry category");
             }
             return new CreateEntryCategoryOutput(result, message);
         }

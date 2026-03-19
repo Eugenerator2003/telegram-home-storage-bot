@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
+using StorageBot.Application.Utils;
 using StorageBot.Domain.Exceptions.Repositories;
 using System;
 using System.Collections.Generic;
@@ -23,35 +24,29 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.DeleteEntryCat
 
         protected override DeleteEntryCategoryOutput ExecuteWithRepository(DeleteEntryCategoryInput input)
         {
-            string message = "";
-            Output.OutputResult result = Output.OutputResult.Success;
-            try
+            using (_logger.BeginEntryCategoryScope(input.EntryCategoryId))
             {
-                EntryCategoryRepository.Delete(input.EntryCategoryId);
-                _logger.LogInformation("User {userId} delete entry category {entryCategoryId} (ownership {storageOnwershipId})",
-                                        input.UserId,
-                                        input.EntryCategoryId,
-                                        input.StorageOwnershipId);
+                string message = "";
+                Output.OutputResult result = Output.OutputResult.Success;
+                try
+                {
+                    EntryCategoryRepository.Delete(input.EntryCategoryId);
+                    _logger.LogInformation("User delete entry category");
+                }
+                catch (EntityNotFoundException ex)
+                {
+                    result = Output.OutputResult.FatalFail;
+                    message = _localizer["Case.EntryCategoryNotFound"];
+                    _logger.LogError(ex, "User failed to delete entry category: entry category not found");
+                }
+                catch (Exception ex)
+                {
+                    result = Output.OutputResult.FatalFail;
+                    message = _localizer["Case.EntryCategoryNotFound"];
+                    _logger.LogError(ex, "User failed to delete entry category");
+                }
+                return new DeleteEntryCategoryOutput(result, message);
             }
-            catch (EntityNotFoundException ex)
-            {
-                result = Output.OutputResult.FatalFail;
-                message = _localizer["Case.EntryCategoryNotFound"];
-                _logger.LogError(ex, "User {userId} failed to delete entry category {entryCategoryId} (ownership {storageOnwershipId}): entry category not found",
-                                 input.UserId,
-                                 input.EntryCategoryId,
-                                 input.StorageOwnershipId);
-            }
-            catch (Exception ex)
-            {
-                result = Output.OutputResult.FatalFail;
-                message = _localizer["Case.EntryCategoryNotFound"];
-                _logger.LogError(ex, "User {userId} failed to delete entry category {entryCategoryId} (ownership {storageOnwershipId})",
-                                 input.UserId,
-                                 input.EntryCategoryId,
-                                 input.StorageOwnershipId);
-            }
-            return new DeleteEntryCategoryOutput(result, message);
         }
 
         protected override DeleteEntryCategoryOutput GenerateNoAccessOutput(DeleteEntryCategoryInput input)

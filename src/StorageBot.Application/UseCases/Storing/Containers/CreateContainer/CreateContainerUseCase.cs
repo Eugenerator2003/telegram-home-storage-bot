@@ -26,9 +26,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.CreateContainer
         {
             if (string.IsNullOrWhiteSpace(input.ContainerName))
             {
-                _logger.LogError("User {userId} failed to create container (ownership {storageOwnershipId}): empty input string",
-                                 input.UserId,
-                                 input.StorageOwnershipId);
+                _logger.LogError("User failed to create container: empty input string");
                 return new CreateContainerOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
 
@@ -44,29 +42,20 @@ namespace StorageBot.Application.UseCases.Storing.Containers.CreateContainer
                 {
                     StorageContainerRepository.Create(input.ContainerName);
                 }
-                _logger.LogInformation("User {userId} create container (ownership {storageOwnershipId}) with {containerName} name",
-                                   input.UserId,
-                                   input.StorageOwnershipId,
-                                   input.ContainerName);
+                _logger.LogInformation("User create container");
             }
             catch (EntityNotFoundException ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.OuterContainerNotFound"];
-                _logger.LogError(ex,
-                                 "User {userId} failed to create container (ownership {storageOwnershipId}): outer container {outerContainerId} not found",
-                                 input.UserId,
-                                 input.StorageOwnershipId,
+                _logger.LogError(ex, "User failed to create container: outer container {outerContainerId} not found",
                                  input.OuterContainerId);
             }
             catch (Exception ex)
             {
                 result = Output.OutputResult.FatalFail;
                 message = _localizer["Case.ServerError"];
-                _logger.LogError(ex,
-                                "User {userId} failed to create container (ownership {storageOwnershipId})",
-                                input.UserId,
-                                input.StorageOwnershipId);
+                _logger.LogError(ex, "User failed to create container");
             }
             return new CreateContainerOutput(result, message);
         }

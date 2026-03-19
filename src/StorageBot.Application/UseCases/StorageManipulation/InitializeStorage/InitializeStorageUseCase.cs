@@ -27,12 +27,12 @@ namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
             var ownership = ownershipRepository.GetByUser(user);
             if (ownership != null)
             {
-                _logger.LogError("User {userId} already have a ownership", user.Id);
-                return new InitializeStorageOutput(Output.OutputResult.FatalFail, _localizer["Case.UserAlreadyHaveStorage", input.UserId]);
+                _logger.LogError("User already have a ownership");
+                return new InitializeStorageOutput(Output.OutputResult.FatalFail, _localizer["Case.UserAlreadyHaveStorage"]);
             }
             ownership = new UserOwnership(user);
             ownershipRepository.Create(ownership);
-            _logger.LogInformation("Create a ownership to user {userId}", user.Id);
+            _logger.LogInformation("Ownership was created");
             return new InitializeStorageOutput(Output.OutputResult.Success);
         }
 

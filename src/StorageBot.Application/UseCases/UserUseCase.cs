@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
+using StorageBot.Application.Utils;
 using StorageBot.Domain.Account;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,15 @@ namespace StorageBot.Application.UseCases
 
         protected override sealed TOutput ExecuteAfterValidation(TInput input)
         {
-            User? user = userRepository.GetById(input.UserId);
-            if (user == null)
+            using (_logger.BeginUserScope(input.UserId))
             {
-                return GenerateUserNotFoundOutputWithLog(input);
+                User? user = userRepository.GetById(input.UserId);
+                if (user == null)
+                {
+                    return GenerateUserNotFoundOutputWithLog(input);
+                }
+                return ExecuteWithUser(input, user);
             }
-            return ExecuteWithUser(input, user);
         }
 
         protected abstract TOutput ExecuteWithUser(TInput input, User user);
@@ -39,7 +43,7 @@ namespace StorageBot.Application.UseCases
 
         private TOutput GenerateUserNotFoundOutputWithLog(TInput input)
         {
-            _logger.LogError("User {userId} not found", input.UserId);
+            _logger.LogError("User not found");
             return GenerateUserNotFoundOutput(input);
         }
     }

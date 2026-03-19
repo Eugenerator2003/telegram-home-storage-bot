@@ -25,7 +25,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.GetAccessibleStora
             var userIds = ownership.OtherStorages.Select(s => s.UserOwnership.User.Id)
                                                  .ToList();
             userIds.Insert(0, ownership.PersonalStorage.Id);
-            _logger.LogInformation("Get storages for user {userId}", input.UserId);
+            _logger.LogInformation("User retrivied accessible storages");
             return new GetAccessibleStoragesOutput(Output.OutputResult.Success, userIds, "");
         }
 

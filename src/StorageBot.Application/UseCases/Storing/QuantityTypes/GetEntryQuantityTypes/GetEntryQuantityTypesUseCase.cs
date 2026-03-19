@@ -26,7 +26,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.GetEntryQuantity
         {
             var typeDTOs = QuantityTypeRepository.GetAll()
                                               .Select(t => new EntryQuantityTypeDTO(t.Id, t.IsInteger, t.UnitName));
-            _logger.LogInformation("User {userId} get quantity types of personal storage ownership {ownershipId}", input.UserId, input.StorageOwnershipId);
+            _logger.LogInformation("User get quantity types of personal storage ownership");
             return new GetEntryQuantityTypesOutput(typeDTOs, Output.OutputResult.Success);
         }
 
