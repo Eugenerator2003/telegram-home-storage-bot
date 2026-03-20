@@ -74,6 +74,14 @@ namespace StorageBot.Domain.Storing
         {
             ArgumentNullException.ThrowIfNull(container);
             ThrowIfNotContains<Container, StorageNotContainsContainerException>(_containers, container);
+            if (container.InnerContainers.Count > 0)
+            {
+                throw new StorageContainerHasInnerContainerException();
+            }
+            if (container.Entries.Count > 0)
+            {
+                throw new StorageContainerNotEmptyException();
+            }
             _containers.Remove(container);
         }
 
@@ -92,6 +100,10 @@ namespace StorageBot.Domain.Storing
         {
             ArgumentNullException.ThrowIfNull(category);
             ThrowIfNotContains<EntryCategory, StorageNotContainsEntryCategoryException>(_categories, category);
+            if (category.Subcategories.Count > 0)
+            {
+                throw new StorageEntryCategoryHasSubcategoriesException();
+            }
             _categories.Remove(category);
         }
 
