@@ -115,6 +115,44 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
+        public void RemoveContainerNullTest()
+        {
+            var storage = new Storage(ownership);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                storage.RemoveContainer(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveContainerWithInnerContainersTest()
+        {
+            var storage = new Storage(ownership);
+            var container1 = new Container("container1");
+            var container2 = new Container("container1", container1);
+            storage.AddContainer(container1);
+            Assert.ThrowsExactly<StorageContainerHasInnerContainerException>(() =>
+            {
+                storage.RemoveContainer(container1);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveNotEmptyContainerTest()
+        {
+            var storage = new Storage(ownership);
+            var container1 = new Container("container1");
+            var quantityType = new EntryQuantityType(isInteger: false, "unit");
+            var quantity = new EntryQuantity(quantityType, 9999);
+            container1.AddEntry(new ContainerEntry("entry", quantity));
+            storage.AddContainer(container1);
+            Assert.ThrowsExactly<StorageContainerNotEmptyException>(() =>
+            {
+                storage.RemoveContainer(container1);
+            });
+        }
+
+        [TestMethod]
         public void AddCategoryTest()
         {
             var storage = new Storage(ownership);
@@ -172,12 +210,22 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
-        public void AddCategoryrNullTest()
+        public void AddCategoryNullTest()
         {
             var storage = new Storage(ownership);
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 storage.AddEntryCategory(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveCategoryNullTest()
+        {
+            var storage = new Storage(ownership);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                storage.RemoveContainer(null!);
             });
         }
 
@@ -233,6 +281,16 @@ namespace StorageBot.Domain.Tests.Storing
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 storage.AddEntryQuantityType(null!);
+            });
+        }
+
+        [TestMethod]
+        public void RemoveQuantityTypeNullTest()
+        {
+            var storage = new Storage(ownership);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                storage.RemoveEntryQuantityType(null!);
             });
         }
     }
