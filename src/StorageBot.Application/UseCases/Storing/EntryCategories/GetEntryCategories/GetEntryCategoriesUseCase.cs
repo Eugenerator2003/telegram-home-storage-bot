@@ -21,10 +21,6 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetEntryCatego
 
         private static EntryCategoryDTO[] TakePage(IEnumerable<EntryCategory> entryCategories, int pageSize, int page)
         {
-            if (page <= 0)
-            {
-                page = 1;
-            }
             return entryCategories.Skip((page - 1) * pageSize)
                                   .Take(pageSize)
                                   .Select(ToDto)
@@ -69,7 +65,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetEntryCatego
                 categories = EntryCategoryRepository.GetAll();
             }
             int pageSize = pageSizeService.GetPageSize();
-            int page = input.Page;
+            int page = input.Page == 0 ? 1 : input.Page;
             int count = categories.Count();
             var output = new GetEntryCategoriesOutput(Output.OutputResult.Success, string.Empty, 
                                                         mainCategoryDto, 
