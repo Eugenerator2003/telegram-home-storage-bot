@@ -55,6 +55,11 @@ namespace StorageBot.Domain.ContainerEntries
             _categories.Remove(category);
         }
 
+        public void SetQuantityValue(decimal value)
+        {
+            EntryQuantity = new EntryQuantity(EntryQuantity.QuantityType, value);
+        }
+
         public override string? ToString()
         {
             return $"{Name}: {EntryQuantity}";
