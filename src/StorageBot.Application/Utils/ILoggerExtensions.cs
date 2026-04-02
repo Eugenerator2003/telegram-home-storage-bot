@@ -39,5 +39,10 @@ namespace StorageBot.Application.Utils
         {
             return logger?.BeginScope(new Dictionary<string, object> { ["EntryQuantityTypeScopeId"] = entryQuantityTypeScopeId });
         }
+
+        public static IDisposable? BeginContainerEntryScope(this ILogger logger, int containerEntryId)
+        {
+            return logger?.BeginScope(new Dictionary<string, object> { ["ContainerEntryId"] = containerEntryId });
+        }
     }
 }
