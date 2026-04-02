@@ -166,5 +166,20 @@ namespace StorageBot.Domain.Tests.ContainerEntries
                 containerEntry.RemoveCategory(null!);
             });
         }
+
+        [TestMethod]
+        [DataRow(true, 1, 3)]
+        [DataRow(false, 0.5, 2.3)]
+        public void SetQuantityValueTest(bool isInteger, double value1double, double value2double)
+        {
+            var value1 = (decimal)value1double;
+            var value2 = (decimal)value2double;
+            string name = "Entry";
+            var quantity = new EntryQuantity(new EntryQuantityType(isInteger: isInteger, "unit"), value1);
+            var containerEntry = new ContainerEntry(name, quantity);
+            Assert.AreEqual(value1, containerEntry.EntryQuantity.Value);
+            containerEntry.SetQuantityValue(value2);
+            Assert.AreEqual(value2, containerEntry.EntryQuantity.Value);
+        }
     }
 }
