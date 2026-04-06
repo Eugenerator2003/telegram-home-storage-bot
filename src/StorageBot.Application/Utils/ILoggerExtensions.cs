@@ -22,7 +22,7 @@ namespace StorageBot.Application.Utils
 
         public static IDisposable? BeginTargetUserScope(this ILogger logger, int targetUserId)
         {
-            return logger?.BeginScope(new Dictionary<string, object> { ["TagetUserId"] = targetUserId });
+            return logger?.BeginScope(new Dictionary<string, object> { ["TargetUserId"] = targetUserId });
         }
 
         public static IDisposable? BeginContainerScope(this ILogger logger, int containerId)
@@ -37,7 +37,7 @@ namespace StorageBot.Application.Utils
 
         public static IDisposable? BeginEntryQuantityTypeScope(this ILogger logger, int entryQuantityTypeScopeId)
         {
-            return logger?.BeginScope(new Dictionary<string, object> { ["EntryQuantityTypeScopeId"] = entryQuantityTypeScopeId });
+            return logger?.BeginScope(new Dictionary<string, object> { ["EntryQuantityTypeId"] = entryQuantityTypeScopeId });
         }
 
         public static IDisposable? BeginContainerEntryScope(this ILogger logger, int containerEntryId)
