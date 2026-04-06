@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.UseCases.Storing.QuantityTypes.AddEntryQuantityType;
-using StorageBot.Application.Utils;
+using StorageBot.Application.Utilities;
 using StorageBot.Domain.ContainerEntries;
 using System;
 using System.Collections.Generic;

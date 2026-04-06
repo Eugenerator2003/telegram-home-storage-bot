@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
-using StorageBot.Application.Utils;
+using StorageBot.Application.Utilities;
 
 namespace StorageBot.Application.UseCases.Storing.Containers.UpdateContainerName
 {

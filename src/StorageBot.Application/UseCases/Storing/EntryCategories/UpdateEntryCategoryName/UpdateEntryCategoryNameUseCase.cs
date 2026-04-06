@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
-using StorageBot.Application.Utils;
+using StorageBot.Application.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

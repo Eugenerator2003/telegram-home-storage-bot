@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Application.Utils
+namespace StorageBot.Application.Utilities
 {
     public static class ILoggerExtensions
     {

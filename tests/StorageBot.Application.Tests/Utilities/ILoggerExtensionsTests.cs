@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
-using StorageBot.Application.Utils;
+using StorageBot.Application.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Application.Tests.Utils
+namespace StorageBot.Application.Tests.Utilities
 {
     [TestClass]
     public class ILoggerExtensionsTests
