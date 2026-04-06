@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageBot.Domain.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageBot.Application", "StorageBot.Application\StorageBot.Application.csproj", "{CBFB2F33-E5AD-4504-9076-94F7EBDD416F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageBot.Application.Tests", "..\tests\StorageBot.Application.Tests\StorageBot.Application.Tests.csproj", "{5CA04E1D-DD9B-4927-86B3-CF45C3B5B942}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CBFB2F33-E5AD-4504-9076-94F7EBDD416F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBFB2F33-E5AD-4504-9076-94F7EBDD416F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBFB2F33-E5AD-4504-9076-94F7EBDD416F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CA04E1D-DD9B-4927-86B3-CF45C3B5B942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CA04E1D-DD9B-4927-86B3-CF45C3B5B942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CA04E1D-DD9B-4927-86B3-CF45C3B5B942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CA04E1D-DD9B-4927-86B3-CF45C3B5B942}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
