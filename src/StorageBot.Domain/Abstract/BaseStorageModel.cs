@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("StorageBot.Domain.Tests")]
+[assembly: InternalsVisibleTo("StorageBot.Application.Tests")]
 
 namespace StorageBot.Domain.Abstract
 {
