@@ -16,11 +16,6 @@ namespace StorageBot.Application.Tests.TestUtilities
 {
     public class UseCaseTester
     {
-        private class TestUser : User
-        {
-
-        }
-
         public static void UserNotFoundTest<TUseCase, TInput, TOuput>(
             IUserUseCaseFactory<TUseCase, TInput, TOuput> factory,
             TInput input)
