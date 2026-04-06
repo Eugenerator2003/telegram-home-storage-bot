@@ -33,13 +33,13 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.UpdateContain
                 if (entry == null)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["UseCase.ContainerEntryNotFound"];
+                    message = _localizer["Case.ContainerEntryNotFound"];
                     _logger.LogError("User failed to update entry quantity: entry not found");
                 }
                 else if (input.QuantityValue <= 0)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["UseCase.NotPositiveQuantityValue"];
+                    message = _localizer["Case.NotPositiveQuantityValue"];
                     _logger.LogError("User failed to update entry quantity: invalid quantity value (must be positive)");
                 }
                 else
@@ -52,14 +52,14 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.UpdateContain
                     catch (NotIntegerValueException ex)
                     {
                         result = Output.OutputResult.Fail;
-                        message = _localizer["UseCase.NotIntegerQuantityValue"];
+                        message = _localizer["Case.NotIntegerQuantityValue"];
                         _logger.LogError(ex,
                                          "User failed to update entry quantity: invalid quantity value (must be integer)");
                     }
                     catch (Exception ex)
                     {
                         result = Output.OutputResult.FatalFail;
-                        message = _localizer["UseCase.ServerError"];
+                        message = _localizer["Case.ServerError"];
                         _logger.LogError(ex,
                                          "User failed to update entry quantity");
                     }
@@ -70,27 +70,27 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.UpdateContain
 
         protected override UpdateContainerEntryQuantityOutput GenerateContainerNotFoundOutput()
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["UseCase.ContainerNotFound"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.ContainerNotFound"]);
         }
 
         protected override UpdateContainerEntryQuantityOutput GenerateNoAccessOutput(UpdateContainerEntryQuantityInput input)
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["UseCase.NoStorageAccess"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.NoStorageAccess"]);
         }
 
         protected override UpdateContainerEntryQuantityOutput GenerateOwnershipNotFoundOutput(UpdateContainerEntryQuantityInput input)
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["UseCase.OwnershipNotFound"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
         }
 
         protected override UpdateContainerEntryQuantityOutput GenerateStorageOwnershipNotFoundOutput(UpdateContainerEntryQuantityInput input)
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["UseCase.StorageOnwershipNotFound"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOnwershipNotFound"]);
         }
 
         protected override UpdateContainerEntryQuantityOutput GenerateUserNotFoundOutput(UpdateContainerEntryQuantityInput input)
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["UseCase.UserNotFound"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 }

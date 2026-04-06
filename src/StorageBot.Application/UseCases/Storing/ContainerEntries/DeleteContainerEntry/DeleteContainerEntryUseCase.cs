@@ -36,14 +36,14 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.DeleteContain
                 catch (EntityNotFoundException ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["UseCase.ContainerEnryNotFound"];
+                    message = _localizer["Case.ContainerEnryNotFound"];
                     _logger.LogError(ex,
                                      "User failed to delete container entry: container not found");
                 }
                 catch (Exception ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["UseCase.ServerError"];
+                    message = _localizer["Case.ServerError"];
                     _logger.LogError(ex,
                                      "User failed to delete container entry: container not found");
                 }
@@ -53,27 +53,27 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.DeleteContain
 
         protected override DeleteContainerEntryOutput GenerateContainerNotFoundOutput()
         {
-            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.ContainerNotFound"]);
+            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.ContainerNotFound"]);
         }
 
         protected override DeleteContainerEntryOutput GenerateNoAccessOutput(DeleteContainerEntryInput input)
         {
-            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.NoStorageAccess"]);
+            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.NoStorageAccess"]);
         }
 
         protected override DeleteContainerEntryOutput GenerateOwnershipNotFoundOutput(DeleteContainerEntryInput input)
         {
-            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.OwnershipNotFound"]);
+            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
         }
 
         protected override DeleteContainerEntryOutput GenerateStorageOwnershipNotFoundOutput(DeleteContainerEntryInput input)
         {
-            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.StorageOwnershipNotFound"]);
+            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOwnershipNotFound"]);
         }
 
         protected override DeleteContainerEntryOutput GenerateUserNotFoundOutput(DeleteContainerEntryInput input)
         {
-            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.UserNotFound"]);
+            return new DeleteContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 }

@@ -38,13 +38,13 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.DeleteEntryQuant
                 catch (EntityNotFoundException ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["UseCase.QuantityTypeNotFound"];
+                    message = _localizer["Case.QuantityTypeNotFound"];
                     _logger.LogError(ex, "User failed to delete quantity type: quantity type not found");
                 }
                 catch (Exception ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["UseCase.ServerError"];
+                    message = _localizer["Case.ServerError"];
                     _logger.LogError(ex, "User failed to delete quantity type");
                 }
                 return new DeleteEntryQuantityTypeOutput(result, message);

@@ -49,7 +49,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.GetContainers
                 {
                     _logger.LogError("User failed to get container: outer container {outerContainerId} not found",
                                      input.OuterContainerId);
-                    return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["UseCase.OuterContainerNotFound"]);
+                    return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.OuterContainerNotFound"]);
                 }
             }
             ContainerDTO? outerContainerDto = null;
@@ -78,22 +78,22 @@ namespace StorageBot.Application.UseCases.Storing.Containers.GetContainers
 
         protected override GetContainersOutput GenerateNoAccessOutput(GetContainersInput input)
         {
-            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["UseCase.NoStorageAccess"]);
+            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.NoStorageAccess"]);
         }
 
         protected override GetContainersOutput GenerateOwnershipNotFoundOutput(GetContainersInput input)
         {
-            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["UseCase.OwnershipNotFound"]);
+            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
         }
 
         protected override GetContainersOutput GenerateStorageOwnershipNotFoundOutput(GetContainersInput input)
         {
-            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["UseCase.StorageOwnershipNotFound"]);
+            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOwnershipNotFound"]);
         }
 
         protected override GetContainersOutput GenerateUserNotFoundOutput(GetContainersInput input)
         {
-            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["UseCase.UserNotFound"]);
+            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 }

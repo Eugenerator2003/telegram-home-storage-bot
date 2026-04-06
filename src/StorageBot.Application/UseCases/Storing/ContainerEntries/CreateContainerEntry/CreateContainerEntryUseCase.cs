@@ -27,12 +27,12 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.CreateContain
             if (quantityType == null)
             {
                 _logger.LogError("User failed to create container entry: quantity type not found");
-                return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.QuantityTypeNotFound"]);
+                return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.QuantityTypeNotFound"]);
             }
             if (string.IsNullOrEmpty(input.EntryName))
             {
                 _logger.LogError("User failed to create container entry: empty entry name");
-                return new CreateContainerEntryOutput(Output.OutputResult.Fail, _localizer["UseCase.EmptyInputString"]);
+                return new CreateContainerEntryOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
             }
             var quantity = new EntryQuantity(quantityType, 1);
             ContainerEntryRepository.Create(input.EntryName, quantity);
@@ -42,27 +42,27 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.CreateContain
 
         protected override CreateContainerEntryOutput GenerateContainerNotFoundOutput()
         {
-            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.ContainerNotFound"]);
+            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.ContainerNotFound"]);
         }
 
         protected override CreateContainerEntryOutput GenerateNoAccessOutput(CreateContainerEntryInput input)
         {
-            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.NoStorageAccess"]);
+            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.NoStorageAccess"]);
         }
 
         protected override CreateContainerEntryOutput GenerateOwnershipNotFoundOutput(CreateContainerEntryInput input)
         {
-            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.OwnershipNotFound"]);
+            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
         }
 
         protected override CreateContainerEntryOutput GenerateStorageOwnershipNotFoundOutput(CreateContainerEntryInput input)
         {
-            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.StorageOwnershipNotFound"]);
+            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOwnershipNotFound"]);
         }
 
         protected override CreateContainerEntryOutput GenerateUserNotFoundOutput(CreateContainerEntryInput input)
         {
-            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["UseCase.UserNotFound"]);
+            return new CreateContainerEntryOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 }

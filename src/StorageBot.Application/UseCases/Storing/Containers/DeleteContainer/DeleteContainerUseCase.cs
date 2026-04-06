@@ -51,22 +51,22 @@ namespace StorageBot.Application.UseCases.Storing.Containers.DeleteContainer
 
         protected override DeleteContainerOutput GenerateNoAccessOutput(DeleteContainerInput input)
         {
-            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["UseCase.NoStorageAccess"]);
+            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.NoStorageAccess"]);
         }
 
         protected override DeleteContainerOutput GenerateOwnershipNotFoundOutput(DeleteContainerInput input)
         {
-            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["UseCase.OwnershipNotFound"]);
+            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
         }
 
         protected override DeleteContainerOutput GenerateStorageOwnershipNotFoundOutput(DeleteContainerInput input)
         {
-            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["UseCase.StorageOwnershipNotFound"]);
+            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOwnershipNotFound"]);
         }
 
         protected override DeleteContainerOutput GenerateUserNotFoundOutput(DeleteContainerInput input)
         {
-            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["UseCase.UseNotFound"]);
+            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.UseNotFound"]);
         }
     }
 }
