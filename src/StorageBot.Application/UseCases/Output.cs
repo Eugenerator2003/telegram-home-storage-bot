@@ -21,7 +21,7 @@ namespace StorageBot.Application.UseCases
 
         protected Output(OutputResult result, string message = "")
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(message);
+            ArgumentNullException.ThrowIfNull(message);
             Message = message;
             Result = result;
         }
