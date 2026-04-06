@@ -38,7 +38,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.InitializeStorage
 
         protected override InitializeStorageOutput GenerateUserNotFoundOutput(InitializeStorageInput input)
         {
-            return new InitializeStorageOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
+            return new InitializeStorageOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 }
