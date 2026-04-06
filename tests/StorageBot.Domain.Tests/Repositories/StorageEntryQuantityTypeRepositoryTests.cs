@@ -1,7 +1,7 @@
 ﻿using StorageBot.Domain.ContainerEntries;
 using StorageBot.Domain.Repositories;
 using StorageBot.Domain.Storing;
-using StorageBot.Domain.Tests.Utils;
+using StorageBot.Domain.Tests.TestUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

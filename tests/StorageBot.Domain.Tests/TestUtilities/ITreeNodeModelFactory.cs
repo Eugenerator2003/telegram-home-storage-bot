@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Domain.Tests.Utils
+namespace StorageBot.Domain.Tests.TestUtilities
 {
     internal abstract class ITreeNodeModelFactory<T> where T : TreeNodeModel<T>
     {

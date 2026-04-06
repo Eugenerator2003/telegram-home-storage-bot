@@ -2,7 +2,7 @@
 using StorageBot.Domain.Exceptions.Abstract;
 using StorageBot.Domain.Exceptions.Storing;
 using StorageBot.Domain.Storing;
-using StorageBot.Domain.Tests.Utils;
+using StorageBot.Domain.Tests.TestUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

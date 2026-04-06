@@ -1,5 +1,5 @@
 ﻿using StorageBot.Domain.Abstract;
-using StorageBot.Domain.Tests.Utils;
+using StorageBot.Domain.Tests.TestUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

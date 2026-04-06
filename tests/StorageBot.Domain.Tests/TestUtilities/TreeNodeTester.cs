@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Domain.Tests.Utils
+namespace StorageBot.Domain.Tests.TestUtilities
 {
     internal class TreeNodeTester<T> where T : TreeNodeModel<T>
     {
