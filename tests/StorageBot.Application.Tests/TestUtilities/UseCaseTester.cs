@@ -41,7 +41,7 @@ namespace StorageBot.Application.Tests.TestUtilities
             where TInput : UserInput
             where TOuput : Output
         {
-            User user = new TestUser();
+            User user = new Mock<User>().Object;
             var userRepositoryMock = new Mock<UserRepository>();
             userRepositoryMock.Setup(m => m.GetById(input.UserId))
                               .Returns(user);
@@ -64,7 +64,7 @@ namespace StorageBot.Application.Tests.TestUtilities
             where TInput : StorageInput
             where TOuput : Output
         {
-            User user = new TestUser();
+            User user = new Mock<User>().Object;
             var userRepositoryMock = new Mock<UserRepository>();
             userRepositoryMock.Setup(m => m.GetById(input.UserId))
                               .Returns(user);
@@ -90,7 +90,7 @@ namespace StorageBot.Application.Tests.TestUtilities
             where TInput : StorageInput
             where TOuput : Output
         {
-            User user = new TestUser();
+            User user = new Mock<User>().Object;
             var userRepositoryMock = new Mock<UserRepository>();
             userRepositoryMock.Setup(m => m.GetById(input.UserId))
                               .Returns(user);
@@ -99,7 +99,7 @@ namespace StorageBot.Application.Tests.TestUtilities
             var ownershipRepositoryMock = new Mock<UserOwnershipRepository>();
             ownershipRepositoryMock.Setup(m => m.GetByUser(user))
                                    .Returns(userOwnership);
-            UserOwnership? storageOwnership = new UserOwnership(new TestUser());
+            UserOwnership? storageOwnership = new UserOwnership(new Mock<User>().Object);
             ownershipRepositoryMock.Setup(m => m.GetById(input.StorageOwnershipId))
                                    .Returns(storageOwnership);
             factory.OwnershipRepository = ownershipRepositoryMock.Object;
