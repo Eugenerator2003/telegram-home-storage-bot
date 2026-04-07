@@ -23,6 +23,11 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
 
         protected override DisallowStorageAccessOutput ExecuteWithUserOwnership(DisallowStorageAccessInput input, User user, UserOwnership ownership)
         {
+            if (input.UserId == input.DisallowUserId)
+            {
+                _logger.LogError("User failed to disallow personal storage as other user storage");
+                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.DisallowPersonalStorage"]);
+            }
             var disallowUser = userRepository.GetById(input.DisallowUserId);
             if (disallowUser == null)
             {
@@ -66,16 +71,6 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
         protected override DisallowStorageAccessOutput GenerateUserNotFoundOutput(DisallowStorageAccessInput input)
         {
             return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound", input.UserId]);
-        }
-
-        protected override DisallowStorageAccessOutput? ValidateBeforeExecute(DisallowStorageAccessInput input)
-        {
-            if (input.UserId == input.DisallowUserId)
-            {
-                _logger.LogError("User failed to disallow personal storage as other user storage");
-                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.DisallowPersonalStorage"]);
-            }
-            return base.ExecuteAfterValidation(input);
         }
     }
 }
