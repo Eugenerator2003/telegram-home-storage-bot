@@ -36,7 +36,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
                 var ownerOwnership = ownershipRepository.GetByUser(owner);
                 if (ownerOwnership == null)
                 {
-                    _logger.LogError("Ownership of tager user not found");
+                    _logger.LogError("Ownership of target user not found");
                     return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipWithStorageToRelinquishNotFound"]);
                 }
 
@@ -51,7 +51,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
                 catch (NoStorageToRemoveException ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["Case.NoStorageToRemoveException"];
+                    message = _localizer["Case.NoStorageToRemove"];
                     _logger.LogError(ex, "User can't relinquish access to personal storage to target user");
                 }
                 catch (Exception ex)
