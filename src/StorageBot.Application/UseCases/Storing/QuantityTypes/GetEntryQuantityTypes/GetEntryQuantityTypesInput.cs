@@ -13,6 +13,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.GetEntryQuantity
         public GetEntryQuantityTypesInput(int userId, int storageOwnershipId, int page) 
             : base(userId, storageOwnershipId)
         {
+            Page = page;
         }
     }
 }
