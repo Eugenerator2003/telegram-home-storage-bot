@@ -38,18 +38,16 @@ namespace StorageBot.Application.Tests.UseCases.StorageManipulation.InitializeSt
         [TestMethod]
         public void ExecuteUserAlreadyHaveOwnershipTest()
         {
-            var input = new InitializeStorageInput(1);
-            var user = new TestUser();
-            var userRepositoryMock = new Mock<UserRepository>();
-            userRepositoryMock.Setup(m => m.GetById(input.UserId))
-                              .Returns(user);
-            var ownership = new UserOwnership(user);
-            var userOwnershipRepositoryMock = new Mock<UserOwnershipRepository>();
-            userOwnershipRepositoryMock.Setup(m => m.GetByUser(user))
-                                       .Returns(ownership);
             var factory = new InitializeStorageUseCaseFactory();
-            factory.UserRepository = userRepositoryMock.Object;
+            var factoryContext = factory.ConfigureWithUser();
+
+            var userOwnership = new UserOwnership(factoryContext.UserMock.Object);
+            var userOwnershipRepositoryMock = new Mock<UserOwnershipRepository>();
+            userOwnershipRepositoryMock.Setup(m => m.GetByUser(factoryContext.UserMock.Object))
+                                       .Returns(userOwnership);
             factory.OwnershipRepository = userOwnershipRepositoryMock.Object;
+
+            var input = new InitializeStorageInput(1);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.FatalFail, output.Result);
             Assert.AreEqual(factory.Localizer["Case.UserAlreadyHaveStorage"], output.Message);
@@ -58,19 +56,16 @@ namespace StorageBot.Application.Tests.UseCases.StorageManipulation.InitializeSt
         [TestMethod]
         public void ExecuteTest()
         {
-            var input = new InitializeStorageInput(1);
-            var user = new TestUser();
-            var userRepositoryMock = new Mock<UserRepository>();
-            userRepositoryMock.Setup(m => m.GetById(input.UserId))
-                              .Returns(user);
-            UserOwnership? ownership = null;
-            var userOwnershipRepositoryMock = new Mock<UserOwnershipRepository>();
-            userOwnershipRepositoryMock.Setup(m => m.GetByUser(user))
-                                       .Returns(ownership);
-            userOwnershipRepositoryMock.Setup(m => m.Create(It.IsAny<UserOwnership>()));
             var factory = new InitializeStorageUseCaseFactory();
-            factory.UserRepository = userRepositoryMock.Object;
+            var factoryContext = factory.ConfigureWithUser();
+
+            UserOwnership? userOwnership = null;
+            var userOwnershipRepositoryMock = new Mock<UserOwnershipRepository>();
+            userOwnershipRepositoryMock.Setup(m => m.GetByUser(factoryContext.UserMock.Object))
+                                       .Returns(userOwnership);
             factory.OwnershipRepository = userOwnershipRepositoryMock.Object;
+
+            var input = new InitializeStorageInput(1);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
