@@ -20,5 +20,21 @@ namespace StorageBot.Application.UseCases
             PageSize = pageSize;
             Count = count;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not PaginationDTO dto)
+            {
+                return false;
+            }
+            return Page == dto.Page &&
+                   PageSize == dto.PageSize &&
+                   Count == dto.Count;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Page, PageSize, Count);
+        }
     }
 }
