@@ -41,7 +41,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.AddEntryQuantity
 
         protected override CreateEntryQuantityTypeOutput GenerateOwnershipNotFoundOutput(CreateEntryQuantityTypeInput input)
         {
-            return new CreateEntryQuantityTypeOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new CreateEntryQuantityTypeOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override CreateEntryQuantityTypeOutput GenerateStorageOwnershipNotFoundOutput(CreateEntryQuantityTypeInput input)
