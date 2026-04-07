@@ -1,7 +1,9 @@
 ﻿using Moq;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.Tests.TestUtilities.Factories;
+using StorageBot.Application.Tests.TestUtilities.Factories.Storing;
 using StorageBot.Application.UseCases;
+using StorageBot.Application.UseCases.Storing;
 using StorageBot.Domain.Account;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,13 @@ namespace StorageBot.Application.Tests.TestUtilities.Factories
             public required UserOwnership UserOwnership { get; set; }
 
             public required Mock<UserOwnershipRepository> OwnershipRepositoryMock { get; set; }
+        }
+
+        public class FactoryTargetOwnershipContext : FactoryOwnershipContext
+        {
+            public required Mock<User> TargetUserMock { get; set; }
+
+            public required UserOwnership TargetOwnership { get; set; }
         }
 
         public static FactoryUserContext ConfigureWithUser<T, TInput, TOutput>
@@ -59,6 +68,30 @@ namespace StorageBot.Application.Tests.TestUtilities.Factories
                 UserRepositoryMock = context.UserRepositoryMock,
                 UserOwnership = ownership,
                 OwnershipRepositoryMock = ownershipRepositoryMock
+            };
+        }
+
+        public static FactoryTargetOwnershipContext ConfigureWithTargetOwnership<T, TInput, TOutput>
+            (this IStorageUseCaseFactory<T, TInput, TOutput> factory, int targetOwnershipId)
+            where T : StorageUseCase<TInput, TOutput>
+            where TInput : StorageInput
+            where TOutput : Output
+        {
+            var context = factory.ConfigureWithUserOwnership();
+            var userMock = new Mock<User>();
+            var targetOwnership = new UserOwnership(userMock.Object);
+            targetOwnership.Id = targetOwnershipId;
+            context.UserOwnership.AddOtherStorage(targetOwnership.PersonalStorage);
+            context.OwnershipRepositoryMock.Setup(m => m.GetById(targetOwnershipId))
+                                           .Returns(targetOwnership);
+            return new FactoryTargetOwnershipContext()
+            {
+                UserMock = context.UserMock,
+                UserRepositoryMock = context.UserRepositoryMock,
+                UserOwnership = context.UserOwnership,
+                OwnershipRepositoryMock = context.OwnershipRepositoryMock,
+                TargetUserMock = userMock,
+                TargetOwnership = targetOwnership,
             };
         }
     }
