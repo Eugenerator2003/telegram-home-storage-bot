@@ -21,5 +21,37 @@ namespace StorageBot.Application.Tests.UseCases.Storing.QuantityTypes
             Assert.AreEqual(isInteger, dto.IsInteger);
             Assert.AreEqual(unitName, dto.UnitName);
         }
+
+        [TestMethod]
+        public void EqualsTrueTest()
+        {
+            var dto1 = new EntryQuantityTypeDTO(1, false, "i.");
+            var dto2 = new EntryQuantityTypeDTO(1, false, "i.");
+            Assert.IsTrue(dto1.Equals(dto2));
+        }
+
+        [TestMethod]
+        public void EqualsFalseTest()
+        {
+            var dto1 = new EntryQuantityTypeDTO(1, true, "i.");
+            var dto2 = new EntryQuantityTypeDTO(1, false, "i.");
+            Assert.IsFalse(dto1.Equals(dto2));
+        }
+
+        [TestMethod]
+        public void GetHashCodeSameTest()
+        {
+            var dto1 = new EntryQuantityTypeDTO(1, false, "i.");
+            var dto2 = new EntryQuantityTypeDTO(1, false, "i.");
+            Assert.AreEqual(dto1.GetHashCode(), dto2.GetHashCode());
+        }
+
+        [TestMethod]
+        public void GetHashCodeDifferentTest()
+        {
+            var dto1 = new EntryQuantityTypeDTO(1, true, "i.");
+            var dto2 = new EntryQuantityTypeDTO(1, false, "i.");
+            Assert.AreNotEqual(dto1.GetHashCode(), dto2.GetHashCode());
+        }
     }
 }
