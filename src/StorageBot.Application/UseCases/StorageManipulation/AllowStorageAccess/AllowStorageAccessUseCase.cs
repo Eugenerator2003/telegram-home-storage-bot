@@ -35,7 +35,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.AllowStorageAccess
                 _logger.LogError("User to allow {userId} not found", input.AllowUserId);
                 return new AllowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToAllowNotFound", input.AllowUserId]);
             }
-            var allowOwnership = ownershipRepository.GetByUser(user);
+            var allowOwnership = ownershipRepository.GetByUser(allowUser);
             if (allowOwnership == null)
             {
                 _logger.LogError("Ownership of user to allow {userId} not found", input.AllowUserId);
