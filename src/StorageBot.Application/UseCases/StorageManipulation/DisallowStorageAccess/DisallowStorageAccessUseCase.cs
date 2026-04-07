@@ -34,11 +34,11 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
                 _logger.LogError("User to disallow {userId} not found", input.DisallowUserId);
                 return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserToDisallowNotFound", input.DisallowUserId]);
             }
-            var allowOwnership = ownershipRepository.GetByUser(user);
+            var allowOwnership = ownershipRepository.GetByUser(disallowUser);
             if (allowOwnership == null)
             {
                 _logger.LogError("Ownership of user to disallow {userId} not found", input.DisallowUserId);
-                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToDisallownNotFound", input.DisallowUserId]);
+                return new DisallowStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipToDisallowNotFound", input.DisallowUserId]);
             }
             Output.OutputResult result;
             string message = "";
@@ -51,7 +51,7 @@ namespace StorageBot.Application.UseCases.StorageManipulation.DisallowStorageAcc
             catch (NoStorageToRemoveException ex)
             {
                 result = Output.OutputResult.FatalFail;
-                message = _localizer["Case.NoStorageToRemoveException"];
+                message = _localizer["Case.NoStorageToRemove"];
                 _logger.LogError(ex, "User can't disallow access to personal storage to user {otherUserId}: target user doesn't have a storage access", input.DisallowUserId);
             }
             catch (Exception ex)
