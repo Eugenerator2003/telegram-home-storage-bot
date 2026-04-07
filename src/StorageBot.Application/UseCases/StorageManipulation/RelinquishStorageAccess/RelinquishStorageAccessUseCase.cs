@@ -27,6 +27,11 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
         {
             using (_logger.BeginScope(new Dictionary<string, object> { ["StorageOwnerId"] = input.StorageOwnerId }))
             {
+                if (input.UserId == input.StorageOwnerId)
+                {
+                    _logger.LogError("User failed to relinquish access to personal storage");
+                    return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.RelinquishAccessToPersonalStorage"]);
+                }
                 var owner = userRepository.GetById(input.StorageOwnerId);
                 if (owner == null)
                 {
@@ -72,16 +77,6 @@ namespace StorageBot.Application.UseCases.StorageManipulation.RelinquishStorageA
         protected override RelinquishStorageAccessOutput GenerateUserNotFoundOutput(RelinquishStorageAccessInput input)
         {
             return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
-        }
-
-        protected override RelinquishStorageAccessOutput? ValidateBeforeExecute(RelinquishStorageAccessInput input)
-        {
-            if (input.UserId == input.StorageOwnerId)
-            {
-                _logger.LogError("User failed to relinquish access to personal storage");
-                return new RelinquishStorageAccessOutput(Output.OutputResult.FatalFail, _localizer["Case.RelinquishAccessToPersonalStorage"]);
-            }
-            return base.ValidateBeforeExecute(input);
         }
     }
 }
