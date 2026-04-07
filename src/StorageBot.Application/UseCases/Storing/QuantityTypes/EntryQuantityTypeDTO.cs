@@ -20,5 +20,18 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes
             IsInteger = isInteger;
             UnitName = unitName;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not EntryQuantityTypeDTO dto) return false;
+            return Id == dto.Id &&
+                   IsInteger == dto.IsInteger &&
+                   UnitName.Equals(dto.UnitName);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, IsInteger, UnitName);
+        }
     }
 }
