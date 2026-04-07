@@ -12,6 +12,7 @@ namespace StorageBot.Application.UseCases.Storing
 
         public StorageInput(int userId, int storageOwnershipId) : base(userId)
         {
+            StorageOwnershipId = storageOwnershipId;
         }
     }
 }
