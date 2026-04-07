@@ -8,7 +8,9 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.GetEntryQuantity
 {
     public class GetEntryQuantityTypesInput : StorageInput
     {
-        public GetEntryQuantityTypesInput(int userId, int storageOwnershipId) 
+        public int Page { get; }
+
+        public GetEntryQuantityTypesInput(int userId, int storageOwnershipId, int page) 
             : base(userId, storageOwnershipId)
         {
         }

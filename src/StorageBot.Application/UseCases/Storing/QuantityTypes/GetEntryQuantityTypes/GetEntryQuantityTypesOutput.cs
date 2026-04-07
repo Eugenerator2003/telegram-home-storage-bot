@@ -8,15 +8,19 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.GetEntryQuantity
 {
     public class GetEntryQuantityTypesOutput : Output
     {
+        public PaginationDTO Pagination { get; }
+
         public IReadOnlyCollection<EntryQuantityTypeDTO> EntryQuantityTypes { get; }
 
         public GetEntryQuantityTypesOutput(
-            IEnumerable<EntryQuantityTypeDTO> entryQuantityTypes, 
+            IEnumerable<EntryQuantityTypeDTO> entryQuantityTypes,
+            PaginationDTO pagination,
             OutputResult result, 
             string message = "") 
             : base(result, message)
         {
             EntryQuantityTypes = entryQuantityTypes.ToArray();
+            Pagination = pagination;
         }
 
         public GetEntryQuantityTypesOutput(
@@ -25,6 +29,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.GetEntryQuantity
             : base(result, message)
         {
             EntryQuantityTypes = Array.Empty<EntryQuantityTypeDTO>();
+            Pagination = new PaginationDTO(0, 0, 0);
         }
     }
 }
