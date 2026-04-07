@@ -52,7 +52,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.UpdateEntryQuant
 
         protected override UpdateEntryQuantityTypeNameOutput GenerateOwnershipNotFoundOutput(UpdateEntryQuantityTypeNameInput input)
         {
-            return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new UpdateEntryQuantityTypeNameOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override UpdateEntryQuantityTypeNameOutput GenerateStorageOwnershipNotFoundOutput(UpdateEntryQuantityTypeNameInput input)

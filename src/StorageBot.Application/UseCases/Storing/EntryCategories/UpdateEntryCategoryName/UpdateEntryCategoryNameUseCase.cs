@@ -50,7 +50,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.UpdateEntryCat
 
         protected override UpdateEntryCategoryNameOutput GenerateOwnershipNotFoundOutput(UpdateEntryCategoryNameInput input)
         {
-            return new UpdateEntryCategoryNameOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new UpdateEntryCategoryNameOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override UpdateEntryCategoryNameOutput GenerateStorageOwnershipNotFoundOutput(UpdateEntryCategoryNameInput input)

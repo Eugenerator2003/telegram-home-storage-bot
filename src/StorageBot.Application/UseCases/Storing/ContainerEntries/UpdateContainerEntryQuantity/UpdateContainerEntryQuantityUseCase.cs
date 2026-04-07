@@ -80,7 +80,7 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.UpdateContain
 
         protected override UpdateContainerEntryQuantityOutput GenerateOwnershipNotFoundOutput(UpdateContainerEntryQuantityInput input)
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override UpdateContainerEntryQuantityOutput GenerateStorageOwnershipNotFoundOutput(UpdateContainerEntryQuantityInput input)

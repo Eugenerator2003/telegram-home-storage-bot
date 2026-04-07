@@ -46,7 +46,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.UpdateContainerName
 
         protected override UpdateContainerNameOutput GenerateOwnershipNotFoundOutput(UpdateContainerNameInput input)
         {
-            return new UpdateContainerNameOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new UpdateContainerNameOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override UpdateContainerNameOutput GenerateStorageOwnershipNotFoundOutput(UpdateContainerNameInput input)

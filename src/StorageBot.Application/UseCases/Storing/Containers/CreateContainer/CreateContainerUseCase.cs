@@ -67,7 +67,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.CreateContainer
 
         protected override CreateContainerOutput GenerateOwnershipNotFoundOutput(CreateContainerInput input)
         {
-            return new CreateContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new CreateContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override CreateContainerOutput GenerateStorageOwnershipNotFoundOutput(CreateContainerInput input)

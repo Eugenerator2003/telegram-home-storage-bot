@@ -56,7 +56,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.DeleteEntryCat
 
         protected override DeleteEntryCategoryOutput GenerateOwnershipNotFoundOutput(DeleteEntryCategoryInput input)
         {
-            return new DeleteEntryCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new DeleteEntryCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override DeleteEntryCategoryOutput GenerateStorageOwnershipNotFoundOutput(DeleteEntryCategoryInput input)

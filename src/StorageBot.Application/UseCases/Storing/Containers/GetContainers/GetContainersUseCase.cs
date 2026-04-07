@@ -83,7 +83,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.GetContainers
 
         protected override GetContainersOutput GenerateOwnershipNotFoundOutput(GetContainersInput input)
         {
-            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new GetContainersOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override GetContainersOutput GenerateStorageOwnershipNotFoundOutput(GetContainersInput input)

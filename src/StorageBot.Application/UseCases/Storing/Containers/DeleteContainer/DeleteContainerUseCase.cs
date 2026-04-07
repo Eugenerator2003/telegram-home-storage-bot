@@ -56,7 +56,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.DeleteContainer
 
         protected override DeleteContainerOutput GenerateOwnershipNotFoundOutput(DeleteContainerInput input)
         {
-            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override DeleteContainerOutput GenerateStorageOwnershipNotFoundOutput(DeleteContainerInput input)

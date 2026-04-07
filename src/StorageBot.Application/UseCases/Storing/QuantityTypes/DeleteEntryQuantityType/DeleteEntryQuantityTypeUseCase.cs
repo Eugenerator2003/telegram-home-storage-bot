@@ -58,7 +58,7 @@ namespace StorageBot.Application.UseCases.Storing.QuantityTypes.DeleteEntryQuant
 
         protected override DeleteEntryQuantityTypeOutput GenerateOwnershipNotFoundOutput(DeleteEntryQuantityTypeInput input)
         {
-            return new DeleteEntryQuantityTypeOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new DeleteEntryQuantityTypeOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override DeleteEntryQuantityTypeOutput GenerateStorageOwnershipNotFoundOutput(DeleteEntryQuantityTypeInput input)

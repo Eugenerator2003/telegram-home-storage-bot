@@ -68,7 +68,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.CreateEntryCat
 
         protected override CreateEntryCategoryOutput GenerateOwnershipNotFoundOutput(CreateEntryCategoryInput input)
         {
-            return new CreateEntryCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.OwnershipNotFound"]);
+            return new CreateEntryCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.UserOwnershipNotFound"]);
         }
 
         protected override CreateEntryCategoryOutput GenerateStorageOwnershipNotFoundOutput(CreateEntryCategoryInput input)
