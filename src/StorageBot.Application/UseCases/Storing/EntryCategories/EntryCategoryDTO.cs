@@ -17,5 +17,20 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories
             Id = id;
             Name = name;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not EntryCategoryDTO dto)
+            {
+                return false;
+            }
+            return Id == dto.Id &&
+                   Name.Equals(dto.Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name);
+        }
     }
 }
