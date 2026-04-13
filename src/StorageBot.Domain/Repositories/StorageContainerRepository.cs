@@ -11,28 +11,6 @@ namespace StorageBot.Domain.Repositories
 {
     public class StorageContainerRepository : StorageRepository<Container>
     {
-        private static Container? GetInner(IEnumerable<Container> containers, int id)
-        {
-            Container? inner = null;
-            Queue<Container> queue = new Queue<Container>(containers);
-            while (queue.Count > 0 && inner == null)
-            {
-                Container container = queue.Dequeue();
-                if (container.Id == id)
-                {
-                    inner = container;
-                }
-                else
-                {
-                    foreach (var i in container.InnerContainers)
-                    {
-                        queue.Enqueue(i);
-                    }
-                }
-            }
-            return inner;
-        }
-
         public StorageContainerRepository(Storage storage) 
             : base(storage)
         {
@@ -66,7 +44,7 @@ namespace StorageBot.Domain.Repositories
 
         public override Container? GetById(int id)
         {
-            return GetInner(storage.Containers, id);
+            return storage.FindContainer(id);
         }
     }
 }

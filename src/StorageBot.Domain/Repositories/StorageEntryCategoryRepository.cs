@@ -11,28 +11,6 @@ namespace StorageBot.Domain.Repositories
 {
     public class StorageEntryCategoryRepository : StorageRepository<EntryCategory>
     {
-        private static EntryCategory? GetSub(IEnumerable<EntryCategory> categories, int id)
-        {
-            EntryCategory? sub = null;
-            Queue<EntryCategory> queue = new Queue<EntryCategory>(categories);
-            while (queue.Count > 0 && sub == null)
-            {
-                EntryCategory category = queue.Dequeue();
-                if (category.Id == id)
-                {
-                    sub = category;
-                }
-                else
-                {
-                    foreach(var s in category.Subcategories)
-                    {
-                        queue.Enqueue(s);
-                    }
-                }
-            }
-            return sub;
-        }
-
         public StorageEntryCategoryRepository(Storage storage)
             : base(storage)
         {
@@ -65,7 +43,7 @@ namespace StorageBot.Domain.Repositories
 
         public override EntryCategory? GetById(int id)
         {
-            return GetSub(storage.EntryCategories, id);
+            return storage.FindEntryCategory(id);
         }
     }
 }
