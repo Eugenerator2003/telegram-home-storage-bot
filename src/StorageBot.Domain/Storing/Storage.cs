@@ -54,7 +54,26 @@ namespace StorageBot.Domain.Storing
                 }
             }
             return item;
-        } 
+        }
+
+        private static bool IsOwns<T>(IEnumerable<T> topNodes, T value, Func<T,T?> parentFunc)
+            where T : TreeNodeModel<T>
+        {
+            T ancestor = null!;
+            while (ancestor is null)
+            {
+                var parent = parentFunc(value);
+                if (parent == null)
+                {
+                    ancestor = value;
+                }
+                else
+                {
+                    value = parent;
+                }
+            }
+            return topNodes.Contains(ancestor);
+        }
 
         public UserOwnership UserOwnership { get; protected set; }
         public IReadOnlyCollection<Container> Containers => _containers.AsReadOnly();
@@ -102,7 +121,10 @@ namespace StorageBot.Domain.Storing
         public void RemoveContainer(Container container)
         {
             ArgumentNullException.ThrowIfNull(container);
-            ThrowIfNotContains<Container, StorageNotContainsContainerException>(_containers, container);
+            if (container.OuterContainer is null || !IsOwns(_containers, container, c => c.OuterContainer))
+            {
+                ThrowIfNotContains<Container, StorageNotContainsContainerException>(_containers, container);
+            }
             if (container.InnerContainers.Count > 0)
             {
                 throw new StorageContainerHasInnerContainerException();
@@ -111,7 +133,15 @@ namespace StorageBot.Domain.Storing
             {
                 throw new StorageContainerNotEmptyException();
             }
-            _containers.Remove(container);
+
+            if (container.OuterContainer is not null)
+            {
+                container.OuterContainer.RemoveInnerContainer(container);
+            }
+            else
+            {
+                _containers.Remove(container);
+            }
         }
 
         public EntryCategory? FindEntryCategory(int id)
@@ -133,12 +163,23 @@ namespace StorageBot.Domain.Storing
         public void RemoveEntryCategory(EntryCategory category)
         {
             ArgumentNullException.ThrowIfNull(category);
-            ThrowIfNotContains<EntryCategory, StorageNotContainsEntryCategoryException>(_categories, category);
+            if (category.MainCategory is null || !IsOwns(_categories, category, c => c.MainCategory))
+            {
+                ThrowIfNotContains<EntryCategory, StorageNotContainsEntryCategoryException>(_categories, category);
+            }
             if (category.Subcategories.Count > 0)
             {
                 throw new StorageEntryCategoryHasSubcategoriesException();
             }
-            _categories.Remove(category);
+
+            if (category.MainCategory is not null)
+            {
+                category.MainCategory.RemoveSubcategory(category);
+            }
+            else
+            {
+                _categories.Remove(category);
+            }
         }
 
         public void AddEntryQuantityType(EntryQuantityType quantityType)
