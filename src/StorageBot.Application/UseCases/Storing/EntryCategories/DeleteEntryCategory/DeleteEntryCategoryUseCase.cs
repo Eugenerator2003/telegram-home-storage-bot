@@ -42,7 +42,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.DeleteEntryCat
                 catch (Exception ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["Case.EntryCategoryNotFound"];
+                    message = _localizer["Case.ServerError"];
                     _logger.LogError(ex, "User failed to delete entry category");
                 }
                 return new DeleteEntryCategoryOutput(result, message);
