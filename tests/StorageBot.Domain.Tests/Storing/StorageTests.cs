@@ -93,6 +93,40 @@ namespace StorageBot.Domain.Tests.Storing
         }
 
         [TestMethod]
+        public void FindContainerNullTest()
+        {
+            var storage = new Storage(ownership);
+            var container = storage.FindContainer(1000);
+            Assert.IsNull(container);
+        }
+
+        [TestMethod]
+        public void FindContainerTopTest()
+        {
+            var storage = new Storage(ownership);
+            int id = 99;
+            var exptectedContainer = new Container("Container") { Id = id };
+            var otherContainer = new Container("Container100") { Id = id + 2 };
+            storage.AddContainer(exptectedContainer);
+            storage.AddContainer(otherContainer);
+            var container = storage.FindContainer(id);
+            Assert.AreEqual(exptectedContainer, container);
+        }
+
+        [TestMethod]
+        public void FindContainerChildTest()
+        {
+            var storage = new Storage(ownership);
+            int id = 9999;
+            var container1 = new Container("Container1") { Id = id - 2 };
+            var container2 = new Container("Container2", container1) { Id = id - 1 };
+            var container3 = new Container("Container3", container2) { Id = id };
+            storage.AddContainer(container1);
+            var container = storage.FindContainer(id);
+            Assert.AreEqual(container3, container);
+        }
+
+        [TestMethod]
         public void RemoveNotIncludedContainerTest()
         {
             var storage = new Storage(ownership);
@@ -227,6 +261,40 @@ namespace StorageBot.Domain.Tests.Storing
             {
                 storage.RemoveContainer(null!);
             });
+        }
+
+        [TestMethod]
+        public void FindCategoryNullTest()
+        {
+            var storage = new Storage(ownership);
+            var category = storage.FindEntryCategory(1000);
+            Assert.IsNull(category);
+        }
+
+        [TestMethod]
+        public void FindCategoryTopTest()
+        {
+            var storage = new Storage(ownership);
+            int id = 99;
+            var exptectedCategory = new EntryCategory("category") { Id = id };
+            var otherCategory = new EntryCategory("category2313") { Id = id + 2 };
+            storage.AddEntryCategory(exptectedCategory);
+            storage.AddEntryCategory(otherCategory);
+            var category = storage.FindEntryCategory(id);
+            Assert.AreEqual(exptectedCategory, category);
+        }
+
+        [TestMethod]
+        public void FindCategoryChildTest()
+        {
+            var storage = new Storage(ownership);
+            int id = 9999;
+            var category1 = new EntryCategory("Category1") { Id = id - 2 };
+            var category2 = new EntryCategory("Category2", category1) { Id = id - 1 };
+            var category3 = new EntryCategory("Category3", category2) { Id = id };
+            storage.AddEntryCategory(category1);
+            var category = storage.FindEntryCategory(id);
+            Assert.AreEqual(category3, category);
         }
 
         [TestMethod]
