@@ -16,5 +16,20 @@ namespace StorageBot.Application.UseCases.Storing.Containers
             Id = id;
             Name = name;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not ContainerDTO dto)
+            {
+                return false;
+            }
+            return Id == dto.Id &&
+                   Name == dto.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name);
+        }
     }
 }
