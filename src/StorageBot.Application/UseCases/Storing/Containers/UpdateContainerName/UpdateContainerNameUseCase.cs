@@ -26,7 +26,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.UpdateContainerName
                 if (container == null)
                 {
                     _logger.LogError("User failed to update container: container not found");
-                    return new UpdateContainerNameOutput(Output.OutputResult.FatalFail, _localizer["Case.ContainerNotFound"]);
+                    return new UpdateContainerNameOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageContainerNotFound"]);
                 }
                 if (string.IsNullOrWhiteSpace(input.ContainerName))
                 {
