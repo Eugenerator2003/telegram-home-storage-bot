@@ -40,6 +40,18 @@ namespace StorageBot.Application.UseCases.Storing.Containers.DeleteContainer
                     message = _localizer["Case.StorageContainerNotFound"];
                     _logger.LogError(ex, "User failed to delete container: container not found");
                 }
+                catch (StorageContainerHasInnerContainerException ex)
+                {
+                    result = Output.OutputResult.Fail;
+                    message = _localizer["Case.StorageContainerHasInnerContainers"];
+                    _logger.LogError(ex, "User failed to delete container: it has inner containers");
+                }
+                catch (StorageContainerNotEmptyException ex)
+                {
+                    result = Output.OutputResult.Fail;
+                    message = _localizer["Case.StorageContainerNotEmpty"];
+                    _logger.LogError(ex, "User failed to delete container: container not empty");
+                }
                 catch (Exception ex)
                 {
                     result = Output.OutputResult.FatalFail;
