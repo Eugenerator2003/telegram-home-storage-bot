@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.Utilities;
 using StorageBot.Domain.Exceptions.Repositories;
+using StorageBot.Domain.Exceptions.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +37,13 @@ namespace StorageBot.Application.UseCases.Storing.Containers.DeleteContainer
                 catch (EntityNotFoundException ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["Case.EntryCategoryNotFound"];
+                    message = _localizer["Case.StorageContainerNotFound"];
                     _logger.LogError(ex, "User failed to delete container: container not found");
                 }
                 catch (Exception ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["Case.EntryCategoryNotFound"];
+                    message = _localizer["Case.ServerError"];
                     _logger.LogError(ex, "User failed to delete container");
                 }
                 return new DeleteContainerOutput(result, message);
@@ -66,7 +67,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.DeleteContainer
 
         protected override DeleteContainerOutput GenerateUserNotFoundOutput(DeleteContainerInput input)
         {
-            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.UseNotFound"]);
+            return new DeleteContainerOutput(Output.OutputResult.FatalFail, _localizer["Case.UserNotFound"]);
         }
     }
 }
