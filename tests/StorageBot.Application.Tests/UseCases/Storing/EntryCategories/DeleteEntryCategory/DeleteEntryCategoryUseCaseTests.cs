@@ -101,5 +101,21 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.DeleteEn
             Assert.AreEqual(string.Empty, output.Message);
             Assert.DoesNotContain(subCategory2, subCategory1.Subcategories);
         }
+
+        [TestMethod]
+        public void ExecuteHasSubcategoriesTest()
+        {
+            var targetOwnershipId = 10;
+            var deleteCategoryId = 1;
+            var entryCategory = new EntryCategory("category") { Id = deleteCategoryId };
+            var subCategory = new EntryCategory("sub-category-1", entryCategory) { Id = 2 };
+            var factory = new DeleteEntryCategoryUseCaseFactory();
+            var input = new DeleteEntryCategoryInput(1, targetOwnershipId, deleteCategoryId);
+            var context = factory.ConfigureWithTargetOwnership(targetOwnershipId);
+            context.TargetOwnership.PersonalStorage.AddEntryCategory(entryCategory);
+            var output = factory.CreateUseCase().Execute(input);
+            Assert.AreEqual(Output.OutputResult.Fail, output.Result);
+            Assert.AreEqual(factory.Localizer["Case.EntryCategoryHasSubcategories"], output.Message);
+        }
     }
 }
