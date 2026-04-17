@@ -13,6 +13,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.DeleteContainer
         public DeleteContainerInput(int userId, int storageOwnershipId, int containerId) 
             : base(userId, storageOwnershipId)
         {
+            ContainerId = containerId;
         }
     }
 }
