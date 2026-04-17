@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.Utilities;
 using StorageBot.Domain.Exceptions.Repositories;
+using StorageBot.Domain.Exceptions.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,12 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.DeleteEntryCat
                     result = Output.OutputResult.FatalFail;
                     message = _localizer["Case.EntryCategoryNotFound"];
                     _logger.LogError(ex, "User failed to delete entry category: entry category not found");
+                }
+                catch (StorageEntryCategoryHasSubcategoriesException ex)
+                {
+                    result = Output.OutputResult.Fail;
+                    message = _localizer["Case.EntryCategoryHasSubcategories"];
+                    _logger.LogError(ex, "User failed to delete entry category: it has child categories");
                 }
                 catch (Exception ex)
                 {
