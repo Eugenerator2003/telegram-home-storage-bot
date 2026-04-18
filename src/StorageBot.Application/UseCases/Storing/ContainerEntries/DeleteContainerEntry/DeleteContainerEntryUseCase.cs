@@ -36,7 +36,7 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.DeleteContain
                 catch (EntityNotFoundException ex)
                 {
                     result = Output.OutputResult.FatalFail;
-                    message = _localizer["Case.ContainerEnryNotFound"];
+                    message = _localizer["Case.ContainerEntryNotFound"];
                     _logger.LogError(ex,
                                      "User failed to delete container entry: container not found");
                 }
