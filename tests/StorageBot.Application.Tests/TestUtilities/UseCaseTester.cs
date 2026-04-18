@@ -3,8 +3,10 @@ using Moq;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.Tests.TestUtilities.Factories;
 using StorageBot.Application.Tests.TestUtilities.Factories.Storing;
+using StorageBot.Application.Tests.TestUtilities.Factories.Storing.ContainerEntries;
 using StorageBot.Application.UseCases;
 using StorageBot.Application.UseCases.Storing;
+using StorageBot.Application.UseCases.Storing.ContainerEntries;
 using StorageBot.Domain.Account;
 using System;
 using System.Collections.Generic;
@@ -107,6 +109,33 @@ namespace StorageBot.Application.Tests.TestUtilities
             var output = useCase.Execute(input);
             Assert.AreEqual(Output.OutputResult.FatalFail, output.Result);
             Assert.AreEqual(factory.Localizer["Case.NoStorageAccess"], output.Message);
+        }
+
+        public static void ContainerNotFoundTest<TUseCase, TInput, TOuput>(
+            IContainerEntryUseCaseFactory<TUseCase, TInput, TOuput> factory,
+            TInput input)
+            where TUseCase : ContainerEntryUseCase<TInput, TOuput>
+            where TInput : ContainerInput
+            where TOuput : Output
+        {
+            User user = new Mock<User>().Object;
+            var userRepositoryMock = new Mock<UserRepository>();
+            userRepositoryMock.Setup(m => m.GetById(input.UserId))
+                              .Returns(user);
+            factory.UserRepository = userRepositoryMock.Object;
+            UserOwnership userOwnership = new UserOwnership(user);
+            var ownershipRepositoryMock = new Mock<UserOwnershipRepository>();
+            ownershipRepositoryMock.Setup(m => m.GetByUser(user))
+                                   .Returns(userOwnership);
+            UserOwnership? storageOwnership = new UserOwnership(new Mock<User>().Object);
+            ownershipRepositoryMock.Setup(m => m.GetById(input.StorageOwnershipId))
+                                   .Returns(storageOwnership);
+            userOwnership.AddOtherStorage(storageOwnership.PersonalStorage);
+            factory.OwnershipRepository = ownershipRepositoryMock.Object;
+            var useCase = factory.CreateUseCase();
+            var output = useCase.Execute(input);
+            Assert.AreEqual(Output.OutputResult.FatalFail, output.Result);
+            Assert.AreEqual(factory.Localizer["Case.ContainerNotFound"], output.Message);
         }
     }
 }

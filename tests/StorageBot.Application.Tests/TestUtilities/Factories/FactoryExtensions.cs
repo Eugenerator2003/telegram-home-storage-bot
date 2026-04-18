@@ -2,9 +2,12 @@
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Application.Tests.TestUtilities.Factories;
 using StorageBot.Application.Tests.TestUtilities.Factories.Storing;
+using StorageBot.Application.Tests.TestUtilities.Factories.Storing.ContainerEntries;
 using StorageBot.Application.UseCases;
 using StorageBot.Application.UseCases.Storing;
+using StorageBot.Application.UseCases.Storing.ContainerEntries;
 using StorageBot.Domain.Account;
+using StorageBot.Domain.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +37,11 @@ namespace StorageBot.Application.Tests.TestUtilities.Factories
             public required Mock<User> TargetUserMock { get; set; }
 
             public required UserOwnership TargetOwnership { get; set; }
+        }
+
+        public class FactoryTargetContainerContext : FactoryTargetOwnershipContext
+        {
+            public required Container TargetContainer { get; set; }
         }
 
         public static FactoryUserContext ConfigureWithUser<T, TInput, TOutput>
@@ -92,6 +100,27 @@ namespace StorageBot.Application.Tests.TestUtilities.Factories
                 OwnershipRepositoryMock = context.OwnershipRepositoryMock,
                 TargetUserMock = userMock,
                 TargetOwnership = targetOwnership,
+            };
+        }
+
+        public static FactoryTargetContainerContext ConfigureWithTargetContainer<T, TInput, TOutput>
+            (this IContainerEntryUseCaseFactory<T, TInput, TOutput> factory, int targetOwnershipId, int targetContainerId)
+            where T : ContainerEntryUseCase<TInput, TOutput>
+            where TInput : ContainerInput
+            where TOutput : Output
+        {
+            var context = factory.ConfigureWithTargetOwnership(targetOwnershipId);
+            var container = new Container("container") { Id = targetContainerId };
+            context.TargetOwnership.PersonalStorage.AddContainer(container);
+            return new FactoryTargetContainerContext()
+            {
+                UserMock = context.UserMock,
+                UserRepositoryMock = context.UserRepositoryMock,
+                UserOwnership = context.UserOwnership,
+                OwnershipRepositoryMock = context.OwnershipRepositoryMock,
+                TargetUserMock = context.TargetUserMock,
+                TargetOwnership = context.TargetOwnership,
+                TargetContainer = container
             };
         }
     }
