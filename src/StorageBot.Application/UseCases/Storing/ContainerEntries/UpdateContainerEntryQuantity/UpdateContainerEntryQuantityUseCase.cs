@@ -38,7 +38,7 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.UpdateContain
                 }
                 else if (input.QuantityValue <= 0)
                 {
-                    result = Output.OutputResult.FatalFail;
+                    result = Output.OutputResult.Fail;
                     message = _localizer["Case.NotPositiveQuantityValue"];
                     _logger.LogError("User failed to update entry quantity: invalid quantity value (must be positive)");
                 }
@@ -85,7 +85,7 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.UpdateContain
 
         protected override UpdateContainerEntryQuantityOutput GenerateStorageOwnershipNotFoundOutput(UpdateContainerEntryQuantityInput input)
         {
-            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOnwershipNotFound"]);
+            return new UpdateContainerEntryQuantityOutput(Output.OutputResult.FatalFail, _localizer["Case.StorageOwnershipNotFound"]);
         }
 
         protected override UpdateContainerEntryQuantityOutput GenerateUserNotFoundOutput(UpdateContainerEntryQuantityInput input)
