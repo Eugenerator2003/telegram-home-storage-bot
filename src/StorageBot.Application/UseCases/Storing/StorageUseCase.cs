@@ -36,9 +36,10 @@ namespace StorageBot.Application.UseCases.Storing
                     _logger.LogError("Storage ownership not found");
                     return GenerateStorageOwnershipNotFoundOutput(input);
                 }
-                if (!ownership.OtherStorages.Contains(storageOwnership.PersonalStorage))
+                if (!ownership.Equals(storageOwnership) &&
+                    !ownership.OtherStorages.Contains(storageOwnership.PersonalStorage))
                 {
-                    _logger.LogError("User has no access to personal storage");
+                    _logger.LogError("User has no access to storage");
                     return GenerateNoAccessOutput(input);
                 }
                 return ExecuteWithStorage(input, storageOwnership.PersonalStorage);
