@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Host.Routing
+namespace StorageBot.Host.Routing.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ControllerIdAttribute : Attribute
