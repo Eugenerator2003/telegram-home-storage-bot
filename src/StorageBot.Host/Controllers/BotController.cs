@@ -12,18 +12,24 @@ namespace StorageBot.Host.Controllers
 {
     public abstract class BotController
     {
+        protected IStringLocalizer Localizer => _dependencies.Localizer;
+
+        protected INavigationIdProvider Navigation => _dependencies.Navigation;
+
         protected BotContext Context { get; private set; } = null!;
 
-        protected IStringLocalizer Localizer { get; private set; } = null!;
+        private ControllerDependencies _dependencies = null!;
 
-        public void SetBotContext(BotContext botContext)
+        public void SetDependencies(ControllerDependencies dependencies)
         {
-            Context = botContext;
+            ArgumentNullException.ThrowIfNull(dependencies);
+            _dependencies = dependencies;
         }
 
-        public void SetLocalizer(IStringLocalizer localizer)
+        public void SetContext(BotContext context)
         {
-            Localizer = localizer;
+            ArgumentNullException.ThrowIfNull(context);
+            Context = context;
         }
     }
 }
