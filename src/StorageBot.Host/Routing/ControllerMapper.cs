@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
-    public class ControllerMapper : IControllerProvider, INavigationIdProvider
+    public class ControllerMapper : IControllerTypeProvider, INavigationIdProvider
     {
         private static int GetControllerId(Type controllerType)
         {
@@ -75,7 +75,7 @@ namespace StorageBot.Host.Routing
             }
         }
 
-        public ControllerActionPair GetControllerWithAction(int controllerId, int actionId)
+        public ControllerTypeActionPair GetControllerWithAction(int controllerId, int actionId)
         {
             if (controllerId < 0 || actionId < 0)
             {
@@ -90,7 +90,7 @@ namespace StorageBot.Host.Routing
                 ?? throw new InvalidOperationException("Controller not found");
             var action = actionInvokers[controllerId][actionId]
                 ?? throw new InvalidOperationException("Action not found");
-            return new ControllerActionPair(controllerType, action);
+            return new ControllerTypeActionPair(controllerType, action);
         }
 
         private void Initialize(Assembly assembly)

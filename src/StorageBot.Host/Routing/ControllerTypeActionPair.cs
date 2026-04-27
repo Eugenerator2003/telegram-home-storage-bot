@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
-    public class ControllerActionPair
+    public class ControllerTypeActionPair
     {
         public Type ControllerType { get; }
 
         public MethodInvoker ActionInvoker { get; }
 
-        public ControllerActionPair(Type controllerType, MethodInvoker actionInvoker)
+        public ControllerTypeActionPair(Type controllerType, MethodInvoker actionInvoker)
         {
             ArgumentNullException.ThrowIfNull(controllerType);
             ArgumentNullException.ThrowIfNull(actionInvoker);
