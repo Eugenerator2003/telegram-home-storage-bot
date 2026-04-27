@@ -1,0 +1,36 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using StorageBot.Host.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StorageBot.Host.Factories
+{
+    public class ControllerFactory : IControllerFactory
+    {
+        private readonly IServiceProvider serviceProvider;
+
+        public ControllerFactory(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
+        public BotController GetController(Type controllerType)
+        {
+            if (!controllerType.IsSubclassOf(typeof(BotController)))
+            {
+                throw new ArgumentException("Type must be a subclass of BotController");
+            }
+            var service = serviceProvider.GetService(controllerType) 
+                ?? throw new InvalidOperationException($"Cannot create controller {controllerType.Name}: service not found");
+            return (BotController)service!;
+        }
+
+        public T GetController<T>() where T : BotController
+        {
+            return (T)GetController(typeof(T));
+        }
+    }
+}
