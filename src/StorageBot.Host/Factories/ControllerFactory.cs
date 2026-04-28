@@ -25,7 +25,11 @@ namespace StorageBot.Host.Factories
             }
             var service = serviceProvider.GetService(controllerType) 
                 ?? throw new InvalidOperationException($"Cannot create controller {controllerType.Name}: service not found");
-            return (BotController)service!;
+            var controller = (BotController)service;
+            var dependencies = serviceProvider.GetService<ControllerDependencies>()
+                ?? throw new InvalidOperationException($"Cannot initialize controller {controllerType.Name}: dependencies not found");
+            controller.SetDependencies(dependencies);
+            return controller;
         }
 
         public T GetController<T>() where T : BotController
