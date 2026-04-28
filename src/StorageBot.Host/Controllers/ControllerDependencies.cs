@@ -20,20 +20,25 @@ namespace StorageBot.Host.Controllers
 
         public IMenuMessageProvider MenuProvider { get; }
 
+        public IRedirectStateProvider RedirectProvider { get; }
+
         public ControllerDependencies(
             ITelegramBotClient botClient,
             IStringLocalizer localizer, 
             INavigationIdProvider navigation, 
-            IMenuMessageProvider menuProvider)
+            IMenuMessageProvider menuProvider,
+            IRedirectStateProvider stateProvider)
         {
             ArgumentNullException.ThrowIfNull(botClient);
             ArgumentNullException.ThrowIfNull(localizer);
             ArgumentNullException.ThrowIfNull(navigation);
             ArgumentNullException.ThrowIfNull(menuProvider);
+            ArgumentNullException.ThrowIfNull(stateProvider);
             BotClient = botClient;
             Localizer = localizer;
             Navigation = navigation;
             MenuProvider = menuProvider;
+            RedirectProvider = stateProvider;
         }
     }
 }

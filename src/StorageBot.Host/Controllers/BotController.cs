@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Extensions;
 using Telegram.Bot.Types;
 
 namespace StorageBot.Host.Controllers
@@ -16,12 +17,10 @@ namespace StorageBot.Host.Controllers
     public abstract class BotController
     {
         protected ITelegramBotClient BotClient => _dependencies.BotClient;
-
         protected IStringLocalizer Localizer => _dependencies.Localizer;
-
         protected INavigationIdProvider Navigation => _dependencies.Navigation;
-
         protected IMenuMessageProvider MenuProvider => _dependencies.MenuProvider;
+        protected IRedirectStateProvider RedirectProvider => _dependencies.RedirectProvider;
 
         protected BotContext Context { get; private set; } = null!;
 
@@ -37,6 +36,11 @@ namespace StorageBot.Host.Controllers
         {
             ArgumentNullException.ThrowIfNull(context);
             Context = context;
+        }
+
+        public RedirectState? ConsumeRedirectState()
+        {
+            return RedirectProvider.Consume();
         }
     }
 }
