@@ -20,16 +20,13 @@ namespace StorageBot.Host.Dispatchers
 
         protected IControllerFactory ControllerFactory { get; }
 
-        protected IStringLocalizer Localizer { get; }
 
         public BotDispatcher(
             IControllerTypeProvider controllerProvider, 
-            IControllerFactory controllerFactory, 
-            IStringLocalizer localizer)
+            IControllerFactory controllerFactory)
         {
             ControllerProvider = controllerProvider;
             ControllerFactory = controllerFactory;
-            Localizer = localizer;
         }
 
         public async Task DispatchUpdate(Update update)
