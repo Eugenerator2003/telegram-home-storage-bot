@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
-    public class ControllerMapper : IControllerTypeProvider, INavigationIdProvider
+    public class ControllerMapper : IControllerTypeProvider, IIdNavigation
     {
         private static int GetControllerId(Type controllerType)
         {

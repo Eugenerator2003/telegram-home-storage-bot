@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
-    public interface INavigationIdProvider
+    public interface IIdNavigation
     {
         int GetControllerId(string controllerName);
 

@@ -16,7 +16,7 @@ namespace StorageBot.Host.Controllers
 
         public IStringLocalizer Localizer { get; }
 
-        public INavigationIdProvider Navigation { get; }
+        public IIdNavigation Navigation { get; }
 
         public IMenuMessageProvider MenuProvider { get; }
 
@@ -25,7 +25,7 @@ namespace StorageBot.Host.Controllers
         public ControllerDependencies(
             ITelegramBotClient botClient,
             IStringLocalizer localizer, 
-            INavigationIdProvider navigation, 
+            IIdNavigation navigation, 
             IMenuMessageProvider menuProvider,
             IRedirectStateProvider stateProvider)
         {
