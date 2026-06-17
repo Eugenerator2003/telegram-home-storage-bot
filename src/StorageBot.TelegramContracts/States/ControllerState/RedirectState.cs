@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
-namespace StorageBot.TelegramContracts.States
+namespace StorageBot.TelegramContracts.States.ControllerState
 {
     public class RedirectState
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.TelegramContracts.StateManagement
+namespace StorageBot.TelegramContracts.States.Chat
 {
     public class InputState
     {

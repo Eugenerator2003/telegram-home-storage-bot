@@ -2,7 +2,7 @@
 using StorageBot.Host.Factories;
 using StorageBot.Host.Routing;
 using StorageBot.TelegramContracts.Context;
-using StorageBot.TelegramContracts.States;
+using StorageBot.TelegramContracts.States.ControllerState;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,28 +16,28 @@ namespace StorageBot.Host.Dispatchers
     {
         protected readonly static int MaxRedirects = 10;
 
-        protected IHandlerInfoResolver ControllerProvider { get; }
+        protected IHandlerInfoResolver HandlerInfoResolver { get; }
 
         protected IControllerFactory ControllerFactory { get; }
 
 
         public BotDispatcher(
-            IHandlerInfoResolver controllerProvider, 
+            IHandlerInfoResolver handlerInfoResolver, 
             IControllerFactory controllerFactory)
         {
-            ControllerProvider = controllerProvider;
+            HandlerInfoResolver = handlerInfoResolver;
             ControllerFactory = controllerFactory;
         }
 
         public async Task DispatchUpdate(Update update)
         {
             var context = GetContext(update);
-            var pair = GetControllerWithAction(update);
+            var pair = GetHandlerInfo(update);
             var state = await InvokeWithContext(pair, context);
             int counter = MaxRedirects;
             while (state != null && counter > 0)
             {
-                pair = ControllerProvider.GetHandlerInfo(state.ControllerId, state.ActionId);
+                pair = HandlerInfoResolver.GetHandlerInfo(state.ControllerId, state.ActionId);
                 state = await InvokeWithContext(pair, context);
                 counter--;
             }
@@ -55,7 +55,7 @@ namespace StorageBot.Host.Dispatchers
             await (Task)pair.ActionInvoker.Invoke(controller)!;
             return controller.ConsumeRedirectState();
         }
-        protected abstract HandlerInfo GetControllerWithAction(Update update);
+        protected abstract HandlerInfo GetHandlerInfo(Update update);
 
         protected abstract BotContext GetContext(Update update);
     }

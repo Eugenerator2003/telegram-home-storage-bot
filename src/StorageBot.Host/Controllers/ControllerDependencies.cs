@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using StorageBot.Host.Routing;
-using StorageBot.TelegramContracts.States;
+using StorageBot.TelegramContracts.States.Chat;
+using StorageBot.TelegramContracts.States.ControllerState;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +19,27 @@ namespace StorageBot.Host.Controllers
 
         public IIdNavigation Navigation { get; }
 
-        public IMenuMessageProvider MenuProvider { get; }
+        public IMenuMessageStore MenuStore { get; }
 
-        public IRedirectStateProvider RedirectProvider { get; }
+        public IRedirectBuffer RedirectBuffer { get; }
 
         public ControllerDependencies(
             ITelegramBotClient botClient,
             IStringLocalizer localizer, 
             IIdNavigation navigation, 
-            IMenuMessageProvider menuProvider,
-            IRedirectStateProvider stateProvider)
+            IMenuMessageStore menuStore,
+            IRedirectBuffer stateBuffer)
         {
             ArgumentNullException.ThrowIfNull(botClient);
             ArgumentNullException.ThrowIfNull(localizer);
             ArgumentNullException.ThrowIfNull(navigation);
-            ArgumentNullException.ThrowIfNull(menuProvider);
-            ArgumentNullException.ThrowIfNull(stateProvider);
+            ArgumentNullException.ThrowIfNull(menuStore);
+            ArgumentNullException.ThrowIfNull(stateBuffer);
             BotClient = botClient;
             Localizer = localizer;
             Navigation = navigation;
-            MenuProvider = menuProvider;
-            RedirectProvider = stateProvider;
+            MenuStore = menuStore;
+            RedirectBuffer = stateBuffer;
         }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.TelegramContracts.StateManagement
+namespace StorageBot.TelegramContracts.States.Chat
 {
-    public interface IUserInputLinesProvider
+    public interface IUserInputLinesStore
     {
         Task SetLines(long id, IEnumerable<string> lines);
 

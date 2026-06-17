@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.TelegramContracts.States
+namespace StorageBot.TelegramContracts.States.Chat
 {
-    public interface IMenuMessageProvider
+    public interface IMenuMessageStore
     {
         Task<long> GetMenuMessageId(long userId);
 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.TelegramContracts.StateManagement
+namespace StorageBot.TelegramContracts.States.Chat
 {
-    public interface IUserInputStateProvider
+    public interface IUserInputStateStore
     {
         Task SetState(long id, InputState state);
 
