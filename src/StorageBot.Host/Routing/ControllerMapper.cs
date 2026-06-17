@@ -26,11 +26,24 @@ namespace StorageBot.Host.Routing
             return attribute.Id;
         }
 
+        private static bool IsMainController(Type controllerType)
+        {
+            return controllerType.GetCustomAttribute<MainControllerAttribute>() is not null;
+        }
+
+        private static bool IsMenuAction(MethodInfo methodInfo)
+        {
+            return methodInfo.GetCustomAttribute<MenuActionAttribute>() is not null;
+        }
+
         private List<Type> controllerTypes;
         private List<List<MethodInvoker>> actionInvokers;
 
         private Dictionary<string, int> controllerIds;
         private Dictionary<string, Dictionary<string, int>> actionIds;
+
+        private int mainControllerId = -1;
+        private int menuActionId = -1;
 
         public ControllerMapper(Assembly assembly)
         {
@@ -75,6 +88,16 @@ namespace StorageBot.Host.Routing
             }
         }
 
+        public int GetMainControllerId()
+        {
+            return mainControllerId;
+        }
+
+        public int GetMenuActionId()
+        {
+            return menuActionId;
+        }
+
         public HandlerInfo GetHandlerInfo(int controllerId, int actionId)
         {
             if (controllerId < 0 || actionId < 0)
@@ -97,61 +120,87 @@ namespace StorageBot.Host.Routing
         {
             var types = assembly.GetTypes()
                                 .Where(c => c.IsSubclassOf(typeof(BotController)))
-                                .OrderBy(GetControllerId)
+                                .Select(c => new { Type = c, Id = GetControllerId(c) })
+                                .OrderBy(c => c.Id)
                                 .ToArray();
 
             if (types.Length == 0)
             {
                 throw new InvalidOperationException("No controllers found in assembly");
             }
-            int previous = AddBeforeFirstControllers(types[0]);
+            AddBeforeFirstControllers(types[0].Id);
+            int previous = -1;
             for (int i = 0; i < types.Length; i++)
             {
-                var idC = GetControllerId(types[i]);
+                var idC = types[i].Id;
+
                 if (i > 0 && idC == previous)
-                {
-                    throw new InvalidOperationException($"Controller Id collision: {types[i].Name}, {types[i - 1].Name}");
-                }
+                    throw new InvalidOperationException($"Controller Id collision: {types[i].Type.Name}, {types[i - 1].Type.Name}");
+
                 for (int j = 0; j < idC - previous - 1; j++)
                 {
                     AddEmptyController();
                 }
-                AddController(types[i], idC);
-                var methods = types[i]
-                    .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
-                    .OrderBy(GetActionId)
-                    .ToArray();
-                if (methods.Length == 0)
+                AddController(types[i].Type, idC);
+
+                if (IsMainController(types[i].Type))
                 {
-                    throw new InvalidOperationException($"No methods found in controller {types[i].Name}");
+                    if (mainControllerId == -1)
+                        mainControllerId = types[i].Id;
+                    else
+                        throw new InvalidOperationException($"Main controller collision: {types[i].Type.Name}, {controllerTypes[mainControllerId].Name}");
                 }
-                previous = AddBeforeFirstActions(idC, methods[0]);
+
+                var methods = types[i].Type
+                    .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+                    .Select(m => new { Type = m, Id = GetActionId(m) })
+                    .OrderBy(m => m.Id)
+                    .ToArray();
+
+                if (methods.Length == 0)
+                    throw new InvalidOperationException($"No methods found in controller {types[i].Type.Name}");
+
+                AddBeforeFirstActions(idC, methods[0].Id);
+                previous = -1;
                 for (int j = 0; j < methods.Length; j++)
                 {
-                    var idM = GetActionId(methods[j]);
+                    var idM = methods[j].Id;
+
                     if (j > 0 && idM == previous)
-                    {
-                        throw new InvalidOperationException($"Action Id collision in {types[i].Name} controller: {methods[i].Name}, {methods[i - 1].Name}");
-                    }
+                        throw new InvalidOperationException(
+                            $"Action Id collision in {types[i].Type.Name} controller: {methods[i].Type.Name}, {methods[i - 1].Type.Name}");
+
                     for (int k = 0; k < idM - previous - 1; k++)
                     {
                         AddEmptyAction(idC);
                     }
-                    AddAction(types[i], methods[j], idC, idM);
+                    AddAction(types[i].Type, methods[j].Type, idC, idM);
+                    if (IsMenuAction(methods[j].Type))
+                    {
+                        if (types[i].Id != mainControllerId)
+                            throw new InvalidOperationException(
+                                $"Menu action {types[j].Type.Name} ({types[i].Type.Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
+                        if (menuActionId != -1)
+                            throw new InvalidOperationException(
+                                $"Menu action collision in {types[i].Type.Name} controller: {methods[i].Type.Name}, {methods[menuActionId].Type}");
+                        menuActionId = methods[j].Id;
+                    }
                     previous = idM;
                 }
                 previous = idC;
             }
+            if (mainControllerId == -1)
+                throw new InvalidOperationException("No main controller found in assembly");
+            if (menuActionId == -1)
+                throw new InvalidOperationException("No menu action found in assembly");
         }
 
-        private int AddBeforeFirstControllers(Type type)
+        private void AddBeforeFirstControllers(int id)
         {
-            var id = GetControllerId(type);
             for(int i = 0; i < id; i++)
             {
                 AddEmptyController();
             }
-            return id;
         }
 
         private void AddEmptyController()
@@ -180,14 +229,12 @@ namespace StorageBot.Host.Routing
             actionIds[type.Name].Add(method.Name, actionId);
         }
 
-        private int AddBeforeFirstActions(int controllerId, MethodInfo methodInfo)
+        private void AddBeforeFirstActions(int controllerId, int actionId)
         {
-            var actionId = GetActionId(methodInfo);
             for (int i = 0; i < actionId; i++)
             {
                 AddEmptyAction(controllerId);
             }
-            return actionId;
         }
     }
 }

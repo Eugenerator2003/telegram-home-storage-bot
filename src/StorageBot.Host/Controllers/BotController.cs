@@ -49,7 +49,7 @@ namespace StorageBot.Host.Controllers
         {
             var chatId = Context.Chat.Id;
             var menuMessageId = await MenuStore.GetMenuMessageId(chatId);
-            var menuControllerId = Navigation.GetMenuControllerId();
+            var menuControllerId = Navigation.GetMainControllerId();
             var menuActionId = Navigation.GetMenuActionId();
             var callback = CallbackDataEncoder.Encode(
                     new CallbackData(menuControllerId, menuActionId)

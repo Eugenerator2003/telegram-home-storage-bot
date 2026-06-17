@@ -14,7 +14,7 @@ namespace StorageBot.Host.Routing
 
         int GetActionId<T>(string actionName) where T : BotController;
 
-        int GetMenuControllerId();
+        int GetMainControllerId();
 
         int GetMenuActionId();
     }
