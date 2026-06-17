@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
-    public interface IControllerTypeProvider
+    public interface IHandlerInfoResolver
     {
-        ControllerTypeActionPair GetControllerWithAction(int controllerId, int actionId);
+        HandlerInfo GetHandlerInfo(int controllerId, int actionId);
     }
 }

@@ -16,13 +16,13 @@ namespace StorageBot.Host.Dispatchers
     {
         protected readonly static int MaxRedirects = 10;
 
-        protected IControllerTypeProvider ControllerProvider { get; }
+        protected IHandlerInfoResolver ControllerProvider { get; }
 
         protected IControllerFactory ControllerFactory { get; }
 
 
         public BotDispatcher(
-            IControllerTypeProvider controllerProvider, 
+            IHandlerInfoResolver controllerProvider, 
             IControllerFactory controllerFactory)
         {
             ControllerProvider = controllerProvider;
@@ -37,7 +37,7 @@ namespace StorageBot.Host.Dispatchers
             int counter = MaxRedirects;
             while (state != null && counter > 0)
             {
-                pair = ControllerProvider.GetControllerWithAction(state.ControllerId, state.ActionId);
+                pair = ControllerProvider.GetHandlerInfo(state.ControllerId, state.ActionId);
                 state = await InvokeWithContext(pair, context);
                 counter--;
             }
@@ -48,14 +48,14 @@ namespace StorageBot.Host.Dispatchers
             }
         }
 
-        protected async Task<RedirectState?> InvokeWithContext(ControllerTypeActionPair pair, BotContext context)
+        protected async Task<RedirectState?> InvokeWithContext(HandlerInfo pair, BotContext context)
         {
             var controller = ControllerFactory.GetController(pair.ControllerType);
             controller.SetContext(context);
             await (Task)pair.ActionInvoker.Invoke(controller)!;
             return controller.ConsumeRedirectState();
         }
-        protected abstract ControllerTypeActionPair GetControllerWithAction(Update update);
+        protected abstract HandlerInfo GetControllerWithAction(Update update);
 
         protected abstract BotContext GetContext(Update update);
     }
