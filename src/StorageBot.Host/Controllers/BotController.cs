@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Localization;
 using StorageBot.Application.UseCases;
 using StorageBot.Host.Routing;
+using StorageBot.Host.Utilities;
 using StorageBot.TelegramContracts.Context;
-using StorageBot.TelegramContracts.States;
+using StorageBot.TelegramContracts.States.Chat;
+using StorageBot.TelegramContracts.States.ControllerState;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +20,9 @@ namespace StorageBot.Host.Controllers
     {
         protected ITelegramBotClient BotClient => _dependencies.BotClient;
         protected IStringLocalizer Localizer => _dependencies.Localizer;
-        protected INavigationIdProvider Navigation => _dependencies.Navigation;
-        protected IMenuMessageProvider MenuProvider => _dependencies.MenuProvider;
-        protected IRedirectStateProvider RedirectProvider => _dependencies.RedirectProvider;
+        protected IIdNavigation Navigation => _dependencies.Navigation;
+        protected IMenuMessageStore MenuStore => _dependencies.MenuStore;
+        protected IRedirectBuffer RedirectBuffer => _dependencies.RedirectBuffer;
 
         protected BotContext Context { get; private set; } = null!;
 
@@ -40,7 +42,25 @@ namespace StorageBot.Host.Controllers
 
         public RedirectState? ConsumeRedirectState()
         {
-            return RedirectProvider.Consume();
+            return RedirectBuffer.Consume();
+        }
+
+        public async Task ShowErrorMessage(string errorText)
+        {
+            var chatId = Context.Chat.Id;
+            var menuMessageId = await MenuStore.GetMenuMessageId(chatId);
+            var menuControllerId = Navigation.GetMenuControllerId();
+            var menuActionId = Navigation.GetMenuActionId();
+            var callback = CallbackDataEncoder.Encode(
+                    new CallbackData(menuControllerId, menuActionId)
+                );
+            await BotClient.EditHtml(chatId, (int)menuMessageId, 
+                $"""
+                {Localizer["View.ShowError"]}: {errorText}
+                <keyboard>
+                    <button text="{Localizer["View.BackToMenu"]}" callback={callback}>
+                </keyboard>
+                """);
         }
     }
 }
