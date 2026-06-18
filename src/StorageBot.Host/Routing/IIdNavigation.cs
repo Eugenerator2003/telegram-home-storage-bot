@@ -17,5 +17,7 @@ namespace StorageBot.Host.Routing
         int GetMainControllerId();
 
         int GetMenuActionId();
+
+        int GetUnregisteredCommandActionId();
     }
 }

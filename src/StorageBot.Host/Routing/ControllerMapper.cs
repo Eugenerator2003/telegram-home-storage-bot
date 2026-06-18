@@ -36,6 +36,11 @@ namespace StorageBot.Host.Routing
             return methodInfo.GetCustomAttribute<MenuActionAttribute>() is not null;
         }
 
+        private static bool IsNoCommandAction(MethodInfo methodInfo)
+        {
+            return methodInfo.GetCustomAttribute<UnregisteredCommandActionAttribute>() is not null;
+        } 
+
         private List<Type> controllerTypes;
         private List<List<MethodInvoker>> actionInvokers;
 
@@ -44,6 +49,7 @@ namespace StorageBot.Host.Routing
 
         private int mainControllerId = -1;
         private int menuActionId = -1;
+        private int noCommandActionId = -1;
 
         public ControllerMapper(Assembly assembly)
         {
@@ -98,6 +104,11 @@ namespace StorageBot.Host.Routing
             return menuActionId;
         }
 
+        public int GetUnregisteredCommandActionId()
+        {
+            return noCommandActionId;
+        }
+
         public HandlerInfo GetHandlerInfo(int controllerId, int actionId)
         {
             if (controllerId < 0 || actionId < 0)
@@ -119,15 +130,15 @@ namespace StorageBot.Host.Routing
         private void Initialize(Assembly assembly)
         {
             var types = assembly.GetTypes()
-                                .Where(c => c.IsSubclassOf(typeof(BotController)))
+                                .Where(c => !c.IsAbstract && c.IsSubclassOf(typeof(BotController)))
                                 .Select(c => new { Type = c, Id = GetControllerId(c) })
                                 .OrderBy(c => c.Id)
                                 .ToArray();
 
             if (types.Length == 0)
-            {
                 throw new InvalidOperationException("No controllers found in assembly");
-            }
+
+            controllerTypes.Capacity = types[types.Length - 1].Id;
             AddBeforeFirstControllers(types[0].Id);
             int previous = -1;
             for (int i = 0; i < types.Length; i++)
@@ -142,14 +153,7 @@ namespace StorageBot.Host.Routing
                     AddEmptyController();
                 }
                 AddController(types[i].Type, idC);
-
-                if (IsMainController(types[i].Type))
-                {
-                    if (mainControllerId == -1)
-                        mainControllerId = types[i].Id;
-                    else
-                        throw new InvalidOperationException($"Main controller collision: {types[i].Type.Name}, {controllerTypes[mainControllerId].Name}");
-                }
+                AddIfMainController(types[i].Type, idC);
 
                 var methods = types[i].Type
                     .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
@@ -175,16 +179,8 @@ namespace StorageBot.Host.Routing
                         AddEmptyAction(idC);
                     }
                     AddAction(types[i].Type, methods[j].Type, idC, idM);
-                    if (IsMenuAction(methods[j].Type))
-                    {
-                        if (types[i].Id != mainControllerId)
-                            throw new InvalidOperationException(
-                                $"Menu action {types[j].Type.Name} ({types[i].Type.Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
-                        if (menuActionId != -1)
-                            throw new InvalidOperationException(
-                                $"Menu action collision in {types[i].Type.Name} controller: {methods[i].Type.Name}, {methods[menuActionId].Type}");
-                        menuActionId = methods[j].Id;
-                    }
+                    AddIfMenuAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
+                    AddIfNoCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     previous = idM;
                 }
                 previous = idC;
@@ -193,6 +189,47 @@ namespace StorageBot.Host.Routing
                 throw new InvalidOperationException("No main controller found in assembly");
             if (menuActionId == -1)
                 throw new InvalidOperationException("No menu action found in assembly");
+        }
+
+        private void AddIfMainController(Type type, int methodId)
+        {
+            if (IsMainController(type))
+            {
+                if (mainControllerId == -1)
+                    mainControllerId = methodId;
+                else
+                    throw new InvalidOperationException($"Main controller collision: {type.Name}, {controllerTypes[mainControllerId].Name}");
+            }
+        }
+
+        private void AddIfMenuAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        {
+            if (IsMenuAction(methodInfo))
+            {
+                if (controllerId != mainControllerId)
+                    throw new InvalidOperationException(
+                        $"Menu action {methodInfo.Name} ({controllerTypes[controllerId].Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
+                if (menuActionId != -1)
+                    throw new InvalidOperationException(
+                        $"Menu action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
+                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
+                menuActionId = methodId;
+            }
+        }
+
+        private void AddIfNoCommandAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        {
+            if (IsNoCommandAction(methodInfo))
+            {
+                if (controllerId != mainControllerId)
+                    throw new InvalidOperationException(
+                        $"No command action {methodInfo.Name} ({controllerTypes[controllerId].Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
+                if (noCommandActionId != -1)
+                    throw new InvalidOperationException(
+                        $"Menu action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
+                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
+                noCommandActionId = methodId;
+            }
         }
 
         private void AddBeforeFirstControllers(int id)
