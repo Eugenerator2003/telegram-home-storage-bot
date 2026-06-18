@@ -22,21 +22,25 @@ namespace StorageBot.Host.Utilities
 
         public static CallbackData Decode(string data)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(data);
-            if (strBytes.Length > 64 || strBytes.Length < 8)
+            return Decode(Encoding.UTF8.GetBytes(data));
+        }
+
+        public static CallbackData Decode(byte[] data)
+        {
+            if (data.Length > 64 || data.Length < 8)
             {
                 throw new ArgumentException("Bytes length of callback string must be from 8 to 64", nameof(data));
             }
-            if (strBytes.Length % 4 != 0)
+            if (data.Length % 4 != 0)
             {
                 throw new ArgumentException("Bytes length of callback string must be a multiple of 4", nameof(data));
             }
-            int controllerId = BitConverter.ToInt32(strBytes, 0);
-            int actionId = BitConverter.ToInt32(strBytes, 4);
-            int[] values = new int[strBytes.Length / 4 - 2];
-            for(int i = 0; i < values.Length; i++)
+            int controllerId = BitConverter.ToInt32(data, 0);
+            int actionId = BitConverter.ToInt32(data, 4);
+            int[] values = new int[data.Length / 4 - 2];
+            for (int i = 0; i < values.Length; i++)
             {
-                values[i] = BitConverter.ToInt32(strBytes, (i + 2) * 4);
+                values[i] = BitConverter.ToInt32(data, (i + 2) * 4);
             }
             return new CallbackData(controllerId, actionId, values);
         }
