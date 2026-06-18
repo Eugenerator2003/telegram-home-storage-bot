@@ -179,6 +179,9 @@ namespace StorageBot.Host.Routing
                 previous = -1;
                 for (int j = 0; j < methods.Length; j++)
                 {
+                    if (typeof(Task).IsAssignableFrom(methods[j].Type.ReturnType))
+                        throw new InvalidOperationException($"Controller action {methods[j].Type.Name} ({types[i].Type.Name}) must return a Task");
+
                     var idM = methods[j].Id;
 
                     if (j > 0 && idM == previous)
@@ -197,10 +200,7 @@ namespace StorageBot.Host.Routing
                 }
                 previous = idC;
             }
-            if (mainControllerId == -1)
-                throw new InvalidOperationException("No main controller found in assembly");
-            if (menuActionId == -1)
-                throw new InvalidOperationException("No menu action found in assembly");
+            ValidateRequiredActions();
         }
 
         private void AddIfMainController(Type type, int methodId)
@@ -257,6 +257,18 @@ namespace StorageBot.Host.Routing
                         $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
                 unknownCallbackQueryActionId = methodId;
             }
+        }
+
+        private void ValidateRequiredActions()
+        {
+            if (mainControllerId == -1)
+                throw new InvalidOperationException("No main controller found in assembly");
+            if (menuActionId == -1)
+                throw new InvalidOperationException("No menu action found in assembly");
+            if (unregisteredCommandActionId == -1)
+                throw new InvalidOperationException("No unregistered command action found in assembly");
+            if (unknownCallbackQueryActionId == -1)
+                throw new InvalidOperationException("No unknown callback query action found in assembly");
         }
 
         private void AddBeforeFirstControllers(int id)
