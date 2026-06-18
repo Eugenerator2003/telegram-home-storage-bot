@@ -39,7 +39,12 @@ namespace StorageBot.Host.Routing
         private static bool IsNoCommandAction(MethodInfo methodInfo)
         {
             return methodInfo.GetCustomAttribute<UnregisteredCommandActionAttribute>() is not null;
-        } 
+        }
+        
+        private static bool IsUnknownCallbackQueryAction(MethodInfo methodInfo)
+        {
+            return methodInfo.GetCustomAttribute<UnknownCallbackQueryActionAttribute>() is not null;
+        }
 
         private List<Type> controllerTypes;
         private List<List<MethodInvoker>> actionInvokers;
@@ -49,7 +54,8 @@ namespace StorageBot.Host.Routing
 
         private int mainControllerId = -1;
         private int menuActionId = -1;
-        private int noCommandActionId = -1;
+        private int unregisteredCommandActionId = -1;
+        private int unknownCallbackQueryActionId = -1;
 
         public ControllerMapper(Assembly assembly)
         {
@@ -106,7 +112,12 @@ namespace StorageBot.Host.Routing
 
         public int GetUnregisteredCommandActionId()
         {
-            return noCommandActionId;
+            return unregisteredCommandActionId;
+        }
+
+        public int GetUnknownCallbackQueryActionId()
+        {
+            return unknownCallbackQueryActionId;
         }
 
         public HandlerInfo GetHandlerInfo(int controllerId, int actionId)
@@ -180,7 +191,8 @@ namespace StorageBot.Host.Routing
                     }
                     AddAction(types[i].Type, methods[j].Type, idC, idM);
                     AddIfMenuAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
-                    AddIfNoCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
+                    AddIfUnregisteredCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
+                    AddIfUnknownCallbackQueryAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     previous = idM;
                 }
                 previous = idC;
@@ -217,18 +229,33 @@ namespace StorageBot.Host.Routing
             }
         }
 
-        private void AddIfNoCommandAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        private void AddIfUnregisteredCommandAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
         {
             if (IsNoCommandAction(methodInfo))
             {
                 if (controllerId != mainControllerId)
                     throw new InvalidOperationException(
                         $"No command action {methodInfo.Name} ({controllerTypes[controllerId].Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
-                if (noCommandActionId != -1)
+                if (unregisteredCommandActionId != -1)
                     throw new InvalidOperationException(
-                        $"Menu action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
+                        $"Unregistered command action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
                         $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
-                noCommandActionId = methodId;
+                unregisteredCommandActionId = methodId;
+            }
+        }
+
+        private void AddIfUnknownCallbackQueryAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        {
+            if (IsUnknownCallbackQueryAction(methodInfo))
+            {
+                if (controllerId != mainControllerId)
+                    throw new InvalidOperationException(
+                        $"Unknown callback query action {methodInfo.Name} ({controllerTypes[controllerId].Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
+                if (unknownCallbackQueryActionId != -1)
+                    throw new InvalidOperationException(
+                        $"Unknown callback query action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
+                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
+                unknownCallbackQueryActionId = methodId;
             }
         }
 
