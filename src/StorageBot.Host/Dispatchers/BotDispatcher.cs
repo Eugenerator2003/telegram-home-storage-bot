@@ -32,7 +32,7 @@ namespace StorageBot.Host.Dispatchers
         public async Task DispatchUpdate(Update update)
         {
             var context = GetContext(update);
-            var pair = GetHandlerInfo(update);
+            var pair = GetHandlerInfo(context);
             var state = await InvokeWithContext(pair, context);
             int counter = MaxRedirects;
             while (state != null && counter > 0)
@@ -55,7 +55,7 @@ namespace StorageBot.Host.Dispatchers
             await (Task)pair.ActionInvoker.Invoke(controller)!;
             return controller.ConsumeRedirectState();
         }
-        protected abstract HandlerInfo GetHandlerInfo(Update update);
+        protected abstract HandlerInfo GetHandlerInfo(BotContext context);
 
         protected abstract BotContext GetContext(Update update);
     }
