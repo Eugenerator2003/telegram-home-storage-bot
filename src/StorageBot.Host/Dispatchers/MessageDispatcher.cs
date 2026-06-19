@@ -50,7 +50,7 @@ namespace StorageBot.Host.Dispatchers
             if (inputState != null)
             {
                 inputStateStore.ClearState(context.Chat.Id);
-                return HandlerInfoResolver.GetHandlerInfo(inputState.ControllerId, inputState.ControllerId);
+                return HandlerInfoResolver.GetHandlerInfo(inputState.ControllerId, inputState.MethodId);
             }
             if (commandHandlers.TryGetValue(((MessageBotContext)context).Text, out var handlerInfo)) {
                 return handlerInfo;   
