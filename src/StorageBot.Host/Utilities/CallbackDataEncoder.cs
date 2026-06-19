@@ -10,7 +10,7 @@ namespace StorageBot.Host.Utilities
     {
         public static string Encode(CallbackData data)
         {
-            byte[] strBytes = new byte[48];
+            byte[] strBytes = new byte[(2 + data.Values.Length) * 4];
             Array.Copy(BitConverter.GetBytes(data.ControllerId), strBytes, 4);
             Array.Copy(BitConverter.GetBytes(data.ActionId), 0, strBytes, 4, 4);
             for (int i = 0; i < data.Values.Length; i++)
