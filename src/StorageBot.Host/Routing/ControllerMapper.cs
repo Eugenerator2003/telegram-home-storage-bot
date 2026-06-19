@@ -187,7 +187,7 @@ namespace StorageBot.Host.Routing
 
                     if (j > 0 && idM == previous)
                         throw new InvalidOperationException(
-                            $"Action Id collision in {types[i].Type.Name} controller: {methods[i].Type.Name}, {methods[i - 1].Type.Name}");
+                            $"Action Id collision in {types[i].Type.Name} controller: {methods[j].Type.Name}, {methods[j - 1].Type.Name}");
 
                     for (int k = 0; k < idM - previous - 1; k++)
                     {
