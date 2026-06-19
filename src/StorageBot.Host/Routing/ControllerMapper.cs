@@ -15,14 +15,14 @@ namespace StorageBot.Host.Routing
         private static int GetControllerId(Type controllerType)
         {
             var attribute = controllerType.GetCustomAttribute<ControllerIdAttribute>()
-                                ?? throw new InvalidOperationException("Controller must have an id attribute");
+                                ?? throw new InvalidOperationException($"Controller {controllerType.Name} must have an id attribute");
             return attribute.Id;
         }
 
         private static int GetActionId(MethodInfo methodInfo)
         {
-            var attribute = methodInfo.GetCustomAttribute<ControllerIdAttribute>()
-                                ?? throw new InvalidOperationException("Action method must have an id attribute");
+            var attribute = methodInfo.GetCustomAttribute<ActionIdAttribute>()
+                                ?? throw new InvalidOperationException($"Action method {methodInfo.Name} from {methodInfo.DeclaringType!.Name} must have an id attribute");
             return attribute.Id;
         }
 
@@ -145,13 +145,14 @@ namespace StorageBot.Host.Routing
                                 .Select(c => new { Type = c, Id = GetControllerId(c) })
                                 .OrderBy(c => c.Id)
                                 .ToArray();
+            var taskType = typeof(Task);
 
             if (types.Length == 0)
                 throw new InvalidOperationException("No controllers found in assembly");
 
-            controllerTypes.Capacity = types[types.Length - 1].Id;
+            controllerTypes.Capacity = types[types.Length - 1].Id + 1;
             AddBeforeFirstControllers(types[0].Id);
-            int previous = -1;
+            int previous = 0;
             for (int i = 0; i < types.Length; i++)
             {
                 var idC = types[i].Id;
@@ -176,10 +177,10 @@ namespace StorageBot.Host.Routing
                     throw new InvalidOperationException($"No methods found in controller {types[i].Type.Name}");
 
                 AddBeforeFirstActions(idC, methods[0].Id);
-                previous = -1;
+                previous = 0;
                 for (int j = 0; j < methods.Length; j++)
                 {
-                    if (typeof(Task).IsAssignableFrom(methods[j].Type.ReturnType))
+                    if (methods[j].Type.ReturnType.IsInstanceOfType(taskType))
                         throw new InvalidOperationException($"Controller action {methods[j].Type.Name} ({types[i].Type.Name}) must return a Task");
 
                     var idM = methods[j].Id;
