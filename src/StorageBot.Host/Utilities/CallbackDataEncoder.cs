@@ -10,26 +10,26 @@ namespace StorageBot.Host.Utilities
     {
         public static string Encode(CallbackData data)
         {
-            byte[] strBytes = new byte[64];
+            byte[] strBytes = new byte[48];
             Array.Copy(BitConverter.GetBytes(data.ControllerId), strBytes, 4);
             Array.Copy(BitConverter.GetBytes(data.ActionId), 0, strBytes, 4, 4);
-            for(int i = 0; i < data.Values.Length; i++)
+            for (int i = 0; i < data.Values.Length; i++)
             {
                 Array.Copy(BitConverter.GetBytes(data.Values[i]), 0, strBytes, (2 + i) * 4, 4);
             }
-            return Encoding.UTF8.GetString(strBytes);
+            return Convert.ToBase64String(strBytes);
         }
 
         public static CallbackData Decode(string data)
         {
-            return Decode(Encoding.UTF8.GetBytes(data));
+            return DecodeFromRawBytes(Convert.FromBase64String(data));
         }
 
-        public static CallbackData Decode(byte[] data)
+        private static CallbackData DecodeFromRawBytes(byte[] data)
         {
             if (data.Length > 64 || data.Length < 8)
             {
-                throw new ArgumentException("Bytes length of callback string must be from 8 to 64", nameof(data));
+                throw new ArgumentException("Bytes length of callback string must be from 8 to 48", nameof(data));
             }
             if (data.Length % 4 != 0)
             {

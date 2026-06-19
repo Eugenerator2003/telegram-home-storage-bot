@@ -12,12 +12,12 @@ namespace StorageBot.TelegramContracts.Context
     {
         public string QueryId { get; }
 
-        public byte[] Data { get; }
+        public string Data { get; }
 
         public CallbackQueryBotContext(Update update) 
             : base(update)
         {
-            Data = Encoding.UTF8.GetBytes(update.CallbackQuery!.Data!);
+            Data = update.CallbackQuery!.Data ?? string.Empty;
             QueryId = update.CallbackQuery.Id;
         }
 

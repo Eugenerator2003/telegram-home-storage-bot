@@ -26,8 +26,8 @@ namespace StorageBot.Host.Utilities
                 throw new ArgumentException("Controller id must be non-negative", nameof(controllerId));
             if (actionId < 0)
                 throw new ArgumentException("Action id must be non-negative", nameof(actionId));
-            if (valuesCount < 0 || valuesCount > 14)
-                throw new ArgumentOutOfRangeException("Values count must be from 0 to 6");
+            if (valuesCount < 0 || valuesCount > 10)
+                throw new ArgumentOutOfRangeException("Values count must be from 0 to 10");
             ControllerId = controllerId;
             ActionId = actionId;
             Values = new int[valuesCount];
