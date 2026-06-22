@@ -15,14 +15,18 @@ namespace StorageBot.Host.Routing
         private static int GetControllerId(Type controllerType)
         {
             var attribute = controllerType.GetCustomAttribute<ControllerIdAttribute>()
-                                ?? throw new InvalidOperationException($"Controller {controllerType.Name} must have an id attribute");
+                ?? throw new InvalidOperationException($"Controller {controllerType.Name} must have an id attribute");
+            if (attribute.Id < 0)
+                throw new InvalidOperationException($"Controller id ({controllerType.Name}) must be non-negative");
             return attribute.Id;
         }
 
         private static int GetActionId(MethodInfo methodInfo)
         {
             var attribute = methodInfo.GetCustomAttribute<ActionIdAttribute>()
-                                ?? throw new InvalidOperationException($"Action method {methodInfo.Name} from {methodInfo.DeclaringType!.Name} must have an id attribute");
+                ?? throw new InvalidOperationException($"Action method {methodInfo.Name} from {methodInfo.DeclaringType!.Name} must have an id attribute");
+            if (attribute.Id < 0)
+                throw new InvalidOperationException($"Action id ({methodInfo.Name} from {methodInfo.DeclaringType!.Name}) must be non-negative");
             return attribute.Id;
         }
 
