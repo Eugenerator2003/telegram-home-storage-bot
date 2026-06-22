@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class MenuActionAttribute : Attribute
     {
     }
