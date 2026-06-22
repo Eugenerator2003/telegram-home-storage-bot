@@ -13,8 +13,6 @@ namespace StorageBot.Host.Routing.Attributes
 
         public ControllerIdAttribute(int id)
         {
-            if (id < 0)
-                throw new ArgumentException("Id must be non-negative");
             Id = id;
         }
     }
