@@ -109,6 +109,11 @@ namespace StorageBot.Host.Routing
             }
         }
 
+        public int GetControllerId<T>() where T : BotController
+        {
+            return GetControllerId(nameof(T));
+        }
+
         public int GetControllerId(string controllerName)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(controllerName);

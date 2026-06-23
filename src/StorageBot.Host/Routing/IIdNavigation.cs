@@ -12,6 +12,8 @@ namespace StorageBot.Host.Routing
     {
         int GetControllerId(string controllerName);
 
+        int GetControllerId<T>() where T : BotController;
+
         int GetActionId<T>(string actionName) where T : BotController;
 
         int GetMainControllerId();
