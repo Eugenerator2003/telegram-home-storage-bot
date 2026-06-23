@@ -39,9 +39,11 @@ namespace StorageBot.Host.Routing
             if (attribute is not null)
             {
                 if (string.IsNullOrWhiteSpace(attribute.Name) || attribute.Name.Length > 32)
-                    throw new InvalidOperationException($"Command name length must be between 1 and 32 characters ({methodInfo.Name} from {methodInfo.DeclaringType!.Name})");
-                if (CommandRegex.IsMatch(attribute.Name))
-                    throw new InvalidOperationException($"Command name must contains only latin letters, numbers and underscores");
+                    throw new InvalidOperationException(
+                        $"Command name length must be between 1 and 32 characters ({methodInfo.Name} from {methodInfo.DeclaringType!.Name})");
+                if (!CommandRegex.IsMatch(attribute.Name))
+                    throw new InvalidOperationException(
+                        $"Command name must contains only latin letters, numbers and underscores ({methodInfo.Name} from {methodInfo.DeclaringType!.Name})");
             }
             return attribute?.Name;
         }
@@ -167,6 +169,10 @@ namespace StorageBot.Host.Routing
 
         public HandlerInfo? GetHandlerInfoByCommand(string command)
         {
+            if (command.StartsWith('/'))
+            {
+                command = command.Remove(0, 1);
+            }
             if (commandIds.TryGetValue(command, out var id))
             {
                 return new HandlerInfo(controllerTypes[id.Item1], actionInvokers[id.Item1][id.Item2]); 
