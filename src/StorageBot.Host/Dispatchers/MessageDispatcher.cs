@@ -14,7 +14,6 @@ namespace StorageBot.Host.Dispatchers
     public class MessageDispatcher : BotDispatcher
     {
         private readonly IUserInputStateStore inputStateStore;
-        private readonly Dictionary<string, HandlerInfo> commandHandlers;
         private readonly IIdNavigation navigation;
 
         public MessageDispatcher(IHandlerInfoResolver handlerInfoResolver, IControllerFactory controllerFactory, 
@@ -23,20 +22,6 @@ namespace StorageBot.Host.Dispatchers
         {
             inputStateStore = userInputStateStore;
             this.navigation = navigation;
-            commandHandlers = new Dictionary<string, HandlerInfo>();
-        }
-
-        public void RegisterCommandHandler(string command, HandlerInfo handlerInfo)
-        {
-            if (string.IsNullOrEmpty(command) || !command.StartsWith('/'))
-            {
-                throw new ArgumentException($"Command {command} must start with '/'", nameof(command));
-            }
-            if (commandHandlers.TryGetValue(command, out var _))
-            {
-                throw new InvalidOperationException($"Handler for command {command} is already registered");
-            }
-            commandHandlers[command] = handlerInfo;
         }
 
         protected override BotContext GetContext(Update update)
@@ -52,10 +37,9 @@ namespace StorageBot.Host.Dispatchers
                 inputStateStore.ClearState(context.Chat.Id);
                 return HandlerInfoResolver.GetHandlerInfo(inputState.ControllerId, inputState.MethodId);
             }
-            if (commandHandlers.TryGetValue(((MessageBotContext)context).Text, out var handlerInfo)) {
-                return handlerInfo;   
-            }
-            return HandlerInfoResolver.GetHandlerInfo(navigation.GetMainControllerId(), navigation.GetUnregisteredCommandActionId());
+            var handlerInfo = HandlerInfoResolver.GetHandlerInfoByCommand(((MessageBotContext)context).Text) 
+                ?? HandlerInfoResolver.GetHandlerInfo(navigation.GetMainControllerId(), navigation.GetUnregisteredCommandActionId());
+            return handlerInfo;
         }
     }
 }
