@@ -6,12 +6,15 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
     public class ControllerMapper : IHandlerInfoResolver, IIdNavigation
     {
+        private readonly static Regex CommandRegex = new Regex(@"^[A-Za-z0-9_]+");
+
         private static int GetControllerId(Type controllerType)
         {
             var attribute = controllerType.GetCustomAttribute<ControllerIdAttribute>()
@@ -28,6 +31,19 @@ namespace StorageBot.Host.Routing
             if (attribute.Id < 0)
                 throw new InvalidOperationException($"Action id ({methodInfo.Name} from {methodInfo.DeclaringType!.Name}) must be non-negative");
             return attribute.Id;
+        }
+
+        private static string? GetCommandName(MethodInfo methodInfo)
+        {
+            var attribute = methodInfo.GetCustomAttribute<CommandAttribute>();
+            if (attribute is not null)
+            {
+                if (string.IsNullOrWhiteSpace(attribute.Name) || attribute.Name.Length > 32)
+                    throw new InvalidOperationException($"Command name length must be between 1 and 32 characters ({methodInfo.Name} from {methodInfo.DeclaringType!.Name})");
+                if (CommandRegex.IsMatch(attribute.Name))
+                    throw new InvalidOperationException($"Command name must contains only latin letters, numbers and underscores");
+            }
+            return attribute?.Name;
         }
 
         private static bool IsMainController(Type controllerType)
@@ -50,11 +66,12 @@ namespace StorageBot.Host.Routing
             return methodInfo.GetCustomAttribute<UnknownCallbackQueryActionAttribute>() is not null;
         }
 
-        private List<Type> controllerTypes;
-        private List<List<MethodInvoker>> actionInvokers;
+        private readonly List<Type> controllerTypes;
+        private readonly List<List<MethodInvoker>> actionInvokers;
 
-        private Dictionary<string, int> controllerIds;
-        private Dictionary<string, Dictionary<string, int>> actionIds;
+        private readonly Dictionary<string, int> controllerIds;
+        private readonly Dictionary<string, Dictionary<string, int>> actionIds;
+        private readonly Dictionary<string, (int, int)> commandIds;
 
         private int mainControllerId = -1;
         private int menuActionId = -1;
@@ -68,6 +85,7 @@ namespace StorageBot.Host.Routing
             actionInvokers = new List<List<MethodInvoker>>();
             controllerIds = new Dictionary<string, int>();
             actionIds = new Dictionary<string, Dictionary<string, int>>();
+            commandIds = new Dictionary<string, (int, int)>();
             Initialize(assembly);
         }
 
@@ -142,6 +160,15 @@ namespace StorageBot.Host.Routing
             return new HandlerInfo(controllerType, action);
         }
 
+        public HandlerInfo? GetHandlerInfoByCommand(string command)
+        {
+            if (commandIds.TryGetValue(command, out var id))
+            {
+                return new HandlerInfo(controllerTypes[id.Item1], actionInvokers[id.Item1][id.Item2]); 
+            }
+            return null;
+        }
+
         private void Initialize(Assembly assembly)
         {
             var types = assembly.GetTypes()
@@ -201,6 +228,7 @@ namespace StorageBot.Host.Routing
                     AddIfMenuAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     AddIfUnregisteredCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     AddIfUnknownCallbackQueryAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
+                    AddIfCommandAction(methods[j].Type, methods[j].Id, types[i].Id);
                     previous = idM;
                 }
                 previous = idC;
@@ -261,6 +289,21 @@ namespace StorageBot.Host.Routing
                         $"Unknown callback query action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
                         $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
                 unknownCallbackQueryActionId = methodId;
+            }
+        }
+
+        private void AddIfCommandAction(MethodInfo methodInfo, int methodId, int controllerId)
+        {
+            var command = GetCommandName(methodInfo);
+            if (command is not null)
+            {
+                if (!commandIds.TryAdd(command, (controllerId, methodId)))
+                {
+                    var existCommandId = commandIds[command];
+                    throw new InvalidOperationException(
+                        $"Command collision for actions {methodInfo.Name} ({methodInfo.DeclaringType!.Name}) and " +
+                        $"{controllerTypes[existCommandId.Item1].GetMethods().First(m => GetActionId(methodInfo) == existCommandId.Item2)} ({controllerTypes[existCommandId.Item1]})");
+                }
             }
         }
 

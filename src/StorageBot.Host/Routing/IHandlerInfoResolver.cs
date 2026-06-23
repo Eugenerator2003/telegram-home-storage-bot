@@ -10,5 +10,7 @@ namespace StorageBot.Host.Routing
     public interface IHandlerInfoResolver
     {
         HandlerInfo GetHandlerInfo(int controllerId, int actionId);
+
+        HandlerInfo? GetHandlerInfoByCommand(string command);
     }
 }
