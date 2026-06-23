@@ -14,10 +14,13 @@ namespace StorageBot.TelegramContracts.Context
 
         public UpdateType UpdateType { get; }
 
+        protected Update Update { get; }
+
         public BotContext(Update update)
         {
             ArgumentNullException.ThrowIfNull(update);
             VerifyUpdate(update);
+            Update = update;
             UpdateType = update.Type;
             Chat = GetChatFromUpdate(update);
         }
