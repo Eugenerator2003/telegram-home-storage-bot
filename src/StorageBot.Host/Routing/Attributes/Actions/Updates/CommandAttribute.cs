@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace StorageBot.Host.Routing.Attributes
+namespace StorageBot.Host.Routing.Attributes.Actions.Updates
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandAttribute : Attribute

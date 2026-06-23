@@ -1,5 +1,7 @@
 ﻿using StorageBot.Host.Controllers;
-using StorageBot.Host.Routing.Attributes;
+using StorageBot.Host.Routing.Attributes.Actions.Base;
+using StorageBot.Host.Routing.Attributes.Actions.Updates;
+using StorageBot.Host.Routing.Attributes.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

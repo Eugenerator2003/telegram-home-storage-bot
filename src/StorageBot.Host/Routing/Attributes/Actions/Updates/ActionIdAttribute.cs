@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Host.Routing.Attributes
+namespace StorageBot.Host.Routing.Attributes.Actions.Updates
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ControllerIdAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method)]
+    public class ActionIdAttribute : Attribute
     {
         public int Id { get; }
 
-        public ControllerIdAttribute(int id)
+        public ActionIdAttribute(int id)
         {
             Id = id;
         }
