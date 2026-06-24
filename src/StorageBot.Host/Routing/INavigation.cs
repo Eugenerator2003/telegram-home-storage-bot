@@ -11,13 +11,5 @@ namespace StorageBot.Host.Routing
     public interface INavigation
     {
         NavigationInfo GetAction<T>(string actionName) where T : BotController;
-
-        NavigationInfo GetMenuAction();
-
-        NavigationInfo GetUnregisteredCommandAction();
-
-        NavigationInfo GetUnknownCallbackQueryAction();
-
-        NavigationInfo GetUnexpectedMessageAction();
     }
 }
