@@ -10,12 +10,12 @@ namespace StorageBot.TelegramContracts.Context
 {
     public class MessageBotContext : BotContext
     {
-        public string Text { get; }
+        public Message Message { get; }
 
         public MessageBotContext(Update update) 
             : base(update)
         {
-            Text = update.Message!.Text ?? string.Empty;
+            Message = update.Message!;
         }
 
         protected override Chat GetChatFromUpdate(Update update)
