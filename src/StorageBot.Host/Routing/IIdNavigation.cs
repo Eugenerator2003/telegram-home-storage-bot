@@ -23,5 +23,7 @@ namespace StorageBot.Host.Routing
         int GetUnregisteredCommandActionId();
 
         int GetUnknownCallbackQueryActionId();
+
+        int GetUnexpectedMessageActionId();
     }
 }

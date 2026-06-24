@@ -70,6 +70,11 @@ namespace StorageBot.Host.Routing
             return methodInfo.GetCustomAttribute<UnknownCallbackQueryActionAttribute>() is not null;
         }
 
+        private static bool IsUnexpectedMessageAction(MethodInfo methodInfo)
+        {
+            return methodInfo.GetCustomAttribute<UnexpectedMessageActionAttribute>() is not null;
+        }
+
         private Type[] controllerTypes;
         private MethodInvoker[][] actionInvokers;
 
@@ -81,6 +86,7 @@ namespace StorageBot.Host.Routing
         private int menuActionId = -1;
         private int unregisteredCommandActionId = -1;
         private int unknownCallbackQueryActionId = -1;
+        private int unexpectedMessageActionId = -1;
 
         public ControllerMapper(Assembly assembly)
         {
@@ -131,25 +137,15 @@ namespace StorageBot.Host.Routing
             }
         }
 
-        public int GetMainControllerId()
-        {
-            return mainControllerId;
-        }
+        public int GetMainControllerId() => mainControllerId;
 
-        public int GetMenuActionId()
-        {
-            return menuActionId;
-        }
+        public int GetMenuActionId() => menuActionId;
 
-        public int GetUnregisteredCommandActionId()
-        {
-            return unregisteredCommandActionId;
-        }
+        public int GetUnregisteredCommandActionId() => unregisteredCommandActionId;
 
-        public int GetUnknownCallbackQueryActionId()
-        {
-            return unknownCallbackQueryActionId;
-        }
+        public int GetUnknownCallbackQueryActionId() => unknownCallbackQueryActionId;
+
+        public int GetUnexpectedMessageActionId() => unexpectedMessageActionId;
 
         public HandlerInfo GetHandlerInfo(int controllerId, int actionId)
         {
@@ -234,6 +230,7 @@ namespace StorageBot.Host.Routing
                     AddIfMenuAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     AddIfUnregisteredCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     AddIfUnknownCallbackQueryAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
+                    AddIfUnexpectedMessageAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     AddIfCommandAction(methods[j].Type, methods[j].Id, types[i].Id);
                     previous = idM;
                 }
@@ -313,6 +310,21 @@ namespace StorageBot.Host.Routing
             }
         }
 
+        private void AddIfUnexpectedMessageAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        {
+            if (IsUnexpectedMessageAction(methodInfo))
+            {
+                if (controllerId != mainControllerId)
+                    throw new InvalidOperationException(
+                        $"Unepxected message action {methodInfo.Name} ({controllerTypes[controllerId].Name}) does not belong to main controller {controllerTypes[mainControllerId].Name}");
+                if (unknownCallbackQueryActionId != -1)
+                    throw new InvalidOperationException(
+                        $"Unepxected message action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
+                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuActionId)!.Name}");
+                unexpectedMessageActionId = methodId;
+            }
+        }
+
         private void ValidateRequiredActions()
         {
             if (mainControllerId == -1)
@@ -323,6 +335,8 @@ namespace StorageBot.Host.Routing
                 throw new InvalidOperationException("No unregistered command action found in assembly");
             if (unknownCallbackQueryActionId == -1)
                 throw new InvalidOperationException("No unknown callback query action found in assembly");
+            if (unexpectedMessageActionId == -1)
+                throw new InvalidOperationException("No unexpected message action found in assembly");
         }
 
         private void AddController(Type type, int controllerId)
