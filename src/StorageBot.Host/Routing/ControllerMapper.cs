@@ -70,8 +70,8 @@ namespace StorageBot.Host.Routing
             return methodInfo.GetCustomAttribute<UnknownCallbackQueryActionAttribute>() is not null;
         }
 
-        private readonly List<Type> controllerTypes;
-        private readonly List<List<MethodInvoker>> actionInvokers;
+        private Type[] controllerTypes;
+        private MethodInvoker[][] actionInvokers;
 
         private readonly Dictionary<string, int> controllerIds;
         private readonly Dictionary<string, Dictionary<string, int>> actionIds;
@@ -85,8 +85,8 @@ namespace StorageBot.Host.Routing
         public ControllerMapper(Assembly assembly)
         {
             ArgumentNullException.ThrowIfNull(assembly);
-            controllerTypes = new List<Type>();
-            actionInvokers = new List<List<MethodInvoker>>();
+            controllerTypes = Array.Empty<Type>();
+            actionInvokers = Array.Empty<MethodInvoker[]>();
             controllerIds = new Dictionary<string, int>();
             actionIds = new Dictionary<string, Dictionary<string, int>>();
             commandIds = new Dictionary<string, (int, int)>();
@@ -157,8 +157,8 @@ namespace StorageBot.Host.Routing
             {
                 throw new ArgumentException("Controller and action IDs must be non-negative");
             }
-            if (controllerId > controllerTypes.Count || 
-                actionId > actionInvokers[controllerId].Count)
+            if (controllerId > controllerTypes.Length || 
+                actionId > actionInvokers[controllerId].Length)
             {
                 throw new ArgumentException("Controller or action ID is greater than allowed");
             }
@@ -194,8 +194,9 @@ namespace StorageBot.Host.Routing
             if (types.Length == 0)
                 throw new InvalidOperationException("No controllers found in assembly");
 
-            controllerTypes.Capacity = types[types.Length - 1].Id + 1;
-            AddBeforeFirstControllers(types[0].Id);
+            int typeCount = types[^1].Id + 1;
+            controllerTypes = new Type[typeCount];
+            actionInvokers = new MethodInvoker[typeCount][];
             int previous = 0;
             for (int i = 0; i < types.Length; i++)
             {
@@ -204,10 +205,6 @@ namespace StorageBot.Host.Routing
                 if (i > 0 && idC == previous)
                     throw new InvalidOperationException($"Controller Id collision: {types[i].Type.Name}, {types[i - 1].Type.Name}");
 
-                for (int j = 0; j < idC - previous - 1; j++)
-                {
-                    AddEmptyController();
-                }
                 AddController(types[i].Type, idC);
                 AddIfMainController(types[i].Type, idC);
 
@@ -220,12 +217,12 @@ namespace StorageBot.Host.Routing
                 if (methods.Length == 0)
                     throw new InvalidOperationException($"No methods found in controller {types[i].Type.Name}");
 
-                AddBeforeFirstActions(idC, methods[0].Id);
                 previous = 0;
+                actionInvokers[idC] = new MethodInvoker[methods.Length + 1];
                 for (int j = 0; j < methods.Length; j++)
                 {
                     if (methods[j].Type.ReturnType.IsInstanceOfType(taskType))
-                        throw new InvalidOperationException($"Controller action {methods[j].Type.Name} ({types[i].Type.Name}) must return a Task");
+                        throw new InvalidOperationException($"Controller action {methods[j].Type.Name} ({types[i].Type.Name}) must return be async");
 
                     var idM = methods[j].Id;
 
@@ -233,10 +230,6 @@ namespace StorageBot.Host.Routing
                         throw new InvalidOperationException(
                             $"Action Id collision in {types[i].Type.Name} controller: {methods[j].Type.Name}, {methods[j - 1].Type.Name}");
 
-                    for (int k = 0; k < idM - previous - 1; k++)
-                    {
-                        AddEmptyAction(idC);
-                    }
                     AddAction(types[i].Type, methods[j].Type, idC, idM);
                     AddIfMenuAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
                     AddIfUnregisteredCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
@@ -332,46 +325,18 @@ namespace StorageBot.Host.Routing
                 throw new InvalidOperationException("No unknown callback query action found in assembly");
         }
 
-        private void AddBeforeFirstControllers(int id)
-        {
-            for(int i = 0; i < id; i++)
-            {
-                AddEmptyController();
-            }
-        }
-
-        private void AddEmptyController()
-        {
-            controllerTypes.Add(null!);
-            actionInvokers.Add(null!);
-        }
-
         private void AddController(Type type, int controllerId)
         {
-            controllerTypes.Add(type);
-            actionInvokers.Add(new List<MethodInvoker>());
+            controllerTypes[controllerId] = type;
             controllerIds.Add(type.Name, controllerId);
             actionIds.Add(type.Name, new Dictionary<string, int>());
-        }
-
-        private void AddEmptyAction(int controllerId)
-        {
-            actionInvokers[controllerId].Add(null!);
         }
 
         private void AddAction(Type type, MethodInfo method, int controllerId, int actionId)
         {
             var actionInvoker = MethodInvoker.Create(method);
-            actionInvokers[controllerId].Add(actionInvoker);
+            actionInvokers[controllerId][actionId] = actionInvoker;
             actionIds[type.Name].Add(method.Name, actionId);
-        }
-
-        private void AddBeforeFirstActions(int controllerId, int actionId)
-        {
-            for (int i = 0; i < actionId; i++)
-            {
-                AddEmptyAction(controllerId);
-            }
         }
     }
 }
