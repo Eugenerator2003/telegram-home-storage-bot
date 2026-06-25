@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Host.Routing.Attributes.Actions.Base
+namespace StorageBot.Host.Routing.Attributes.Actions.Required
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class UnregisteredCommandActionAttribute : Attribute
+    public abstract class RequiredActionAttribute : Attribute
     {
     }
 }
