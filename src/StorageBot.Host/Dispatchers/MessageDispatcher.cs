@@ -40,7 +40,7 @@ namespace StorageBot.Host.Dispatchers
             }
             HandlerInfo? handlerInfo = null!;
             var text = ((MessageBotContext)context).Message.Text;
-            if (text is not null)
+            if (text is not null && text.StartsWith('/'))
             {
                 text = text.Split(' ')[0];
                 handlerInfo = HandlerInfoResolver.GetHandlerInfoByCommand(text);
@@ -50,7 +50,7 @@ namespace StorageBot.Host.Dispatchers
                     handlerInfo = HandlerInfoResolver.GetHandlerInfo(navigationInfo.ControllerId, navigationInfo.ActionId);
                 }
             }
-            else
+            if (handlerInfo is null)
             {
                 var navigationInfo = navigation.GetRequiredAction<UnexpectedMessageActionAttribute>();
                 handlerInfo = HandlerInfoResolver.GetHandlerInfo(navigationInfo.ControllerId, navigationInfo.ActionId);
