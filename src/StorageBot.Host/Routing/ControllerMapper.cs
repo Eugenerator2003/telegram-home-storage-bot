@@ -74,11 +74,12 @@ namespace StorageBot.Host.Routing
         public NavigationInfo GetAction<T>(string actionName) where T : BotController
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(actionName);
-            if (actionIds.TryGetValue(typeof(T).Name, out var methods))
+            var type = typeof(T);
+            if (actionIds.TryGetValue(type.Name, out var methods))
             {
                 if (methods.TryGetValue(actionName, out int id))
                 {
-                    return new NavigationInfo(controllerIds[actionName], id); 
+                    return new NavigationInfo(controllerIds[type.Name], id); 
                 }
                 else
                 {
