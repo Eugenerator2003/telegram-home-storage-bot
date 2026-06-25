@@ -1,5 +1,5 @@
 ﻿using StorageBot.Host.Controllers;
-using StorageBot.Host.Routing.Attributes.Actions.Base;
+using StorageBot.Host.Routing.Attributes.Actions.Required;
 using StorageBot.Host.Routing.Attributes.Actions.Updates;
 using StorageBot.Host.Routing.Attributes.Controllers;
 using System;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace StorageBot.Host.Routing
 {
-    public class ControllerMapper : IHandlerInfoResolver, INavigation
+    public class ControllerMapper : IHandlerInfoResolver, INavigation, IRequiredNavigation
     {
         private readonly static Regex CommandRegex = new Regex(@"^[A-Za-z0-9_]+");
 
@@ -50,26 +50,6 @@ namespace StorageBot.Host.Routing
             return attribute?.Name;
         }
 
-        private static bool IsMenuAction(MethodInfo methodInfo)
-        {
-            return methodInfo.GetCustomAttribute<MenuActionAttribute>() is not null;
-        }
-
-        private static bool IsNoCommandAction(MethodInfo methodInfo)
-        {
-            return methodInfo.GetCustomAttribute<UnregisteredCommandActionAttribute>() is not null;
-        }
-        
-        private static bool IsUnknownCallbackQueryAction(MethodInfo methodInfo)
-        {
-            return methodInfo.GetCustomAttribute<UnknownCallbackQueryActionAttribute>() is not null;
-        }
-
-        private static bool IsUnexpectedMessageAction(MethodInfo methodInfo)
-        {
-            return methodInfo.GetCustomAttribute<UnexpectedMessageActionAttribute>() is not null;
-        }
-
         private Type[] controllerTypes;
         private MethodInvoker[][] actionInvokers;
 
@@ -77,10 +57,7 @@ namespace StorageBot.Host.Routing
         private readonly Dictionary<string, Dictionary<string, int>> actionIds;
         private readonly Dictionary<string, NavigationInfo> commandIds;
 
-        private NavigationInfo? menuAction;
-        private NavigationInfo? unregisteredCommandAction;
-        private NavigationInfo? unknownCallbackQueryAction;
-        private NavigationInfo? unexpectedMessageAction;
+        private readonly RequiredNavigationCollection requiredCollection;
 
         public ControllerMapper(Assembly assembly)
         {
@@ -90,6 +67,7 @@ namespace StorageBot.Host.Routing
             controllerIds = new Dictionary<string, int>();
             actionIds = new Dictionary<string, Dictionary<string, int>>();
             commandIds = new Dictionary<string, NavigationInfo>();
+            requiredCollection = new RequiredNavigationCollection(assembly);
             Initialize(assembly);
         }
 
@@ -112,14 +90,6 @@ namespace StorageBot.Host.Routing
                 throw new InvalidOperationException($"Controller {nameof(T)} not found");
             }
         }
-
-        public NavigationInfo GetMenuAction() => menuAction!;
-
-        public NavigationInfo GetUnregisteredCommandAction() => unexpectedMessageAction!;
-
-        public NavigationInfo GetUnknownCallbackQueryAction() => unknownCallbackQueryAction!;
-
-        public NavigationInfo GetUnexpectedMessageAction() => unexpectedMessageAction!;
 
         public HandlerInfo GetHandlerInfo(int controllerId, int actionId)
         {
@@ -150,6 +120,11 @@ namespace StorageBot.Host.Routing
                 return new HandlerInfo(controllerTypes[id.ControllerId], actionInvokers[id.ControllerId][id.ActionId]); 
             }
             return null;
+        }
+
+        public NavigationInfo GetRequiredAction<TAttribute>() where TAttribute : RequiredActionAttribute
+        {
+            return requiredCollection.GetRequiredAction<TAttribute>();
         }
 
         private void Initialize(Assembly assembly)
@@ -200,52 +175,27 @@ namespace StorageBot.Host.Routing
                             $"Action Id collision in {types[i].Type.Name} controller: {methods[j].Type.Name}, {methods[j - 1].Type.Name}");
 
                     AddAction(types[i].Type, methods[j].Type, idC, idM);
-                    AddIfMenuAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
-                    AddIfUnregisteredCommandAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
-                    AddIfUnknownCallbackQueryAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
-                    AddIfUnexpectedMessageAction(methods[j].Type, methods[j].Id, idC, methods.Select(m => m.Type));
-                    AddIfCommandAction(methods[j].Type, methods[j].Id, types[i].Id);
+                    requiredCollection.AddIfRequired(methods[j].Type, idM, idC);
                     previous = idM;
                 }
                 previous = idC;
             }
-            ValidateRequiredActions();
+            requiredCollection.ValidateRequired();
         }
 
-        private void AddIfMenuAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        private void AddController(Type type, int controllerId)
         {
-            if (IsMenuAction(methodInfo))
-            {
-                if (menuAction != null)
-                    throw new InvalidOperationException(
-                        $"Menu action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
-                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == menuAction.ActionId)!.Name}");
-                menuAction = new NavigationInfo(controllerId, methodId);
-            }
+            controllerTypes[controllerId] = type;
+            controllerIds.Add(type.Name, controllerId);
+            actionIds.Add(type.Name, new Dictionary<string, int>());
         }
 
-        private void AddIfUnregisteredCommandAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
+        private void AddAction(Type type, MethodInfo method, int controllerId, int actionId)
         {
-            if (IsNoCommandAction(methodInfo))
-            {
-                if (unregisteredCommandAction != null)
-                    throw new InvalidOperationException(
-                        $"Unregistered command action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
-                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == unregisteredCommandAction.ControllerId)!.Name}");
-                unregisteredCommandAction = new NavigationInfo(controllerId, methodId);
-            }
-        }
-
-        private void AddIfUnknownCallbackQueryAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
-        {
-            if (IsUnknownCallbackQueryAction(methodInfo))
-            {
-                if (unknownCallbackQueryAction != null)
-                    throw new InvalidOperationException(
-                        $"Unknown callback query action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
-                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == unknownCallbackQueryAction.ControllerId)!.Name}");
-                unknownCallbackQueryAction = new NavigationInfo(controllerId, methodId);
-            }
+            var actionInvoker = MethodInvoker.Create(method);
+            actionInvokers[controllerId][actionId] = actionInvoker;
+            actionIds[type.Name].Add(method.Name, actionId);
+            AddIfCommandAction(method, actionId, controllerId);
         }
 
         private void AddIfCommandAction(MethodInfo methodInfo, int methodId, int controllerId)
@@ -262,44 +212,6 @@ namespace StorageBot.Host.Routing
                         $"({controllerTypes[existCommandInfo.ControllerId].Name})");
                 }
             }
-        }
-
-        private void AddIfUnexpectedMessageAction(MethodInfo methodInfo, int methodId, int controllerId, IEnumerable<MethodInfo> controllerActions)
-        {
-            if (IsUnexpectedMessageAction(methodInfo))
-            {
-                if (unexpectedMessageAction != null)
-                    throw new InvalidOperationException(
-                        $"Unepxected message action collision in {controllerTypes[controllerId].Name} controller: {methodInfo.Name}, " +
-                        $"{controllerActions.FirstOrDefault(a => GetActionId(methodInfo) == unexpectedMessageAction.ActionId)!.Name}");
-                unexpectedMessageAction = new NavigationInfo(controllerId, methodId);
-            }
-        }
-
-        private void ValidateRequiredActions()
-        {
-            if (menuAction == null)
-                throw new InvalidOperationException("No menu action found in assembly");
-            if (unregisteredCommandAction == null)
-                throw new InvalidOperationException("No unregistered command action found in assembly");
-            if (unknownCallbackQueryAction == null)
-                throw new InvalidOperationException("No unknown callback query action found in assembly");
-            if (unexpectedMessageAction == null)
-                throw new InvalidOperationException("No unexpected message action found in assembly");
-        }
-
-        private void AddController(Type type, int controllerId)
-        {
-            controllerTypes[controllerId] = type;
-            controllerIds.Add(type.Name, controllerId);
-            actionIds.Add(type.Name, new Dictionary<string, int>());
-        }
-
-        private void AddAction(Type type, MethodInfo method, int controllerId, int actionId)
-        {
-            var actionInvoker = MethodInvoker.Create(method);
-            actionInvokers[controllerId][actionId] = actionInvoker;
-            actionIds[type.Name].Add(method.Name, actionId);
         }
     }
 }
