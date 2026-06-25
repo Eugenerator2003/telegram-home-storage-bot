@@ -17,7 +17,9 @@ namespace StorageBot.Host.Controllers
 
         public IStringLocalizer Localizer { get; }
 
-        public IIdNavigation Navigation { get; }
+        public INavigation Navigation { get; }
+
+        public IRequiredNavigation RequiredNavigation { get; }
 
         public IMenuMessageStore MenuStore { get; }
 
@@ -26,7 +28,8 @@ namespace StorageBot.Host.Controllers
         public ControllerDependencies(
             ITelegramBotClient botClient,
             IStringLocalizer localizer, 
-            IIdNavigation navigation, 
+            INavigation navigation,
+            IRequiredNavigation requiredNavigation,
             IMenuMessageStore menuStore,
             IRedirectBuffer stateBuffer)
         {
@@ -34,10 +37,12 @@ namespace StorageBot.Host.Controllers
             ArgumentNullException.ThrowIfNull(localizer);
             ArgumentNullException.ThrowIfNull(navigation);
             ArgumentNullException.ThrowIfNull(menuStore);
+            ArgumentNullException.ThrowIfNull(requiredNavigation);
             ArgumentNullException.ThrowIfNull(stateBuffer);
             BotClient = botClient;
             Localizer = localizer;
             Navigation = navigation;
+            RequiredNavigation = requiredNavigation;
             MenuStore = menuStore;
             RedirectBuffer = stateBuffer;
         }

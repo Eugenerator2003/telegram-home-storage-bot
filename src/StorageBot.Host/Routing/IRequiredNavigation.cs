@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StorageBot.Host.Routing.Attributes.Actions.Required;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,6 @@ namespace StorageBot.Host.Routing
 {
     public interface IRequiredNavigation
     {
-        NavigationInfo GetMenuAction();
-
-        NavigationInfo GetUnregisteredCommandAction();
-
-        NavigationInfo GetUnknownCallbackQueryAction();
-
-        NavigationInfo GetUnexpectedMessageAction();
+        NavigationInfo GetRequiredAction<TAttribute>() where TAttribute : RequiredActionAttribute;
     }
 }

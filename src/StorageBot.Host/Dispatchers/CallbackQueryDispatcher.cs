@@ -1,5 +1,6 @@
 ﻿using StorageBot.Host.Factories;
 using StorageBot.Host.Routing;
+using StorageBot.Host.Routing.Attributes.Actions.Required;
 using StorageBot.Host.Utilities;
 using StorageBot.TelegramContracts.Context;
 using System;
@@ -13,10 +14,10 @@ namespace StorageBot.Host.Dispatchers
 {
     public class CallbackQueryDispatcher : BotDispatcher
     {
-        private readonly IIdNavigation navigation;
+        private readonly IRequiredNavigation navigation;
 
         public CallbackQueryDispatcher(IHandlerInfoResolver handlerInfoResolver, IControllerFactory controllerFactory,
-            IIdNavigation navigation) 
+            IRequiredNavigation navigation) 
             : base(handlerInfoResolver, controllerFactory)
         {
             this.navigation = navigation;
@@ -38,7 +39,8 @@ namespace StorageBot.Host.Dispatchers
             }
             catch
             {
-                handler = HandlerInfoResolver.GetHandlerInfo(navigation.GetMainControllerId(), navigation.GetUnknownCallbackQueryActionId());
+                var action = navigation.GetRequiredAction<UnknownCallbackQueryActionAttribute>();
+                handler = HandlerInfoResolver.GetHandlerInfo(action.ControllerId, action.ActionId);
             }
             return handler;
         }
