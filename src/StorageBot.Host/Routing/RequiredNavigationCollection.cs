@@ -39,7 +39,7 @@ namespace StorageBot.Host.Routing
             contexts = new Dictionary<Type, RequiredNavigationContext>();
             RequiredAttributes = assembly
                 .GetTypes()
-                .Where(t => t.IsAssignableFrom(typeof(RequiredActionAttribute)) && !t.IsAbstract)
+                .Where(t => t.IsAssignableTo(typeof(RequiredActionAttribute)) && !t.IsAbstract)
                 .ToArray();
         }
 
