@@ -25,6 +25,8 @@ namespace StorageBot.Host.Controllers
         protected IRequiredNavigation RequiredNavigation => _dependencies.RequiredNavigation;
         protected IMenuMessageStore MenuStore => _dependencies.MenuStore;
         protected IRedirectBuffer RedirectBuffer => _dependencies.RedirectBuffer;
+        protected IUserInputLinesStore InputLinesStore => _dependencies.LinesStore;
+        protected IUserInputStateStore InputStateStore => _dependencies.StateStore;
 
         protected BotContext Context { get; private set; } = null!;
 
@@ -62,6 +64,25 @@ namespace StorageBot.Host.Controllers
                     <button text="{Localizer["View.BackToMenu"]}" callback={callback}>
                 </keyboard>
                 """);
+        }
+
+        protected CallbackData GetCallbackDataForAction<TController>(string actionName, int valuesCount = 0) where TController : BotController
+        {
+            var navigation = Navigation.GetAction<TController>(actionName);
+            return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
+        }
+
+        protected void SetRedirect<TController>(string actionName) where TController : BotController
+        {
+            var navigation = Navigation.GetAction<TController>(actionName);
+            RedirectBuffer.SetRedirect(navigation.ControllerId, navigation.ControllerId);
+        }
+
+        protected async Task SetInputState<TController>(long chatId, string actionName) where TController : BotController
+        {
+            var navigation = Navigation.GetAction<TController>(actionName);
+            var state = new InputState(navigation.ControllerId, navigation.ActionId);
+            await InputStateStore.SetState(chatId, state);
         }
     }
 }

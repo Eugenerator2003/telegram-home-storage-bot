@@ -25,13 +25,19 @@ namespace StorageBot.Host.Controllers
 
         public IRedirectBuffer RedirectBuffer { get; }
 
+        public IUserInputStateStore StateStore { get; }
+
+        public IUserInputLinesStore LinesStore { get; }
+
         public ControllerDependencies(
             ITelegramBotClient botClient,
             IStringLocalizer localizer, 
             INavigation navigation,
             IRequiredNavigation requiredNavigation,
             IMenuMessageStore menuStore,
-            IRedirectBuffer stateBuffer)
+            IRedirectBuffer stateBuffer,
+            IUserInputLinesStore linesStore, 
+            IUserInputStateStore stateStore)
         {
             ArgumentNullException.ThrowIfNull(botClient);
             ArgumentNullException.ThrowIfNull(localizer);
@@ -39,12 +45,16 @@ namespace StorageBot.Host.Controllers
             ArgumentNullException.ThrowIfNull(menuStore);
             ArgumentNullException.ThrowIfNull(requiredNavigation);
             ArgumentNullException.ThrowIfNull(stateBuffer);
+            ArgumentNullException.ThrowIfNull(stateStore);
+            ArgumentNullException.ThrowIfNull(linesStore);
             BotClient = botClient;
             Localizer = localizer;
             Navigation = navigation;
             RequiredNavigation = requiredNavigation;
             MenuStore = menuStore;
             RedirectBuffer = stateBuffer;
+            StateStore = stateStore;
+            LinesStore = linesStore;
         }
     }
 }
