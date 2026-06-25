@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageBot.Host", "StorageB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageBot.TelegramContracts", "StorageBot.TelegramContracts\StorageBot.TelegramContracts.csproj", "{002A149E-AFCC-4D4B-B35D-B292A011503C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageBot.Host.Tests.Infrastructure", "..\tests\StorageBot.Host.Tests.Infrastructure\StorageBot.Host.Tests.Infrastructure.csproj", "{B285D3E3-1B0F-4A53-BF69-A3EF21A1B061}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{002A149E-AFCC-4D4B-B35D-B292A011503C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{002A149E-AFCC-4D4B-B35D-B292A011503C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{002A149E-AFCC-4D4B-B35D-B292A011503C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B285D3E3-1B0F-4A53-BF69-A3EF21A1B061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B285D3E3-1B0F-4A53-BF69-A3EF21A1B061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B285D3E3-1B0F-4A53-BF69-A3EF21A1B061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B285D3E3-1B0F-4A53-BF69-A3EF21A1B061}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
