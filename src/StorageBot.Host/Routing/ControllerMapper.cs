@@ -73,7 +73,6 @@ namespace StorageBot.Host.Routing
 
         public NavigationInfo GetAction<T>(string actionName) where T : BotController
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(actionName);
             var type = typeof(T);
             if (actionIds.TryGetValue(type.Name, out var methods))
             {
@@ -83,7 +82,7 @@ namespace StorageBot.Host.Routing
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Action {actionName} ({nameof(T)}) not found");
+                    throw new InvalidOperationException($"Action \"{actionName}\" ({nameof(T)}) not found");
                 }
             }
             else
