@@ -14,7 +14,7 @@ namespace StorageBot.Host.Routing.Attributes.Actions.Updates
 
         public string? Description { get; }
 
-        public CommandAttribute(string name, string? description)
+        public CommandAttribute(string name, string? description = null)
         {
             Description = description;
             Name = name;
