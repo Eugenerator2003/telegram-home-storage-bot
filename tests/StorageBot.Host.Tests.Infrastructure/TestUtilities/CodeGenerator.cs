@@ -11,6 +11,7 @@ namespace StorageBot.Host.Tests.Infrastructure.TestUtilities
             return new StringBuilder(
                 """
                 using System;
+                using System.Threading.Tasks;
                 using System.Reflection;
                 using StorageBot.Host.Controllers; 
                 using StorageBot.Host.Routing.Attributes.Actions.Required;
@@ -40,7 +41,7 @@ namespace StorageBot.Host.Tests.Infrastructure.TestUtilities
             builder.Append(
                 $$"""
                 [ControllerId({{id}})]
-                public class {{controllerName}}
+                public class {{controllerName}} : BotController
                 {
                 """);
             for(int i = 0; i < methods.Length; i++)
@@ -52,7 +53,7 @@ namespace StorageBot.Host.Tests.Infrastructure.TestUtilities
                 builder.Append(
                     $$"""
                     [ActionId({{methodsId[i]}})]
-                    public void {{methods[i]}}() {}
+                    public async Task {{methods[i]}}() { }
                     """);
             }
             builder.Append('}');

@@ -13,14 +13,15 @@ namespace StorageBot.Host.Tests.Infrastructure.TestControllers
     {
         [ActionId(0)]
         [TestRequiredAttribute1]
-        public void Method1()
+        public async Task Method1()
         {
 
         }
 
         [ActionId(1)]
         [TestRequiredAttribute2]
-        public void Method2()
+        [Command("method2", null)]
+        public async Task Method2()
         {
 
         }
