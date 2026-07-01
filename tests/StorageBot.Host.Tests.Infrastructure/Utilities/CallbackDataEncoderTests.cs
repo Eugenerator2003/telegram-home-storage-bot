@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StorageBot.Host.Tests.Infrastructure.Utils
+namespace StorageBot.Host.Tests.Infrastructure.Utilities
 {
     [TestClass]
     public class CallbackDataEncoderTests
