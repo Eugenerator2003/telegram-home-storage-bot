@@ -39,22 +39,14 @@ namespace StorageBot.Host.Controllers
             IUserInputLinesStore linesStore, 
             IUserInputStateStore stateStore)
         {
-            ArgumentNullException.ThrowIfNull(botClient);
-            ArgumentNullException.ThrowIfNull(localizer);
-            ArgumentNullException.ThrowIfNull(navigation);
-            ArgumentNullException.ThrowIfNull(menuStore);
-            ArgumentNullException.ThrowIfNull(requiredNavigation);
-            ArgumentNullException.ThrowIfNull(stateBuffer);
-            ArgumentNullException.ThrowIfNull(stateStore);
-            ArgumentNullException.ThrowIfNull(linesStore);
-            BotClient = botClient;
-            Localizer = localizer;
-            Navigation = navigation;
-            RequiredNavigation = requiredNavigation;
-            MenuStore = menuStore;
-            RedirectBuffer = stateBuffer;
-            StateStore = stateStore;
-            LinesStore = linesStore;
+            BotClient = botClient ?? throw new ArgumentNullException(nameof(botClient));
+            Localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+            Navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+            RequiredNavigation = requiredNavigation ?? throw new ArgumentNullException(nameof(requiredNavigation));
+            MenuStore = menuStore ?? throw new ArgumentNullException(nameof(menuStore));
+            RedirectBuffer = stateBuffer ?? throw new ArgumentNullException(nameof(stateBuffer));
+            StateStore = stateStore ?? throw new ArgumentNullException(nameof(stateStore));
+            LinesStore = linesStore ?? throw new ArgumentNullException(nameof(linesStore));
         }
     }
 }
