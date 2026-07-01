@@ -15,7 +15,7 @@ namespace StorageBot.Host.Routing
 {
     public class ControllerMapper : IHandlerInfoResolver, INavigation, IRequiredNavigation
     {
-        private readonly static Regex CommandRegex = new Regex(@"^[A-Za-z0-9_]+");
+        private readonly static Regex CommandRegex = new Regex(@"^[A-Za-z0-9_]+$");
 
         private static int GetControllerId(Type controllerType)
         {
@@ -97,13 +97,16 @@ namespace StorageBot.Host.Routing
             {
                 throw new ArgumentException("Controller and action IDs must be non-negative");
             }
-            if (controllerId > controllerTypes.Length || 
-                actionId > actionInvokers[controllerId].Length)
+            if (controllerId >= controllerTypes.Length)
             {
-                throw new ArgumentException("Controller or action ID is greater than allowed");
+                throw new ArgumentException("Controller ID is greater than allowed");
             }
             var controllerType = controllerTypes[controllerId]
                 ?? throw new InvalidOperationException("Controller not found");
+            if (actionId >= actionInvokers[controllerId].Length)
+            {
+                throw new ArgumentException("Action ID is greater than allowed");
+            }
             var action = actionInvokers[controllerId][actionId]
                 ?? throw new InvalidOperationException("Action not found");
             return new HandlerInfo(controllerType, action);
@@ -162,11 +165,11 @@ namespace StorageBot.Host.Routing
                     throw new InvalidOperationException($"No methods found in controller {types[i].Type.Name}");
 
                 previous = 0;
-                actionInvokers[idC] = new MethodInvoker[methods.Length + 1];
+                actionInvokers[idC] = new MethodInvoker[methods[^1].Id + 1];
                 for (int j = 0; j < methods.Length; j++)
                 {
-                    if (methods[j].Type.ReturnType.IsInstanceOfType(taskType))
-                        throw new InvalidOperationException($"Controller action {methods[j].Type.Name} ({types[i].Type.Name}) must return be async");
+                    if (!methods[j].Type.ReturnType.IsAssignableTo(taskType))
+                        throw new InvalidOperationException($"Controller action {methods[j].Type.Name} ({types[i].Type.Name}) must be async");
 
                     var idM = methods[j].Id;
 
