@@ -14,7 +14,7 @@ namespace StorageBot.TelegramContracts.Context
 
         public UpdateType UpdateType { get; }
 
-        protected Update Update { get; }
+        public Update Update { get; }
 
         public BotContext(Update update)
         {
