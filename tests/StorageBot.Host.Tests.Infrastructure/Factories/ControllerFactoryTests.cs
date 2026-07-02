@@ -5,6 +5,7 @@ using StorageBot.Host.Controllers;
 using StorageBot.Host.Factories;
 using StorageBot.Host.Routing;
 using StorageBot.Host.Tests.Infrastructure.TestControllers;
+using StorageBot.TelegramContracts.Application;
 using StorageBot.TelegramContracts.States.Chat;
 using StorageBot.TelegramContracts.States.ControllerState;
 using System;
@@ -33,6 +34,8 @@ namespace StorageBot.Host.Tests.Infrastructure.Factories
             services.AddTransient((pr) => new Mock<IRedirectBuffer>().Object);
             services.AddTransient((pr) => new Mock<IUserInputStateStore>().Object);
             services.AddTransient((pr) => new Mock<IUserInputLinesStore>().Object);
+            services.AddTransient((pr) => new Mock<ITelegramUserService>().Object);
+            services.AddTransient((pr) => new Mock<ICurrentOwnershipStore>().Object);
             serviceProvider = services.BuildServiceProvider();
         }
 

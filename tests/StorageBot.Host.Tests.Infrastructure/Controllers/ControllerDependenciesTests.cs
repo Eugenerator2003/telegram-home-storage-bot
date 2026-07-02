@@ -2,6 +2,7 @@
 using Moq;
 using StorageBot.Host.Controllers;
 using StorageBot.Host.Routing;
+using StorageBot.TelegramContracts.Application;
 using StorageBot.TelegramContracts.States.Chat;
 using StorageBot.TelegramContracts.States.ControllerState;
 using System;
@@ -32,6 +33,8 @@ namespace StorageBot.Host.Tests.Infrastructure.Controllers
             var redirectBuffer = new Mock<IRedirectBuffer>().Object;
             var stateStore = new Mock<IUserInputStateStore>().Object;
             var linesStore = new Mock<IUserInputLinesStore>().Object;
+            var telegramUserService = new Mock<ITelegramUserService>().Object;
+            var ownershipStore = new Mock<ICurrentOwnershipStore>().Object;
             var controllerDependencies = new ControllerDependencies(
                 botClient,
                 localizer,
@@ -40,7 +43,9 @@ namespace StorageBot.Host.Tests.Infrastructure.Controllers
                 menuStore,
                 redirectBuffer,
                 linesStore,
-                stateStore
+                stateStore,
+                ownershipStore,
+                telegramUserService
                 );
             Assert.AreEqual(botClient, controllerDependencies.BotClient);
             Assert.AreEqual(localizer, controllerDependencies.Localizer);
