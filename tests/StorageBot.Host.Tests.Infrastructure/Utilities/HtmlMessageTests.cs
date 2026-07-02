@@ -121,6 +121,44 @@ namespace StorageBot.Host.Tests.Infrastructure.Utilities
         }
 
         [TestMethod]
+        [DataRow("", 0, 2)]
+        [DataRow("yami", 40, 3)]
+        public void AddRowWithCallbackQueryButtonTest(string buttonText, int controllerId, int actionId)
+        {
+            var message = new HtmlMessage();
+            var callback = new CallbackData(controllerId, actionId);
+            message.OpenKeyboard();
+            message.AddRowWithCallbackQueryButton(buttonText, callback);
+            message.CloseKeyboard();
+            var expectedText = $"<keyboard><row><button text=\"{buttonText}\" callback=\"{CallbackDataEncoder.Encode(callback)}\"></row></keyboard>";
+            Assert.AreEqual(expectedText, message.ToString());
+        }
+
+        [TestMethod]
+        public void AddRowWithCallbackQueryButtonWithoutOpenKeyboardTest()
+        {
+            var message = new HtmlMessage();
+            var callback = new CallbackData(30, 256);
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                message.AddRowWithCallbackQueryButton("lolololo", callback);
+            });
+        }
+
+        [TestMethod]
+        public void AddRowWithCallbackQueryButtonWithOpenRowTest()
+        {
+            var message = new HtmlMessage();
+            var callback = new CallbackData(30, 256);
+            message.OpenKeyboard();
+            message.OpenRow();
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                message.AddRowWithCallbackQueryButton("lolololo", callback);
+            });
+        }
+
+        [TestMethod]
         public void CloseRowWithClosedKeyboardTest()
         {
             var message = new HtmlMessage();
