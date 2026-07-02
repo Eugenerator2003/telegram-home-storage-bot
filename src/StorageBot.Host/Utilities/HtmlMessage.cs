@@ -72,6 +72,24 @@ namespace StorageBot.Host.Utilities
             rowState = KeyboardRowState.Open;
         }
 
+        public void AddRowWithCallbackQueryButton(string buttonText, CallbackData data)
+        {
+            if (keyboardState == KeyboardState.None)
+            {
+                throw new InvalidOperationException("Cannot add button row without keyboard");
+            }
+            if (keyboardState == KeyboardState.Close)
+            {
+                throw new InvalidOperationException("Cannot add button to closed keyboard");
+            }
+            if (rowState == KeyboardRowState.Open)
+            {
+                throw new InvalidOperationException("Cannot add row with button while previous row is not closed");
+            }
+            builder.Append($"<row><button text=\"{buttonText}\" callback=\"{CallbackDataEncoder.Encode(data)}\"></row>");
+            rowState = KeyboardRowState.Close;
+        }
+
         public void AddCallbackQueryButton(string buttonText, CallbackData data)
         {
             if (keyboardState == KeyboardState.Close)
