@@ -50,26 +50,25 @@ namespace StorageBot.Host.Controllers
             return RedirectBuffer.Consume();
         }
 
-        public async Task ShowErrorMessage(string errorText)
+        protected async Task ShowErrorMessage(string errorText)
         {
-            var chatId = Context.Chat.Id;
-            var menuMessageId = await MenuStore.GetMenuMessageId(chatId);
-            var menuActionNavigation = RequiredNavigation.GetRequiredAction<MenuActionAttribute>();
-            var callback = CallbackDataEncoder.Encode(
-                    new CallbackData(menuActionNavigation.ControllerId, menuActionNavigation.ActionId)
-                );
-            await BotClient.EditHtml(chatId, (int)menuMessageId, 
-                $"""
-                {Localizer["View.ShowError"]}: {errorText}
-                <keyboard>
-                    <button text="{Localizer["View.BackToMenu"]}" callback={callback}>
-                </keyboard>
-                """);
+            var callback = GetCallbackDataForRequiredAction<MenuActionAttribute>();
+            var message = new HtmlMessage(Localizer["View.ShowError", errorText]);
+            message.OpenKeyboard();
+            message.AddRowWithCallbackQueryButton(Localizer["View.BackToMenu"], callback);
+            message.CloseKeyboard();
+            await StartOrEditMenu(message);
         }
 
         protected CallbackData GetCallbackDataForAction<TController>(string actionName, int valuesCount = 0) where TController : BotController
         {
             var navigation = Navigation.GetAction<TController>(actionName);
+            return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
+        }
+
+        protected CallbackData GetCallbackDataForRequiredAction<TRequiredAction>(int valuesCount = 0) where TRequiredAction : RequiredActionAttribute
+        {
+            var navigation = RequiredNavigation.GetRequiredAction<TRequiredAction>();
             return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
         }
 
@@ -84,6 +83,29 @@ namespace StorageBot.Host.Controllers
             var navigation = Navigation.GetAction<TController>(actionName);
             var state = new InputState(navigation.ControllerId, navigation.ActionId);
             await InputStateStore.SetState(chatId, state);
+        }
+
+        protected async Task StartOrEditMenu(HtmlMessage message)
+        {
+            var menuId = await MenuStore.GetMenuMessageId(Context.Chat.Id);
+            if (menuId == -1)
+            {
+                var sendedMessage = await BotClient.SendMessage(Context.Chat, message.ToString());
+                await MenuStore.SetMenuMessageId(Context.Chat.Id, sendedMessage.Id);
+            }
+            else 
+            {
+                await BotClient.EditHtml(Context.Chat, menuId, message.ToString());
+            }
+        }
+
+        protected async Task DeleteMenuIfExist()
+        {
+            var menuId = await MenuStore.GetMenuMessageId(Context.Chat.Id);
+            if (menuId != -1)
+            {
+                await BotClient.DeleteMessage(Context.Chat, menuId);
+            }
         }
     }
 }
