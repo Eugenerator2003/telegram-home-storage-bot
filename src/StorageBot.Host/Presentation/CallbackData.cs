@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.Host.Utilities
+namespace StorageBot.Host.Presentation
 {
     public class CallbackData
     {
