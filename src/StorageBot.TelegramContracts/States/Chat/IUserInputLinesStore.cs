@@ -10,7 +10,7 @@ namespace StorageBot.TelegramContracts.States.Chat
     {
         Task SetLines(long id, IEnumerable<string> lines);
 
-        Task<string[]> GetLines(long id);
+        Task<string[]> GetLines(long userId);
 
         Task ClearLines(long id);
     }

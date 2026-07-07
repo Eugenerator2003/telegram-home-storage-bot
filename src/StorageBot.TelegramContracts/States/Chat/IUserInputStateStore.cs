@@ -10,7 +10,7 @@ namespace StorageBot.TelegramContracts.States.Chat
     {
         Task SetState(long id, InputState state);
 
-        Task<InputState?> GetState(long id);
+        Task<InputState?> GetState(long userId);
 
         Task ClearState(long id);
     }
