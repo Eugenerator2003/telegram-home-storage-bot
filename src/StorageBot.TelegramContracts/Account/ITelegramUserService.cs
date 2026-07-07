@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
-namespace StorageBot.TelegramContracts.Application
+namespace StorageBot.TelegramContracts.Account
 {
     public interface ITelegramUserService
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 using StorageBot.Host.Routing;
-using StorageBot.TelegramContracts.Application;
+using StorageBot.TelegramContracts.Account;
 using StorageBot.TelegramContracts.States.Chat;
 using StorageBot.TelegramContracts.States.ControllerState;
 using System;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StorageBot.TelegramContracts.Application
+namespace StorageBot.TelegramContracts.Account
 {
     public class TelegramUser
     {
