@@ -81,8 +81,15 @@ namespace StorageBot.Host.Controllers
             return (await BotClient.SendMessage(Context.Chat, message.ToString())).Id;
         }
 
-        protected async Task DeleteMessage(int messageId)
+        protected async Task SendMessageWithDelete(HtmlMessage htmlMessage, int milliseconds)
         {
+            var id = await SendMessage(htmlMessage);
+            await DeleteMessage(id, milliseconds);
+        }
+
+        protected async Task DeleteMessage(int messageId, int milliseconds = 0)
+        {
+            await Task.Delay(milliseconds);
             await BotClient.DeleteMessage(Context.Chat, messageId);
         }
 
