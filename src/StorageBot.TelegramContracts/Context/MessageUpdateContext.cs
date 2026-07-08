@@ -8,11 +8,11 @@ using Telegram.Bot.Types.Enums;
 
 namespace StorageBot.TelegramContracts.Context
 {
-    public class MessageBotContext : BotContext
+    public class MessageUpdateContext : UpdateContext
     {
         public Message Message { get; }
 
-        public MessageBotContext(Update update) 
+        public MessageUpdateContext(Update update) 
             : base(update)
         {
             Message = update.Message!;

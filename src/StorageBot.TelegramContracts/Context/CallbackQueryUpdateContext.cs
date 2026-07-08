@@ -8,13 +8,13 @@ using Telegram.Bot.Types.Enums;
 
 namespace StorageBot.TelegramContracts.Context
 {
-    public class CallbackQueryBotContext : BotContext
+    public class CallbackQueryUpdateContext : UpdateContext
     {
         public string QueryId { get; }
 
         public string Data { get; }
 
-        public CallbackQueryBotContext(Update update) 
+        public CallbackQueryUpdateContext(Update update) 
             : base(update)
         {
             Data = update.CallbackQuery!.Data ?? string.Empty;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StorageBot.TelegramContracts.Account;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace StorageBot.TelegramContracts.Context
 {
-    public abstract class BotContext
+    public abstract class UpdateContext
     {
         public Chat Chat { get; }
 
@@ -16,7 +17,7 @@ namespace StorageBot.TelegramContracts.Context
 
         public Update Update { get; }
 
-        public BotContext(Update update)
+        public UpdateContext(Update update)
         {
             ArgumentNullException.ThrowIfNull(update);
             VerifyUpdate(update);
