@@ -29,7 +29,17 @@ namespace StorageBot.Host.Controllers
             }
         }
 
+        protected int ApplicationUserId
+        {
+            get
+            {
+                _applicationUserId ??= TelegramUserService.ResolveApplicationUserIdByChat(Context.Chat);
+                return _applicationUserId.Value;
+            }
+        }
+
         private ITelegramUser? _user;
+        private int? _applicationUserId;
 
         public override void SetDependencies(ControllerDependencies dependencies)
         {
@@ -39,6 +49,12 @@ namespace StorageBot.Host.Controllers
             InputStateStore = dependencies.StateStore;
             CurrentOwnershipStore = dependencies.CurrentOwnershipStore;
             TelegramUserService = dependencies.TelegramUserService;
+        }
+
+        protected override async Task ShowErrorMessage(string errorText)
+        {
+            await DeleteMenuIfExist();
+            await base.ShowErrorMessage(errorText);
         }
 
         protected async Task SetInputState<TController>(string actionName) where TController : BaseBotController
