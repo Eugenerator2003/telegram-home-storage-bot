@@ -25,7 +25,7 @@ namespace StorageBot.TelegramContracts.Context
             Chat = GetChatFromUpdate(update);
         }
 
-        public abstract void VerifyUpdate(Update update);
+        protected abstract void VerifyUpdate(Update update);
 
         protected abstract Chat GetChatFromUpdate(Update update);
     }

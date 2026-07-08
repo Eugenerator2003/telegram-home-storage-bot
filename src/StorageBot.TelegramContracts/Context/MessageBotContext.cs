@@ -23,7 +23,7 @@ namespace StorageBot.TelegramContracts.Context
             return update.Message!.Chat;
         }
 
-        public override void VerifyUpdate(Update update)
+        protected override void VerifyUpdate(Update update)
         {
             if (update.Type != UpdateType.Message)
             {

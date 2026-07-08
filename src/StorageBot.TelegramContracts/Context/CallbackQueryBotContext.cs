@@ -21,7 +21,7 @@ namespace StorageBot.TelegramContracts.Context
             QueryId = update.CallbackQuery.Id;
         }
 
-        public override void VerifyUpdate(Update update)
+        protected override void VerifyUpdate(Update update)
         {
             if (update.Type != UpdateType.CallbackQuery)
             {
