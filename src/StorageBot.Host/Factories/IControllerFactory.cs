@@ -9,8 +9,8 @@ namespace StorageBot.Host.Factories
 {
     public interface IControllerFactory
     {
-        public BotController GetController(Type controllerType);
+        public BaseBotController GetController(Type controllerType);
 
-        public T GetController<T>() where T : BotController;
+        public T GetController<T>() where T : BaseBotController;
     }
 }

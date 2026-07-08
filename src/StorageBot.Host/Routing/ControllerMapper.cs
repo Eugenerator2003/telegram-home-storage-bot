@@ -71,7 +71,7 @@ namespace StorageBot.Host.Routing
             Initialize(assembly);
         }
 
-        public NavigationInfo GetAction<T>(string actionName) where T : BotController
+        public NavigationInfo GetAction<T>(string actionName) where T : BaseBotController
         {
             var type = typeof(T);
             if (actionIds.TryGetValue(type.Name, out var methods))
@@ -133,7 +133,7 @@ namespace StorageBot.Host.Routing
         private void Initialize(Assembly assembly)
         {
             var types = assembly.GetTypes()
-                                .Where(c => !c.IsAbstract && c.IsSubclassOf(typeof(BotController)))
+                                .Where(c => !c.IsAbstract && c.IsSubclassOf(typeof(BaseBotController)))
                                 .Select(c => new { Type = c, Id = GetControllerId(c) })
                                 .OrderBy(c => c.Id)
                                 .ToArray();

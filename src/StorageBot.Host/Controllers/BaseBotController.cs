@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Localization;
 using StorageBot.Application.UseCases;
+using StorageBot.Host.Presentation;
 using StorageBot.Host.Routing;
 using StorageBot.Host.Routing.Attributes.Actions.Required;
 using StorageBot.Host.Utilities;
-using StorageBot.Host.Presentation;
+using StorageBot.TelegramContracts.Account;
 using StorageBot.TelegramContracts.Context;
 using StorageBot.TelegramContracts.States.Chat;
 using StorageBot.TelegramContracts.States.ControllerState;
@@ -18,28 +19,25 @@ using Telegram.Bot.Types;
 
 namespace StorageBot.Host.Controllers
 {
-    public abstract class BotController
+    public abstract class BaseBotController
     {
         protected ITelegramBotClient BotClient => _dependencies.BotClient;
         protected IStringLocalizer Localizer => _dependencies.Localizer;
         protected INavigation Navigation => _dependencies.Navigation;
         protected IRequiredNavigation RequiredNavigation => _dependencies.RequiredNavigation;
-        protected IMenuMessageStore MenuStore => _dependencies.MenuStore;
         protected IRedirectBuffer RedirectBuffer => _dependencies.RedirectBuffer;
-        protected IUserInputLinesStore InputLinesStore => _dependencies.LinesStore;
-        protected IUserInputStateStore InputStateStore => _dependencies.StateStore;
 
-        protected BotContext Context { get; private set; } = null!;
+        protected UpdateContext Context { get; private set; } = null!;
 
         private ControllerDependencies _dependencies = null!;
 
-        public void SetDependencies(ControllerDependencies dependencies)
+        public virtual void SetDependencies(ControllerDependencies dependencies)
         {
             ArgumentNullException.ThrowIfNull(dependencies);
             _dependencies = dependencies;
         }
 
-        public void SetContext(BotContext context)
+        public void SetContext(UpdateContext context)
         {
             ArgumentNullException.ThrowIfNull(context);
             Context = context;
@@ -50,17 +48,17 @@ namespace StorageBot.Host.Controllers
             return RedirectBuffer.Consume();
         }
 
-        protected async Task ShowErrorMessage(string errorText)
+        protected virtual async Task ShowErrorMessage(string errorText)
         {
             var callback = GetCallbackDataForRequiredAction<MenuActionAttribute>();
             var message = new HtmlMessage(Localizer["View.ShowError", errorText]);
             message.OpenKeyboard();
             message.AddRowWithCallbackQueryButton(Localizer["View.BackToMenu"], callback);
             message.CloseKeyboard();
-            await StartOrEditMenu(message);
+            await SendMessage(message);
         }
 
-        protected CallbackData GetCallbackDataForAction<TController>(string actionName, int valuesCount = 0) where TController : BotController
+        protected CallbackData GetCallbackDataForAction<TController>(string actionName, int valuesCount = 0) where TController : BaseBotController
         {
             var navigation = Navigation.GetAction<TController>(actionName);
             return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
@@ -72,40 +70,25 @@ namespace StorageBot.Host.Controllers
             return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
         }
 
-        protected void SetRedirect<TController>(string actionName) where TController : BotController
+        protected void SetRedirect<TController>(string actionName) where TController : BaseBotController
         {
             var navigation = Navigation.GetAction<TController>(actionName);
             RedirectBuffer.SetRedirect(navigation.ControllerId, navigation.ControllerId);
         }
 
-        protected async Task SetInputState<TController>(long chatId, string actionName) where TController : BotController
+        protected async Task<int> SendMessage(HtmlMessage message)
         {
-            var navigation = Navigation.GetAction<TController>(actionName);
-            var state = new InputState(navigation.ControllerId, navigation.ActionId);
-            await InputStateStore.SetState(chatId, state);
+            return (await BotClient.SendMessage(Context.Chat, message.ToString())).Id;
         }
 
-        protected async Task StartOrEditMenu(HtmlMessage message)
+        protected async Task DeleteMessage(int messageId)
         {
-            var menuId = await MenuStore.GetMenuMessageId(Context.Chat.Id);
-            if (menuId == -1)
-            {
-                var sendedMessage = await BotClient.SendMessage(Context.Chat, message.ToString());
-                await MenuStore.SetMenuMessageId(Context.Chat.Id, sendedMessage.Id);
-            }
-            else 
-            {
-                await BotClient.EditHtml(Context.Chat, menuId, message.ToString());
-            }
+            await BotClient.DeleteMessage(Context.Chat, messageId);
         }
 
-        protected async Task DeleteMenuIfExist()
+        protected async Task EditMessage(int messageId, HtmlMessage message)
         {
-            var menuId = await MenuStore.GetMenuMessageId(Context.Chat.Id);
-            if (menuId != -1)
-            {
-                await BotClient.DeleteMessage(Context.Chat, menuId);
-            }
+            await BotClient.EditHtml(messageId, messageId, message.ToString());
         }
     }
 }
