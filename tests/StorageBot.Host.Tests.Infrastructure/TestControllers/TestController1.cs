@@ -9,7 +9,7 @@ using System.Text;
 namespace StorageBot.Host.Tests.Infrastructure.TestControllers
 {
     [ControllerId(0)]
-    public class TestController1 : BotController
+    public class TestController1 : BaseBotController
     {
         [ActionId(0)]
         [TestRequiredAttribute1]

@@ -414,7 +414,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
             var assembly = typeof(ControllerMapperTests).Assembly;
             var mapper = new ControllerMapper(assembly);
             var controllerId = assembly.GetTypes()
-                .Where(t => !t.IsAbstract && t.IsAssignableTo(typeof(BotController)))
+                .Where(t => !t.IsAbstract && t.IsAssignableTo(typeof(BaseBotController)))
                 .Select(t => t.GetCustomAttribute<ControllerIdAttribute>()!.Id)
                 .Max() + 1;
             var actionId = 1;
