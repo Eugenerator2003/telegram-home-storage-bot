@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StorageBot.TelegramContracts.Account;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,8 @@ namespace StorageBot.TelegramContracts.States.Chat
 {
     public interface IMenuMessageStore
     {
-        Task<int> GetMenuMessageId(long userId);
+        Task<int> GetMenuMessageId(ITelegramUser user);
 
-        Task SetMenuMessageId(long userId, int messageId); 
+        Task SetMenuMessageId(ITelegramUser user, int messageId); 
     }
 }

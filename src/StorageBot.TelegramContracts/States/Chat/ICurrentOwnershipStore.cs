@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StorageBot.TelegramContracts.Account;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,8 @@ namespace StorageBot.TelegramContracts.States.Chat
 {
     public interface ICurrentOwnershipStore
     {
-        Task<int> GetCurrentOwnership(long id);
+        Task<int> GetCurrentOwnership(ITelegramUser user);
 
-        Task SetCurrentOwnership(long id, int ownershipId);
+        Task SetCurrentOwnership(ITelegramUser user, int ownershipId);
     }
 }

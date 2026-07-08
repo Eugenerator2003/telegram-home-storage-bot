@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StorageBot.TelegramContracts.Account;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace StorageBot.TelegramContracts.States.Chat
 {
     public interface IUserInputLinesStore
     {
-        Task SetLines(long id, IEnumerable<string> lines);
+        Task SetLines(ITelegramUser user, IEnumerable<string> lines);
 
-        Task<string[]> GetLines(long userId);
+        Task<string[]> GetLines(ITelegramUser user);
 
-        Task ClearLines(long id);
+        Task ClearLines(ITelegramUser user);
     }
 }

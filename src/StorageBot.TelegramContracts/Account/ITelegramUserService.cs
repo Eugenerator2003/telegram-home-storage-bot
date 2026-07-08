@@ -9,7 +9,7 @@ namespace StorageBot.TelegramContracts.Account
 {
     public interface ITelegramUserService
     {
-        ITelegramUser AddByChat(Chat chat);
+        ITelegramUser GetUser(Chat chat);
 
         int ResolveApplicationUserIdByChat(Chat chat);
 
