@@ -90,5 +90,22 @@ namespace StorageBot.Host.Controllers
         {
             await BotClient.EditHtml(messageId, messageId, message.ToString());
         }
+
+        protected async Task AnswerCallbackQuery(string queryId)
+        {
+            await BotClient.AnswerCallbackQuery(queryId);
+        }
+
+        protected T ExtractContext<T>() where T : UpdateContext
+        {
+            if (Context is T context)
+            {
+                return context;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Can't cast context to type {nameof(UpdateContext)}");
+            }
+        }
     }
 }
