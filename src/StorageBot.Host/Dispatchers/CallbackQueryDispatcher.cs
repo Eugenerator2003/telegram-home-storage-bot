@@ -23,14 +23,14 @@ namespace StorageBot.Host.Dispatchers
             this.navigation = navigation;
         }
 
-        protected override BotContext GetContext(Update update)
+        protected override UpdateContext GetContext(Update update)
         {
-            return new CallbackQueryBotContext(update);
+            return new CallbackQueryUpdateContext(update);
         }
 
-        protected override HandlerInfo GetHandlerInfo(BotContext context)
+        protected override HandlerInfo GetHandlerInfo(UpdateContext context)
         {
-            var queryContext = (CallbackQueryBotContext)context;
+            var queryContext = (CallbackQueryUpdateContext)context;
             var callbackData = CallbackDataEncoder.Decode(queryContext.Data);
             HandlerInfo handler;
             try

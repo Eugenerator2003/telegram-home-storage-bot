@@ -1,6 +1,7 @@
 ﻿using StorageBot.Host.Factories;
 using StorageBot.Host.Routing;
 using StorageBot.Host.Routing.Attributes.Actions.Required;
+using StorageBot.TelegramContracts.Account;
 using StorageBot.TelegramContracts.Context;
 using StorageBot.TelegramContracts.States.Chat;
 using System;
@@ -16,30 +17,37 @@ namespace StorageBot.Host.Dispatchers
     {
         private readonly IUserInputStateStore inputStateStore;
         private readonly IRequiredNavigation navigation;
+        private readonly ITelegramUserService userService;
 
-        public MessageDispatcher(IHandlerInfoResolver handlerInfoResolver, IControllerFactory controllerFactory,
-            IRequiredNavigation navigation, IUserInputStateStore userInputStateStore)
+        public MessageDispatcher(
+            IHandlerInfoResolver handlerInfoResolver, 
+            IControllerFactory controllerFactory,
+            IRequiredNavigation navigation, 
+            IUserInputStateStore userInputStateStore,
+            ITelegramUserService telegramUserService)
             : base(handlerInfoResolver, controllerFactory)
         {
             inputStateStore = userInputStateStore;
+            userService = telegramUserService;
             this.navigation = navigation;
         }
 
-        protected override BotContext GetContext(Update update)
+        protected override UpdateContext GetContext(Update update)
         {
-            return new MessageBotContext(update);
+            return new MessageUpdateContext(update);
         }
 
-        protected override HandlerInfo GetHandlerInfo(BotContext context)
+        protected override HandlerInfo GetHandlerInfo(UpdateContext context)
         {
-            var inputState = inputStateStore.GetState(context.Chat.Id).Result;
+            var user = userService.GetUser(context.Chat);
+            var inputState = inputStateStore.GetState(user).Result;
             if (inputState != null)
             {
-                inputStateStore.ClearState(context.Chat.Id);
+                inputStateStore.ClearState(user);
                 return HandlerInfoResolver.GetHandlerInfo(inputState.ControllerId, inputState.MethodId);
             }
             HandlerInfo? handlerInfo = null!;
-            var text = ((MessageBotContext)context).Message.Text;
+            var text = ((MessageUpdateContext)context).Message.Text;
             if (text is not null && text.StartsWith('/'))
             {
                 text = text.Split(' ')[0];

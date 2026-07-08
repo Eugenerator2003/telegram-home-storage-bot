@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using StorageBot.Host.Factories;
 using StorageBot.Host.Routing;
+using StorageBot.TelegramContracts.Account;
 using StorageBot.TelegramContracts.Context;
 using StorageBot.TelegramContracts.States.ControllerState;
 using System;
@@ -48,15 +49,15 @@ namespace StorageBot.Host.Dispatchers
             }
         }
 
-        protected async Task<RedirectState?> InvokeWithContext(HandlerInfo pair, BotContext context)
+        protected async Task<RedirectState?> InvokeWithContext(HandlerInfo pair, UpdateContext context)
         {
             var controller = ControllerFactory.GetController(pair.ControllerType);
             controller.SetContext(context);
             await (Task)pair.ActionInvoker.Invoke(controller)!;
             return controller.ConsumeRedirectState();
         }
-        protected abstract HandlerInfo GetHandlerInfo(BotContext context);
+        protected abstract HandlerInfo GetHandlerInfo(UpdateContext context);
 
-        protected abstract BotContext GetContext(Update update);
+        protected abstract UpdateContext GetContext(Update update);
     }
 }
