@@ -9,12 +9,12 @@ namespace StorageBot.TelegramContracts.Account
 {
     public interface ITelegramUserService
     {
-        void AddByChat(Chat chat);
+        ITelegramUser AddByChat(Chat chat);
 
         int ResolveApplicationUserIdByChat(Chat chat);
 
-        TelegramUser ResolveTelegramUserByUserId(int userId);
+        ITelegramUser ResolveTelegramUserByUserId(int userId);
 
-        TelegramUser ResolveTelegramUserByOwnershipId(int storageOwnershipId);
+        ITelegramUser ResolveTelegramUserByOwnershipId(int storageOwnershipId);
     }
 }
