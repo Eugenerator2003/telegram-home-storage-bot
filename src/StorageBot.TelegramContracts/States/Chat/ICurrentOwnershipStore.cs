@@ -11,6 +11,6 @@ namespace StorageBot.TelegramContracts.States.Chat
     {
         Task<int> GetCurrentOwnership(ITelegramUser user);
 
-        Task SetCurrentOwnership(ITelegramUser user, int ownershipId);
+        Task SetCurrentOwnership(ITelegramUser user, int storageOwnershipId);
     }
 }
