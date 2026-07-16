@@ -54,7 +54,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
             var code = CodeGenerator.GetBaseUsing();
             code.Append("""
                 [ControllerId(3)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     public void Action() 
                     {
@@ -150,7 +150,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
             var code = CodeGenerator
                 .GetBaseUsing();
             code.Append("""
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(3)]
                     public async Task Method() {}
@@ -170,7 +170,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(-30)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(3)]
                     public async Task Method() {}
@@ -190,7 +190,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(30)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     public async Task Method() {}
                 }
@@ -209,7 +209,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(30)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(-10)]
                     public async Task Method() {}
@@ -229,7 +229,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(1)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(1)]
                     [Command("            ")]
@@ -250,7 +250,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(1)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(1)]
                     [Command("")]
@@ -271,7 +271,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(1)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(1)]
                     [Command(null)]
@@ -292,7 +292,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
                 .GetBaseUsing();
             code.Append("""
                 [ControllerId(1)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(1)]
                     [Command("extra_large_command_with_many_symbols")]
@@ -317,7 +317,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Routing
             code.Append(
                 $$"""
                 [ControllerId(1)]
-                public class Controller : BotController 
+                public class Controller : BaseBotController 
                 {
                     [ActionId(1)]
                     [Command("{{commandName}}")]

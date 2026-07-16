@@ -41,7 +41,7 @@ namespace StorageBot.Host.Tests.Infrastructure.TestUtilities
             builder.Append(
                 $$"""
                 [ControllerId({{id}})]
-                public class {{controllerName}} : BotController
+                public class {{controllerName}} : BaseBotController
                 {
                 """);
             for(int i = 0; i < methods.Length; i++)
