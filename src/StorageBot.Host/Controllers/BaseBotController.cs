@@ -103,6 +103,13 @@ namespace StorageBot.Host.Controllers
             await BotClient.AnswerCallbackQuery(queryId);
         }
 
+        protected async Task<CallbackQueryUpdateContext> AnswerCallbackQueryWithContext()
+        {
+            var context = ExtractContext<CallbackQueryUpdateContext>();
+            await BotClient.AnswerCallbackQuery(context.QueryId);
+            return context;
+        }
+
         protected T ExtractContext<T>() where T : UpdateContext
         {
             if (Context is T context)
