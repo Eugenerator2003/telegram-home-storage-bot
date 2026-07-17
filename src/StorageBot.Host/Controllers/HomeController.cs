@@ -50,18 +50,19 @@ namespace StorageBot.Host.Controllers
             var storageUserId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
             var telegramUser = TelegramUserService.ResolveTelegramUserByOwnershipId(storageUserId);
 
-            var emptyCallback = new CallbackData(0, 0, 0);
+            var emptyCallback = new CallbackData(int.MaxValue, int.MaxValue, 0);
+            var myStoragesCallback = GetCallbackDataForAction<StoragesController>(nameof(StoragesController.StoragesMenu));
+            var aboutThisStorageCallback = GetCallbackDataForAction<StoragesController>(nameof(StoragesController.AboutThisStorage));
             var localizationCallback = GetCallbackDataForRequiredAction<LocalizationMenuActionAttribute>();
 
             var message = new HtmlMessage();
             message.AddLine(Localizer["View.MenuTitle"]);
-            message.AddText(Localizer["View.CurrentOwnershipInfo", telegramUser.Firstname, telegramUser.Lastname, telegramUser.Username]);
+            message.AddText(Localizer["View.CurrentStorageOwnerInfo", telegramUser.Firstname, telegramUser.Lastname, telegramUser.Username]);
             message.OpenKeyboard();
             message.AddRowWithCallbackQueryButton(Localizer["View.MyContainers"], emptyCallback);
             message.AddRowWithCallbackQueryButton(Localizer["View.MyCategories"], emptyCallback);
-            message.AddRowWithCallbackQueryButton(Localizer["View.MyQuantityType"], emptyCallback);
-            message.AddRowWithCallbackQueryButton(Localizer["View.MoreAboutOnwrship"], emptyCallback);
-            message.AddRowWithCallbackQueryButton(Localizer["View.MyStorages"], emptyCallback);
+            message.AddRowWithCallbackQueryButton(Localizer["View.MyQuantityType"], emptyCallback);;
+            message.AddRowWithCallbackQueryButton(Localizer["View.MyStorages"], myStoragesCallback);
             message.AddRowWithCallbackQueryButton(Localizer["View.ToLocalizationMenu"], localizationCallback);
             message.CloseKeyboard();
             var sendedMessage = await BotClient.SendMessage(Context.Chat, message.ToString());
@@ -71,7 +72,8 @@ namespace StorageBot.Host.Controllers
         [ActionId(2)]
         [LocalizationMenuAction]
         public async Task LocalizationMenu()
-        {            
+        {
+            var context = await AnswerCallbackQueryWithContext();
             var message = new HtmlMessage();
             var menuCallback = GetCallbackDataForRequiredAction<MenuActionAttribute>();
             message.AddRowWithCallbackQueryButton(Localizer["View.ToMenu"], menuCallback);
@@ -88,8 +90,7 @@ namespace StorageBot.Host.Controllers
         [ActionId(3)]
         public async Task SetLocalization()
         {
-            var context = ExtractContext<CallbackQueryUpdateContext>();
-            await AnswerCallbackQuery(context.QueryId);
+            var context = await AnswerCallbackQueryWithContext();
             var callback = CallbackDataEncoder.Decode(context.Data);
             var index = callback.Values[0];
             var localizations = localizationService.GetAvailableLocalizations();
