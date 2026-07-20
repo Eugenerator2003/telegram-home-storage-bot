@@ -21,6 +21,16 @@ namespace StorageBot.Application.UseCases
             Count = count;
         }
 
+        public bool HasPrevious()
+        {
+            return Page > 0;
+        }
+
+        public bool HasNext()
+        {
+            return Page * PageSize < Count;
+        }
+
         public override bool Equals(object? obj)
         {
             if (obj is not PaginationDTO dto)
