@@ -24,7 +24,7 @@ namespace StorageBot.Host.Controllers
 
         public IMenuMessageStore MenuStore { get; }
 
-        public IRedirectBuffer RedirectBuffer { get; }
+        public IRedirectStateBuffer RedirectStateBuffer { get; }
 
         public IUserInputStateStore StateStore { get; }
 
@@ -40,7 +40,7 @@ namespace StorageBot.Host.Controllers
             INavigation navigation,
             IRequiredNavigation requiredNavigation,
             IMenuMessageStore menuStore,
-            IRedirectBuffer stateBuffer,
+            IRedirectStateBuffer stateBuffer,
             IUserInputLinesStore linesStore, 
             IUserInputStateStore stateStore,
             ICurrentOwnershipStore ownershipStore,
@@ -51,7 +51,7 @@ namespace StorageBot.Host.Controllers
             Navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
             RequiredNavigation = requiredNavigation ?? throw new ArgumentNullException(nameof(requiredNavigation));
             MenuStore = menuStore ?? throw new ArgumentNullException(nameof(menuStore));
-            RedirectBuffer = stateBuffer ?? throw new ArgumentNullException(nameof(stateBuffer));
+            RedirectStateBuffer = stateBuffer ?? throw new ArgumentNullException(nameof(stateBuffer));
             StateStore = stateStore ?? throw new ArgumentNullException(nameof(stateStore));
             LinesStore = linesStore ?? throw new ArgumentNullException(nameof(linesStore));
             CurrentOwnershipStore = ownershipStore ?? throw new ArgumentNullException(nameof(ownershipStore));

@@ -25,7 +25,7 @@ namespace StorageBot.Host.Controllers
         protected IStringLocalizer Localizer => _dependencies.Localizer;
         protected INavigation Navigation => _dependencies.Navigation;
         protected IRequiredNavigation RequiredNavigation => _dependencies.RequiredNavigation;
-        protected IRedirectBuffer RedirectBuffer => _dependencies.RedirectBuffer;
+        protected IRedirectStateBuffer RedirectStateBuffer => _dependencies.RedirectStateBuffer;
 
         protected UpdateContext Context { get; private set; } = null!;
 
@@ -45,7 +45,7 @@ namespace StorageBot.Host.Controllers
 
         public RedirectState? ConsumeRedirectState()
         {
-            return RedirectBuffer.Consume();
+            return RedirectStateBuffer.Consume();
         }
 
         protected virtual async Task ShowErrorMessage(string errorText)
@@ -73,7 +73,7 @@ namespace StorageBot.Host.Controllers
         protected void SetRedirect<TController>(string actionName) where TController : BaseBotController
         {
             var navigation = Navigation.GetAction<TController>(actionName);
-            RedirectBuffer.SetRedirect(navigation.ControllerId, navigation.ControllerId);
+            RedirectStateBuffer.SetRedirect(navigation.ControllerId, navigation.ControllerId);
         }
 
         protected async Task<int> SendMessage(HtmlMessage message)

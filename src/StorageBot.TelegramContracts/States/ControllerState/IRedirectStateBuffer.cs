@@ -1,6 +1,6 @@
 ﻿namespace StorageBot.TelegramContracts.States.ControllerState
 {
-    public interface IRedirectBuffer
+    public interface IRedirectStateBuffer
     {
         RedirectState? Consume();
 
