@@ -73,7 +73,7 @@ namespace StorageBot.Host.Controllers
         [LocalizationMenuAction]
         public async Task LocalizationMenu()
         {
-            var context = await AnswerCallbackQueryWithContext();
+            var context = await AnswerCallbackQuery();
             var message = new HtmlMessage();
             var menuCallback = GetCallbackDataForRequiredAction<MenuActionAttribute>();
             message.AddRowWithCallbackQueryButton(Localizer["View.ToMenu"], menuCallback);
@@ -90,7 +90,7 @@ namespace StorageBot.Host.Controllers
         [ActionId(3)]
         public async Task SetLocalization()
         {
-            var context = await AnswerCallbackQueryWithContext();
+            var context = await AnswerCallbackQuery();
             var callback = CallbackDataEncoder.Decode(context.Data);
             var index = callback.Values[0];
             var localizations = localizationService.GetAvailableLocalizations();

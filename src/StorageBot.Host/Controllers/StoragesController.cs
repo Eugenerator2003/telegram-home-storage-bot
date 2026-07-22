@@ -23,7 +23,7 @@ namespace StorageBot.Host.Controllers
         [ActionId(0)]
         public async Task StoragesMenu()
         {
-            _ = AnswerCallbackQueryWithContext();
+            _ = AnswerCallbackQuery();
             var input = new GetAccessibleStoragesInput(ApplicationUserId);
             var output = getAccessibleStoragesUseCase.Execute(input);
             var message = new HtmlMessage(Localizer["View.Storages.MenuTitle"]);
@@ -51,7 +51,7 @@ namespace StorageBot.Host.Controllers
         [ActionId(1)]
         public async Task ChooseStorage()
         {
-            var context = await AnswerCallbackQueryWithContext();
+            var context = await AnswerCallbackQuery();
             var callback = CallbackDataEncoder.Decode(context.Data);
             var userId = callback.Values[0];
             var storagesInput = new GetAccessibleStoragesInput(ApplicationUserId);
@@ -79,7 +79,7 @@ namespace StorageBot.Host.Controllers
         [ActionId(2)]
         public async Task AboutThisStorage()
         {
-            _ = AnswerCallbackQueryWithContext();
+            _ = AnswerCallbackQuery();
             await SendMessageWithDelete(new HtmlMessage(Localizer["View.Placeholder"]), 1000);   
         }
     }

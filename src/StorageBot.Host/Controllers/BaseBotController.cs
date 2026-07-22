@@ -27,6 +27,8 @@ namespace StorageBot.Host.Controllers
         protected IRequiredNavigation RequiredNavigation => _dependencies.RequiredNavigation;
         protected IRedirectStateBuffer RedirectStateBuffer => _dependencies.RedirectStateBuffer;
 
+        protected IRedirectValueBuffer RedirectValueBuffer => _dependencies.RedirectValueBuffer;
+
         protected UpdateContext Context { get; private set; } = null!;
 
         private ControllerDependencies _dependencies = null!;
@@ -76,6 +78,18 @@ namespace StorageBot.Host.Controllers
             RedirectStateBuffer.SetRedirect(navigation.ControllerId, navigation.ControllerId);
         }
 
+        protected void SetRedirectWithCallbackData<TController>(string actionName, params int[] values) where TController : BaseBotController
+        {
+            var navigation = Navigation.GetAction<TController>(actionName);
+            var callbackData = new CallbackData(navigation.ControllerId, navigation.ActionId, values.Length);
+            for(int i = 0; i < values.Length; i++)
+            {
+                callbackData.Values[i] = values[i];
+            }
+            RedirectStateBuffer.SetRedirect(navigation.ControllerId, navigation.ControllerId);
+            RedirectValueBuffer.SetValue(callbackData);
+        }
+
         protected async Task<int> SendMessage(HtmlMessage message)
         {
             return (await BotClient.SendMessage(Context.Chat, message.ToString())).Id;
@@ -103,9 +117,16 @@ namespace StorageBot.Host.Controllers
             await BotClient.AnswerCallbackQuery(queryId);
         }
 
-        protected async Task<CallbackQueryUpdateContext> AnswerCallbackQueryWithContext()
+        protected async Task<CallbackQueryUpdateContext> AnswerCallbackQuery()
         {
             var context = ExtractContext<CallbackQueryUpdateContext>();
+            await BotClient.AnswerCallbackQuery(context.QueryId);
+            return context;
+        }
+
+        protected async Task<CallbackQueryUpdateContext> AnswerCallbackQueryWithBuffer()
+        {
+            var context = ExtractContextWithBuffer<CallbackQueryUpdateContext>();
             await BotClient.AnswerCallbackQuery(context.QueryId);
             return context;
         }
@@ -119,6 +140,20 @@ namespace StorageBot.Host.Controllers
             else
             {
                 throw new InvalidOperationException($"Can't cast context to type {nameof(UpdateContext)}");
+            }
+        }
+
+        protected T ExtractContextWithBuffer<T>() where T : UpdateContext
+        {
+            if (Context is T context)
+            {
+                return context;
+            }
+            else
+            {
+                context = RedirectValueBuffer.Consume<T>() 
+                    ?? throw new InvalidOperationException($"Can't cast context to type {nameof(UpdateContext)} and resolve from buffer");
+                return context;
             }
         }
     }

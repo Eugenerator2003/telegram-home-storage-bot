@@ -26,6 +26,8 @@ namespace StorageBot.Host.Controllers
 
         public IRedirectStateBuffer RedirectStateBuffer { get; }
 
+        public IRedirectValueBuffer RedirectValueBuffer { get; }
+
         public IUserInputStateStore StateStore { get; }
 
         public IUserInputLinesStore LinesStore { get; }
@@ -41,6 +43,7 @@ namespace StorageBot.Host.Controllers
             IRequiredNavigation requiredNavigation,
             IMenuMessageStore menuStore,
             IRedirectStateBuffer stateBuffer,
+            IRedirectValueBuffer valueBuffer,
             IUserInputLinesStore linesStore, 
             IUserInputStateStore stateStore,
             ICurrentOwnershipStore ownershipStore,
@@ -52,6 +55,7 @@ namespace StorageBot.Host.Controllers
             RequiredNavigation = requiredNavigation ?? throw new ArgumentNullException(nameof(requiredNavigation));
             MenuStore = menuStore ?? throw new ArgumentNullException(nameof(menuStore));
             RedirectStateBuffer = stateBuffer ?? throw new ArgumentNullException(nameof(stateBuffer));
+            RedirectValueBuffer = valueBuffer ?? throw new ArgumentNullException(nameof(valueBuffer));
             StateStore = stateStore ?? throw new ArgumentNullException(nameof(stateStore));
             LinesStore = linesStore ?? throw new ArgumentNullException(nameof(linesStore));
             CurrentOwnershipStore = ownershipStore ?? throw new ArgumentNullException(nameof(ownershipStore));
