@@ -12,7 +12,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetEntryCatego
 
         public int? MainCategoryId { get; }
 
-        public GetEntryCategoriesInput(int userId, int storageOwnershipId, int page, int? mainCategoryId) 
+        public GetEntryCategoriesInput(int userId, int storageOwnershipId, int? mainCategoryId, int page) 
             : base(userId, storageOwnershipId)
         {
             MainCategoryId = mainCategoryId;
