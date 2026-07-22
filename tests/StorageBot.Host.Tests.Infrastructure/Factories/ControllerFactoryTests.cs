@@ -31,7 +31,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Factories
             services.AddTransient((pr) => new Mock<INavigation>().Object);
             services.AddTransient((pr) => new Mock<IRequiredNavigation>().Object);
             services.AddTransient((pr) => new Mock<IMenuMessageStore>().Object);
-            services.AddTransient((pr) => new Mock<IRedirectBuffer>().Object);
+            services.AddTransient((pr) => new Mock<IRedirectStateBuffer>().Object);
             services.AddTransient((pr) => new Mock<IUserInputStateStore>().Object);
             services.AddTransient((pr) => new Mock<IUserInputLinesStore>().Object);
             services.AddTransient((pr) => new Mock<ITelegramUserService>().Object);

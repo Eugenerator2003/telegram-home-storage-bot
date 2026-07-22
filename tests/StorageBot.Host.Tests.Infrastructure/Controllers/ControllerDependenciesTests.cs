@@ -30,7 +30,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Controllers
             var navigation = new Mock<INavigation>().Object;
             var requiredNavigation = new Mock<IRequiredNavigation>().Object;
             var menuStore = new Mock<IMenuMessageStore>().Object;
-            var redirectBuffer = new Mock<IRedirectBuffer>().Object;
+            var redirectBuffer = new Mock<IRedirectStateBuffer>().Object;
             var stateStore = new Mock<IUserInputStateStore>().Object;
             var linesStore = new Mock<IUserInputLinesStore>().Object;
             var telegramUserService = new Mock<ITelegramUserService>().Object;
@@ -52,7 +52,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Controllers
             Assert.AreEqual(navigation, controllerDependencies.Navigation);
             Assert.AreEqual(requiredNavigation, controllerDependencies.RequiredNavigation);
             Assert.AreEqual(menuStore, controllerDependencies.MenuStore);
-            Assert.AreEqual(redirectBuffer, controllerDependencies.RedirectBuffer);
+            Assert.AreEqual(redirectBuffer, controllerDependencies.RedirectStateBuffer);
             Assert.AreEqual(stateStore, controllerDependencies.StateStore);
             Assert.AreEqual(linesStore, controllerDependencies.LinesStore);
         }
