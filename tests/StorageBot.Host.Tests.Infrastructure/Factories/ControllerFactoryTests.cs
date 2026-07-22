@@ -36,6 +36,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Factories
             services.AddTransient((pr) => new Mock<IUserInputLinesStore>().Object);
             services.AddTransient((pr) => new Mock<ITelegramUserService>().Object);
             services.AddTransient((pr) => new Mock<ICurrentOwnershipStore>().Object);
+            services.AddTransient((pr) => new Mock<IRedirectValueBuffer>().Object);
             serviceProvider = services.BuildServiceProvider();
         }
 

@@ -31,6 +31,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Controllers
             var requiredNavigation = new Mock<IRequiredNavigation>().Object;
             var menuStore = new Mock<IMenuMessageStore>().Object;
             var redirectBuffer = new Mock<IRedirectStateBuffer>().Object;
+            var valueBuffer = new Mock<IRedirectValueBuffer>().Object;
             var stateStore = new Mock<IUserInputStateStore>().Object;
             var linesStore = new Mock<IUserInputLinesStore>().Object;
             var telegramUserService = new Mock<ITelegramUserService>().Object;
@@ -42,6 +43,7 @@ namespace StorageBot.Host.Tests.Infrastructure.Controllers
                 requiredNavigation,
                 menuStore,
                 redirectBuffer,
+                valueBuffer,
                 linesStore,
                 stateStore,
                 ownershipStore,
