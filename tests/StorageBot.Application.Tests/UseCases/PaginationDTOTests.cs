@@ -53,5 +53,45 @@ namespace StorageBot.Application.Tests.UseCases
             var pagination2 = new PaginationDTO(1, 2, 4);
             Assert.AreNotEqual(pagination2.GetHashCode(), pagination1.GetHashCode());
         }
+
+        [TestMethod]
+        public void HasPreviousTrueTest()
+        {
+            int page = 1;
+            int count = 30;
+            int pageSize = 10;
+            var pagination = new PaginationDTO(page, pageSize, count);
+            Assert.IsTrue(pagination.HasPrevious());
+        }
+
+        [TestMethod]
+        public void HasPreviousFalseTest()
+        {
+            int page = 0;
+            int count = 30;
+            int pageSize = 10;
+            var pagination = new PaginationDTO(page, pageSize, count);
+            Assert.IsFalse(pagination.HasPrevious());
+        }
+
+        [TestMethod]
+        public void HasNextTrueTest()
+        {
+            int page = 3;
+            int count = 40;
+            int pageSize = 10;
+            var pagination = new PaginationDTO(page, pageSize, count);
+            Assert.IsTrue(pagination.HasNext());
+        }
+
+        [TestMethod]
+        public void HasNextFalseTest()
+        {
+            int page = 4;
+            int count = 40;
+            int pageSize = 10;
+            var pagination = new PaginationDTO(page, pageSize, count);
+            Assert.IsFalse(pagination.HasNext());
+        }
     }
 }
