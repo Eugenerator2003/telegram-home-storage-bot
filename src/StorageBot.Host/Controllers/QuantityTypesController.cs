@@ -61,7 +61,7 @@ namespace StorageBot.Host.Controllers
                 data.Values[0] = page - 1;
                 message.AddCallbackQueryButton(Localizer["View.PreviousPage"], data);
             }
-            data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateInputName));
+            data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateSetState));
             message.AddCallbackQueryButton(Localizer["View.QuantityTypes.Create"], data);
             if (output.Pagination.HasNext())
             {
@@ -96,7 +96,7 @@ namespace StorageBot.Host.Controllers
             }
             var message = new HtmlMessage(Localizer["View.QuantityType.About", output.QuantityTypeDTO.UnitName, output.QuantityTypeDTO.IsInteger]);
             message.OpenKeyboard();
-            data = GetCallbackDataForAction<QuantityTypesController>(nameof(EditInputName), 1);
+            data = GetCallbackDataForAction<QuantityTypesController>(nameof(EditSetQuantityType), 1);
             data.Values[0] = quantityTypeId;
             message.AddRowWithCallbackQueryButton(Localizer["View.QuantityTypes.Edit"], data);
             data = GetCallbackDataForAction<QuantityTypesController>(nameof(Delete), 1);
@@ -110,22 +110,28 @@ namespace StorageBot.Host.Controllers
         }
 
         [ActionId(2)]
+        public async Task CreateSetState()
+        {
+            await AnswerCallbackQuery();
+            SetRedirect<QuantityTypesController>(nameof(CreateInputName));
+        }
+
+        [ActionId(3)]
         public async Task CreateInputName()
         {
-            _ = AnswerCallbackQuery();
             var message = new HtmlMessage(Localizer["View.QuantityTypes.InputName"]);
             await SetInputState<QuantityTypesController>(nameof(CreateReadName));
             await StartOrEditMenu(message);
         }
 
-        [ActionId(3)]
+        [ActionId(4)]
         public async Task CreateReadName()
         {
             var context = ExtractContext<MessageUpdateContext>();
+            await DeleteMessage(context.Message.Id);
             var name = context.Message.Text;
             if (string.IsNullOrEmpty(name))
             {
-                await DeleteMessage(context.Message.Id);
                 var message = new HtmlMessage(Localizer["View.EmptyInputString"]);
                 _ = SendMessageWithDelete(message, 1000);
                 SetRedirect<QuantityTypesController>(nameof(CreateInputName));
@@ -146,7 +152,7 @@ namespace StorageBot.Host.Controllers
             }
         }
 
-        [ActionId(4)]
+        [ActionId(5)]
         public async Task CreateReadIsInteger()
         {
             var context = await AnswerCallbackQuery();
@@ -168,26 +174,32 @@ namespace StorageBot.Host.Controllers
             }
         }
 
-        [ActionId(5)]
-        public async Task EditInputName()
+        [ActionId(6)]
+        public async Task EditSetQuantityType()
         {
             var context = await AnswerCallbackQuery();
             var data = CallbackDataEncoder.Decode(context.Data);
-            var entryQuantityId = data.Values[0]; 
+            var entryQuantityId = data.Values[0];
             await InputLinesStore.SetLines(TelegramUser, [entryQuantityId.ToString()]);
+            SetRedirect<QuantityTypesController>(nameof(EditInputName));
+        }
+
+        [ActionId(7)]
+        public async Task EditInputName()
+        {
             var message = new HtmlMessage(Localizer["View.QuantityTypes.InputName"]);
             await SetInputState<QuantityTypesController>(nameof(EditReadName));
             await StartOrEditMenu(message);
         }
 
-        [ActionId(6)]
+        [ActionId(8)]
         public async Task EditReadName()
         {
             var context = ExtractContext<MessageUpdateContext>();
             var name = context.Message.Text;
+            await DeleteMessage(context.Message.Id);
             if (string.IsNullOrEmpty(name))
             {
-                await DeleteMessage(context.Message.Id);
                 var message = new HtmlMessage(Localizer["View.EmptyInputString"]);
                 _ = SendMessageWithDelete(message, 1000);
                 SetRedirect<QuantityTypesController>(nameof(EditInputName));
@@ -211,7 +223,7 @@ namespace StorageBot.Host.Controllers
             }
         }
 
-        [ActionId(7)]
+        [ActionId(9)]
         public async Task Delete()
         {
             var context = await AnswerCallbackQuery();
@@ -239,7 +251,7 @@ namespace StorageBot.Host.Controllers
             }
         }
 
-        [ActionId(8)]
+        [ActionId(10)]
         public async Task ConfirmDelete()
         {
             var context = await AnswerCallbackQuery();
