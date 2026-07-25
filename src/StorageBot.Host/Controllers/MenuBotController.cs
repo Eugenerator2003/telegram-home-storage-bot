@@ -38,8 +38,18 @@ namespace StorageBot.Host.Controllers
             }
         }
 
+        protected int CurrentOwnershipId
+        {
+            get
+            {
+                _currentOwnershipId ??= CurrentOwnershipStore.GetCurrentOwnership(TelegramUser).Result;
+                return _currentOwnershipId.Value;
+            }
+        }
+
         private ITelegramUser? _user;
         private int? _applicationUserId;
+        private int? _currentOwnershipId;
 
         public override void SetDependencies(ControllerDependencies dependencies)
         {

@@ -47,8 +47,7 @@ namespace StorageBot.Host.Controllers
         public async Task Menu()
         {
             await DeleteMenuIfExist();
-            var storageUserId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
-            var telegramUser = TelegramUserService.ResolveTelegramUserByOwnershipId(storageUserId);
+            var telegramUser = TelegramUserService.ResolveTelegramUserByOwnershipId(CurrentOwnershipId);
 
             var emptyCallback = new CallbackData(int.MaxValue, int.MaxValue, 0);
             var myStoragesCallback = GetCallbackDataForAction<StoragesController>(nameof(StoragesController.StoragesMenu));

@@ -37,8 +37,7 @@ namespace StorageBot.Host.Controllers
             {
                 page = data.Values[0];
             }
-            var ownershipId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
-            var input = new GetEntryQuantityTypesInput(ApplicationUserId, ownershipId, page);
+            var input = new GetEntryQuantityTypesInput(ApplicationUserId, CurrentOwnershipId, page);
             var output = getEntryQuantityTypesUseCase.Execute(input);
             if (output.Result == Output.OutputResult.FatalFail)
             {
@@ -86,8 +85,7 @@ namespace StorageBot.Host.Controllers
             {
                 page = data.Values[1];
             }
-            var ownershipId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
-            var input = new GetSingleEntryQuantityTypeInput(ApplicationUserId, ownershipId, quantityTypeId);
+            var input = new GetSingleEntryQuantityTypeInput(ApplicationUserId, CurrentOwnershipId, quantityTypeId);
             var output = getSingleEntryQuantityTypeUseCase.Execute(input);
             if (output.Result != Output.OutputResult.Success)
             {
@@ -160,8 +158,7 @@ namespace StorageBot.Host.Controllers
             var isInteger = data.Values[0] == 1;
             var lines = await InputLinesStore.GetLines(TelegramUser);
             var unitName = lines[0];
-            var storageId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
-            var input = new CreateEntryQuantityTypeInput(ApplicationUserId, storageId, isInteger, unitName);
+            var input = new CreateEntryQuantityTypeInput(ApplicationUserId, CurrentOwnershipId, isInteger, unitName);
             var output = createEntryQuantityTypeUseCase.Execute(input);
             if (output.Result != Output.OutputResult.Success)
             {
@@ -206,11 +203,10 @@ namespace StorageBot.Host.Controllers
             }
             else
             {
-                var ownershipId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
                 var lines = await InputLinesStore.GetLines(TelegramUser);
                 await InputLinesStore.ClearLines(TelegramUser);
                 var entryQuantityId = int.Parse(lines[0]);
-                var input = new UpdateEntryQuantityTypeNameInput(ApplicationUserId, ownershipId, entryQuantityId, name);
+                var input = new UpdateEntryQuantityTypeNameInput(ApplicationUserId, CurrentOwnershipId, entryQuantityId, name);
                 var output = updateEntrtyQuantityTypeNameUseCase.Execute(input);
                 if (output.Result != Output.OutputResult.Success)
                 {
@@ -229,8 +225,7 @@ namespace StorageBot.Host.Controllers
             var context = await AnswerCallbackQuery();
             var data = CallbackDataEncoder.Decode(context.Data);
             var quantityTypeId = data.Values[0];
-            var currentOwnershipId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
-            var input = new GetSingleEntryQuantityTypeInput(ApplicationUserId, currentOwnershipId, quantityTypeId);
+            var input = new GetSingleEntryQuantityTypeInput(ApplicationUserId, CurrentOwnershipId, quantityTypeId);
             var output = getSingleEntryQuantityTypeUseCase.Execute(input);
             if (output.Result != Output.OutputResult.Success)
             {
@@ -257,8 +252,7 @@ namespace StorageBot.Host.Controllers
             var context = await AnswerCallbackQuery();
             var data = CallbackDataEncoder.Decode(context.Data);
             var quantityTypeId = data.Values[0];
-            var currentOwnershipId = await CurrentOwnershipStore.GetCurrentOwnership(TelegramUser);
-            var getInput = new GetSingleEntryQuantityTypeInput(ApplicationUserId, currentOwnershipId, quantityTypeId);
+            var getInput = new GetSingleEntryQuantityTypeInput(ApplicationUserId, CurrentOwnershipId, quantityTypeId);
             var getOutput = getSingleEntryQuantityTypeUseCase.Execute(getInput);
             if (getOutput.Result != Output.OutputResult.Success)
             {
@@ -266,7 +260,7 @@ namespace StorageBot.Host.Controllers
             }
             else
             {
-                var deleteInput = new DeleteEntryQuantityTypeInput(ApplicationUserId, currentOwnershipId, quantityTypeId);
+                var deleteInput = new DeleteEntryQuantityTypeInput(ApplicationUserId, CurrentOwnershipId, quantityTypeId);
                 var deleteOutput = deleteEntryQuantityTypeUseCase.Execute(deleteInput);
                 if (deleteOutput.Result != Output.OutputResult.Success)
                 {
