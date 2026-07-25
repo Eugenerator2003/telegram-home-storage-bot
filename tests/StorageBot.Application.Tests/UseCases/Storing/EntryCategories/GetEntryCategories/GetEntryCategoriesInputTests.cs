@@ -17,7 +17,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
         [DataRow(8, 190, 1, null)]
         public void InitializeTest(int userId, int storageOwnershipId, int page, int? mainCategoryId)
         {
-            var input = new GetEntryCategoriesInput(userId, storageOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(userId, storageOwnershipId, mainCategoryId, page);
             Assert.AreEqual(userId, input.UserId);
             Assert.AreEqual(storageOwnershipId, input.StorageOwnershipId);
             Assert.AreEqual(page, input.Page);

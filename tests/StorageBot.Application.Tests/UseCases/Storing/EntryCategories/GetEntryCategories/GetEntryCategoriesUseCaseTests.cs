@@ -106,7 +106,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var targetOwnershipId = 2;
             int page = 2;
             int? mainCategoryId = 6;
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var factory = new GetEntryCategoriesUseCaseFactory();
             var context = factory.ConfigureWithTargetOwnership(targetOwnershipId);
             var output = factory.CreateUseCase().Execute(input);
@@ -120,7 +120,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var targetOwnershipId = 2;
             int page = 2;
             int? mainCategoryId = null;
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var factory = new GetEntryCategoriesUseCaseFactory();
             var context = factory.ConfigureWithTargetOwnership(targetOwnershipId);
             var pagination = new PaginationDTO(page, GetEntryCategoriesUseCaseFactory.PageSize, 0);
@@ -144,7 +144,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillStorageAndGetPage(context.TargetOwnership.PersonalStorage, count, page);
             var pagination = new PaginationDTO(page, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -169,7 +169,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillStorageAndGetPage(context.TargetOwnership.PersonalStorage, count, page);
             var pagination = new PaginationDTO(1, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -194,7 +194,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillStorageAndGetPage(context.TargetOwnership.PersonalStorage, count, page);
             var pagination = new PaginationDTO(page, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -219,7 +219,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillStorageAndGetPage(context.TargetOwnership.PersonalStorage, count, page);
             var pagination = new PaginationDTO(page, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -237,7 +237,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var targetOwnershipId = 2;
             int page = 2;
             int? mainCategoryId = 2;
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var factory = new GetEntryCategoriesUseCaseFactory();
             var context = factory.ConfigureWithTargetOwnership(targetOwnershipId);
             var mainCategory = new EntryCategory("main-category") { Id = mainCategoryId.Value };
@@ -265,7 +265,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillCategoryAndGetPage(mainCategory, count, page);
             var pagination = new PaginationDTO(1, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -292,7 +292,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillCategoryAndGetPage(mainCategory, count, page);
             var pagination = new PaginationDTO(1, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -319,7 +319,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillCategoryAndGetPage(mainCategory, count, page);
             var pagination = new PaginationDTO(page, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
@@ -346,7 +346,7 @@ namespace StorageBot.Application.Tests.UseCases.Storing.EntryCategories.GetEntry
             var dtos = FillCategoryAndGetPage(mainCategory, count, page);
             var pagination = new PaginationDTO(page, GetEntryCategoriesUseCaseFactory.PageSize, count);
 
-            var input = new GetEntryCategoriesInput(1, targetOwnershipId, page, mainCategoryId);
+            var input = new GetEntryCategoriesInput(1, targetOwnershipId, mainCategoryId, page);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
             Assert.AreEqual(string.Empty, output.Message);
