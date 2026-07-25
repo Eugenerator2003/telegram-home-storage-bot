@@ -60,16 +60,26 @@ namespace StorageBot.Host.Controllers
             await SendMessage(message);
         }
 
-        protected CallbackData GetCallbackDataForAction<TController>(string actionName, int valuesCount = 0) where TController : BaseBotController
+        protected CallbackData GetCallbackDataForAction<TController>(string actionName, params int[] values) where TController : BaseBotController
         {
             var navigation = Navigation.GetAction<TController>(actionName);
-            return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
+            var callbackData = new CallbackData(navigation.ControllerId, navigation.ActionId, values.Length);
+            for (int i = 0; i < values.Length; i++)
+            {
+                callbackData.Values[i] = values[i];
+            }
+            return callbackData;
         }
 
-        protected CallbackData GetCallbackDataForRequiredAction<TRequiredAction>(int valuesCount = 0) where TRequiredAction : RequiredActionAttribute
+        protected CallbackData GetCallbackDataForRequiredAction<TRequiredAction>(params int[] values) where TRequiredAction : RequiredActionAttribute
         {
             var navigation = RequiredNavigation.GetRequiredAction<TRequiredAction>();
-            return new CallbackData(navigation.ControllerId, navigation.ActionId, valuesCount);
+            var callbackData = new CallbackData(navigation.ControllerId, navigation.ActionId, values.Length);
+            for (int i = 0; i < values.Length; i++)
+            {
+                callbackData.Values[i] = values[i];
+            }
+            return callbackData;
         }
 
         protected void SetRedirect<TController>(string actionName) where TController : BaseBotController

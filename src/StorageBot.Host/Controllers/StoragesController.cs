@@ -40,8 +40,7 @@ namespace StorageBot.Host.Controllers
                     var user = TelegramUserService.ResolveTelegramUserByUserId(userId);
                     text = $"@{user.Username}";
                 }
-                var callback = GetCallbackDataForAction<StoragesController>(nameof(ChooseStorage), 1);
-                callback.Values[0] = userId;
+                var callback = GetCallbackDataForAction<StoragesController>(nameof(ChooseStorage), [userId]);
                 message.AddRowWithCallbackQueryButton(text, callback);
             }
             message.CloseKeyboard();

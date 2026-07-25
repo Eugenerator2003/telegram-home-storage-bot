@@ -79,8 +79,7 @@ namespace StorageBot.Host.Controllers
             var localizations = localizationService.GetAvailableLocalizations();
             for (int i = 0; i < localizations.Length; i++)
             {
-                var localizationCallback = GetCallbackDataForAction<HomeController>(nameof(SetLocalization), 1);
-                localizationCallback.Values[0] = i;
+                var localizationCallback = GetCallbackDataForAction<HomeController>(nameof(SetLocalization), [i]);
                 message.AddRowWithCallbackQueryButton(localizations[i], localizationCallback);
             }
             await StartOrEditMenu(message);

@@ -48,24 +48,20 @@ namespace StorageBot.Host.Controllers
             message.OpenKeyboard();
             foreach (var item in output.EntryQuantityTypes)
             {
-                data = GetCallbackDataForAction<QuantityTypesController>(nameof(About), 2);
-                data.Values[0] = item.Id;
-                data.Values[1] = page;
+                data = GetCallbackDataForAction<QuantityTypesController>(nameof(About), [item.Id, page]);
                 message.AddRowWithCallbackQueryButton(item.UnitName, data);
             }
             message.OpenRow();
             if (output.Pagination.HasPrevious())
             {
-                data = GetCallbackDataForAction<QuantityTypesController>(nameof(QuantityTypesMenu), 1);
-                data.Values[0] = page - 1;
+                data = GetCallbackDataForAction<QuantityTypesController>(nameof(QuantityTypesMenu), [page - 1]);
                 message.AddCallbackQueryButton(Localizer["View.PreviousPage"], data);
             }
             data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateSetState));
             message.AddCallbackQueryButton(Localizer["View.QuantityTypes.Create"], data);
             if (output.Pagination.HasNext())
             {
-                data = GetCallbackDataForAction<QuantityTypesController>(nameof(QuantityTypesMenu), 1);
-                data.Values[0] = page + 1;
+                data = GetCallbackDataForAction<QuantityTypesController>(nameof(QuantityTypesMenu), [page + 1]);
                 message.AddCallbackQueryButton(Localizer["View.NextPage"], data);
             }
             message.CloseRow();
@@ -94,14 +90,11 @@ namespace StorageBot.Host.Controllers
             }
             var message = new HtmlMessage(Localizer["View.QuantityType.About", output.QuantityTypeDTO.UnitName, output.QuantityTypeDTO.IsInteger]);
             message.OpenKeyboard();
-            data = GetCallbackDataForAction<QuantityTypesController>(nameof(EditSetQuantityType), 1);
-            data.Values[0] = quantityTypeId;
+            data = GetCallbackDataForAction<QuantityTypesController>(nameof(EditSetQuantityType), [quantityTypeId]);
             message.AddRowWithCallbackQueryButton(Localizer["View.QuantityTypes.Edit"], data);
-            data = GetCallbackDataForAction<QuantityTypesController>(nameof(Delete), 1);
-            data.Values[0] = quantityTypeId;
+            data = GetCallbackDataForAction<QuantityTypesController>(nameof(Delete), [quantityTypeId]);
             message.AddRowWithCallbackQueryButton(Localizer["View.QuantityTypes.Delete"], data);
-            data = GetCallbackDataForAction<QuantityTypesController>(nameof(QuantityTypesMenu), 1);
-            data.Values[0] = page;
+            data = GetCallbackDataForAction<QuantityTypesController>(nameof(QuantityTypesMenu), [page]);
             message.AddRowWithCallbackQueryButton(Localizer["View.QuantityTypes.BackToItems"], data);
             message.CloseKeyboard();
             await StartOrEditMenu(message);
@@ -139,11 +132,9 @@ namespace StorageBot.Host.Controllers
                 await InputLinesStore.SetLines(TelegramUser, [name]);
                 var message = new HtmlMessage(Localizer["View.QuantityTypes.InputIsInteger"]);
                 message.OpenKeyboard();
-                var data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateReadIsInteger), 1);
-                data.Values[0] = 1;
+                var data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateReadIsInteger), [1]);
                 message.AddCallbackQueryButton(Localizer["View.QuantityTypes.IsInteger"], data);
-                data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateReadIsInteger), 1);
-                data.Values[0] = 0;
+                data = GetCallbackDataForAction<QuantityTypesController>(nameof(CreateReadIsInteger), [0]);
                 message.AddCallbackQueryButton(Localizer["View.QuantityTypes.IsNotInteger"], data);
                 message.CloseKeyboard();
                 await StartOrEditMenu(message);
@@ -235,11 +226,9 @@ namespace StorageBot.Host.Controllers
             {
                 var message = new HtmlMessage(Localizer["View.QuantityType.About", output.QuantityTypeDTO.UnitName, output.QuantityTypeDTO.IsInteger]);
                 message.OpenKeyboard();
-                var callback = GetCallbackDataForAction<QuantityTypesController>(nameof(ConfirmDelete), 1);
-                callback.Values[0] = quantityTypeId;
+                var callback = GetCallbackDataForAction<QuantityTypesController>(nameof(ConfirmDelete), [quantityTypeId]);
                 message.AddRowWithCallbackQueryButton(Localizer["View.ConfirmDelete"], callback);
-                callback = GetCallbackDataForAction<QuantityTypesController>(nameof(About), 1);
-                callback.Values[0] = quantityTypeId;
+                callback = GetCallbackDataForAction<QuantityTypesController>(nameof(About), [quantityTypeId]);
                 message.AddRowWithCallbackQueryButton(Localizer["View.CancelDelete"], callback);
                 message.CloseKeyboard();
                 await StartOrEditMenu(message);
