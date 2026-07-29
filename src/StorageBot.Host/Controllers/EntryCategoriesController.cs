@@ -69,7 +69,7 @@ namespace StorageBot.Host.Controllers
             {
                 var mainCategoryInput = new GetMainCategoryInput(ApplicationUserId, CurrentOwnershipId, currentCategoryId.Value);
                 var mainCategoryOutput = getMainCategoryUseCase.Execute(mainCategoryInput);
-                callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(About), [currentCategoryId.Value, page]);
+                callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(About), [currentCategoryId.Value]);
                 message.AddRowWithCallbackQueryButton(Localizer["View.EntryCategories.About", itemsOutput.MainCategory!.Name], callback);
                 if (mainCategoryOutput.Result == Output.OutputResult.FatalFail)
                 {
@@ -98,16 +98,15 @@ namespace StorageBot.Host.Controllers
             }
             if (itemsOutput.Pagination.HasNext())
             {
-                callback.Values[1] = page - 1;
-                message.AddCallbackQueryButton(Localizer["View.NextPage"], callback);
                 callback.Values[1] = page + 1;
+                message.AddCallbackQueryButton(Localizer["View.NextPage"], callback);
             }
+            message.CloseRow();
             if (currentCategoryId == null)
             {
                 callback = GetCallbackDataForAction<HomeController>(nameof(HomeController.Menu));
                 message.AddRowWithCallbackQueryButton(Localizer["View.BackToMenu"], callback);
             }
-            message.CloseRow();
             message.CloseKeyboard();
             await StartOrEditMenu(message);
         }
@@ -118,11 +117,6 @@ namespace StorageBot.Host.Controllers
             var context = await AnswerCallbackQueryWithBuffer();
             var callback = CallbackDataEncoder.Decode(context.Data);
             var categoryId = callback.Values[0];
-            int page = 0;
-            if (callback.Values.Length > 1)
-            {
-                page = callback.Values[1];
-            }
             var getInput = new GetSingleEntryCategoryInput(ApplicationUserId, CurrentOwnershipId, categoryId);
             var outputInput = getSingleEntryCategoryUseCase.Execute(getInput);
             if (outputInput.Result != Output.OutputResult.Success)
@@ -132,11 +126,11 @@ namespace StorageBot.Host.Controllers
             }
             var message = new HtmlMessage(Localizer["View.EntryCategories.About", outputInput.EntryCategory.Name]);
             message.OpenKeyboard();
-            callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(EditInputName), [categoryId]);
+            callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(EditSetCategory), [categoryId]);
             message.AddRowWithCallbackQueryButton(Localizer["View.EntryCategories.Edit"], callback);
             callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(Delete), [categoryId]);
             message.AddRowWithCallbackQueryButton(Localizer["View.EntryCategories.Delete"], callback);
-            callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(CategoriesMenu), [categoryId, page]);
+            callback = GetCallbackDataForAction<EntryCategoriesController>(nameof(CategoriesMenu), [categoryId]);
             message.AddRowWithCallbackQueryButton(Localizer["View.EntryCategories.BackToItems"], callback);
             message.CloseKeyboard();
             await StartOrEditMenu(message);
