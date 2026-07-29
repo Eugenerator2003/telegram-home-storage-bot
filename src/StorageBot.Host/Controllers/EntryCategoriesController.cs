@@ -200,7 +200,7 @@ namespace StorageBot.Host.Controllers
             var categoryId = CallbackDataEncoder.Decode(context.Data).Values[0];
             string[] lines = [categoryId.ToString()];
             await InputLinesStore.SetLines(TelegramUser, lines);
-            await SetInputState<EntryCategoriesController>(nameof(EditInputName));
+            SetRedirect<EntryCategoriesController>(nameof(EditInputName));
         }
 
         [ActionId(6)]
