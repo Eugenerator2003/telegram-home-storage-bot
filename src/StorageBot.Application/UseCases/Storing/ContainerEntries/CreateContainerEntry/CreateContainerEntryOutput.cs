@@ -8,9 +8,20 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.CreateContain
 {
     public class CreateContainerEntryOutput : Output
     {
-        public CreateContainerEntryOutput(OutputResult result, string message = "") 
+        public enum InputFailState
+        {
+            None,
+            EmptyName,
+            NotPositiveValue,
+            NotIntegerValue,
+        }
+
+        public InputFailState State { get; set; }
+
+        public CreateContainerEntryOutput(OutputResult result, string message = "", InputFailState failState = InputFailState.None) 
             : base(result, message)
         {
+            State = failState;
         }
     }
 }

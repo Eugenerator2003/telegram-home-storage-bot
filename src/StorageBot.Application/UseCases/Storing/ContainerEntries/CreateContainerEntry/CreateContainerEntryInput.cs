@@ -11,15 +11,19 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.CreateContain
         public int EntryQuantityTypeId { get; }
         public string EntryName { get; }
 
+        public decimal QantityValue { get; }
+
         public CreateContainerEntryInput(int userId, 
                                          int storageOwnershipId, 
                                          int containerId, 
                                          int entryQuantityTypeId,
-                                         string entryName) 
+                                         string entryName,
+                                         decimal quantityValue) 
             : base(userId, storageOwnershipId, containerId)
         {
             EntryQuantityTypeId = entryQuantityTypeId;
             EntryName = entryName;
+            QantityValue = quantityValue;
         }
     }
 }

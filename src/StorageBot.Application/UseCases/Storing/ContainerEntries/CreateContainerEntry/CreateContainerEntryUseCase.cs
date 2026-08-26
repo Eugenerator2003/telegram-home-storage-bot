@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using StorageBot.Application.Data.Repositories;
 using StorageBot.Domain.ContainerEntries;
+using StorageBot.Domain.Exceptions.ContainerEntries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,10 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.CreateContain
     public class CreateContainerEntryUseCase
         : ContainerEntryUseCase<CreateContainerEntryInput, CreateContainerEntryOutput>
     {
-        public CreateContainerEntryUseCase(ILogger<CreateContainerEntryUseCase> logger, 
-                                           IStringLocalizer localizer, 
-                                           UserRepository userRepository, 
-                                           UserOwnershipRepository ownershipRepository) 
+        public CreateContainerEntryUseCase(ILogger<CreateContainerEntryUseCase> logger,
+                                           IStringLocalizer localizer,
+                                           UserRepository userRepository,
+                                           UserOwnershipRepository ownershipRepository)
             : base(logger, localizer, userRepository, ownershipRepository)
         {
         }
@@ -32,9 +33,19 @@ namespace StorageBot.Application.UseCases.Storing.ContainerEntries.CreateContain
             if (string.IsNullOrEmpty(input.EntryName))
             {
                 _logger.LogError("User failed to create container entry: empty entry name");
-                return new CreateContainerEntryOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"]);
+                return new CreateContainerEntryOutput(Output.OutputResult.Fail, _localizer["Case.EmptyInputString"], CreateContainerEntryOutput.InputFailState.EmptyName);
             }
-            var quantity = new EntryQuantity(quantityType, 1);
+            if (input.QantityValue <= 0)
+            {
+                _logger.LogError("User failed to update entry quantity: invalid quantity value (must be positive)");
+                return new CreateContainerEntryOutput(Output.OutputResult.Fail, _localizer["Case.NotPositiveQuantityValue"], CreateContainerEntryOutput.InputFailState.NotPositiveValue);
+            }
+            if (quantityType.IsInteger && input.QantityValue.Scale != 0)
+            {
+                _logger.LogError("User failed to update entry quantity: invalid quantity value (must be integer)");
+                return new CreateContainerEntryOutput(Output.OutputResult.Fail, _localizer["Case.NotIntegerQuantityValue"], CreateContainerEntryOutput.InputFailState.NotIntegerValue);
+            }
+            var quantity = new EntryQuantity(quantityType, input.QantityValue);
             ContainerEntryRepository.Create(input.EntryName, quantity);
             _logger.LogInformation("User create container entry");
             return new CreateContainerEntryOutput(Output.OutputResult.Success);
