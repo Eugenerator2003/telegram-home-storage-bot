@@ -38,7 +38,7 @@ namespace StorageBot.Application.UseCases.Storing.Containers.GetOuterContainer
             }
             else
             {
-                output = new GetOuterContainerOutput(Output.OutputResult.Fail, _localizer["Case.OuterContainerNofFound"]);
+                output = new GetOuterContainerOutput(Output.OutputResult.Fail, _localizer["Case.OuterContainerNotFound"]);
                 _logger.LogInformation("User can't get outer container: container {containerId} has no outer container", input.InnerContainerId);
             }
             return output;
