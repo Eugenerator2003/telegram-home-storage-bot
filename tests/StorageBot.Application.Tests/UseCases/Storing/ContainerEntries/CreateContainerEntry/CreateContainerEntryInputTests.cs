@@ -11,20 +11,23 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
     public class CreateContainerEntryInputTests
     {
         [TestMethod]
-        [DataRow(1, 2, 3, 4, "name")]
-        [DataRow(8665, 3721, 2679, 999, "2")]
-        [DataRow(31, 2139, 39, 675, "")]
+        [DataRow(1, 2, 3, 4, "name", 0.3)]
+        [DataRow(8665, 3721, 2679, 999, "2", 310)]
+        [DataRow(31, 2139, 39, 675, "", 1000)]
         public void InitializeTest(int userId,
                                     int storageOwnershipId,
                                     int containerId,
                                     int entryQuantityTypeId,
-                                    string entryName)
+                                    string entryName,
+                                    double quantityValue)
         {
-            var input = new CreateContainerEntryInput(userId, storageOwnershipId, containerId, entryQuantityTypeId, entryName);
+            var decimalValue = (decimal)quantityValue;
+            var input = new CreateContainerEntryInput(userId, storageOwnershipId, containerId, entryQuantityTypeId, entryName, decimalValue);
             Assert.AreEqual(userId, input.UserId);
             Assert.AreEqual(storageOwnershipId, input.StorageOwnershipId);
             Assert.AreEqual(containerId, input.ContainerId);
             Assert.AreEqual(entryQuantityTypeId, input.EntryQuantityTypeId);
+            Assert.AreEqual(decimalValue, input.QantityValue);
         }
     }
 }

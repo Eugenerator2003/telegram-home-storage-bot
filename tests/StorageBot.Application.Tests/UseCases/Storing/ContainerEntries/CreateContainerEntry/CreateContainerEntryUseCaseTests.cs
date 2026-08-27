@@ -31,7 +31,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 30.0m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             UseCaseTester.UserNotFoundTest(factory, input);
         }
@@ -43,7 +44,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 29.0m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             UseCaseTester.UserOwnershipNotFoundTest(factory, input);
         }
@@ -55,7 +57,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 11.0m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             UseCaseTester.StorageOwnershipNotFoundTest(factory, input);
         }
@@ -67,7 +70,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 23.0m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             UseCaseTester.NoStorageAccessTest(factory, input);
         }
@@ -79,7 +83,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 10.0m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             UseCaseTester.ContainerNotFoundTest(factory, input);
         }
@@ -91,7 +96,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 1.4m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             var context = factory.ConfigureWithTargetContainer(targetOwnershipId, containerId);
             var output = factory.CreateUseCase().Execute(input);
@@ -106,7 +112,8 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 50m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             var context = factory.ConfigureWithTargetContainer(targetOwnershipId, containerId);
             var quantityType = new EntryQuantityType(false, "quantity") { Id = entryQuantityTypeId };
@@ -117,19 +124,59 @@ namespace StorageBot.Application.Tests.UseCases.Storing.ContainerEntries.CreateC
         }
 
         [TestMethod]
+        public void ExecuteNotPositiveValueTest()
+        {
+            var targetOwnershipId = 1;
+            var containerId = 2;
+            var entryQuantityTypeId = 3;
+            var name = "name1";
+            var quantityValue = -1m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
+            var factory = new CreateContainerEntryUseCaseFactory();
+            var context = factory.ConfigureWithTargetContainer(targetOwnershipId, containerId);
+            var quantityType = new EntryQuantityType(false, "quantity") { Id = entryQuantityTypeId };
+            context.TargetOwnership.PersonalStorage.AddEntryQuantityType(quantityType);
+            var output = factory.CreateUseCase().Execute(input);
+            Assert.AreEqual(Output.OutputResult.Fail, output.Result);
+            Assert.AreEqual(CreateContainerEntryOutput.InputFailState.NotPositiveValue, output.State);
+            Assert.AreEqual(factory.Localizer["Case.NotPositiveQuantityValue"], output.Message);
+        }
+
+        [TestMethod]
+        public void ExecuteNotIntegerValueTest()
+        {
+            var targetOwnershipId = 1;
+            var containerId = 2;
+            var entryQuantityTypeId = 3;
+            var name = "name2";
+            var quantityValue = 33.3m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
+            var factory = new CreateContainerEntryUseCaseFactory();
+            var context = factory.ConfigureWithTargetContainer(targetOwnershipId, containerId);
+            var quantityType = new EntryQuantityType(true, "quantity") { Id = entryQuantityTypeId };
+            context.TargetOwnership.PersonalStorage.AddEntryQuantityType(quantityType);
+            var output = factory.CreateUseCase().Execute(input);
+            Assert.AreEqual(Output.OutputResult.Fail, output.Result);
+            Assert.AreEqual(CreateContainerEntryOutput.InputFailState.NotIntegerValue, output.State);
+            Assert.AreEqual(factory.Localizer["Case.NotIntegerQuantityValue"], output.Message);
+        }
+
+        [TestMethod]
         public void ExecuteTest()
         {
             var targetOwnershipId = 1;
             var containerId = 2;
             var entryQuantityTypeId = 3;
             var name = "entry";
-            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name);
+            var quantityValue = 1.0m;
+            var input = new CreateContainerEntryInput(1, targetOwnershipId, containerId, entryQuantityTypeId, name, quantityValue);
             var factory = new CreateContainerEntryUseCaseFactory();
             var context = factory.ConfigureWithTargetContainer(targetOwnershipId, containerId);
             var quantityType = new EntryQuantityType(false, "quantity") { Id = entryQuantityTypeId };
             context.TargetOwnership.PersonalStorage.AddEntryQuantityType(quantityType);
             var output = factory.CreateUseCase().Execute(input);
             Assert.AreEqual(Output.OutputResult.Success, output.Result);
+            Assert.AreEqual(CreateContainerEntryOutput.InputFailState.None, output.State);
             Assert.AreEqual(string.Empty, output.Message);
             var entry = context.TargetContainer.Entries.Single();
             Assert.AreEqual(name, entry.Name);
