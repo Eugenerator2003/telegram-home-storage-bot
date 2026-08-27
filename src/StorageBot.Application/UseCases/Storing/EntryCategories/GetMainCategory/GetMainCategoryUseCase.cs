@@ -26,7 +26,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetMainCategor
             if (entryCategory == null)
             {
                 _logger.LogInformation("User can't get main category: subcategory {subcategoryId} not found", input.SubcategoryId);
-                return new GetMainCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.SubCategoryNotFound"]);
+                return new GetMainCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.SubcategoryNotFound"]);
             }
             GetMainCategoryOutput output = null!;
             if (entryCategory.MainCategory != null)
