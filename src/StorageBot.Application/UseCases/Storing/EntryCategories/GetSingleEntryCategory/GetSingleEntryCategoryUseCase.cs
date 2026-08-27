@@ -34,7 +34,7 @@ namespace StorageBot.Application.UseCases.Storing.EntryCategories.GetSingleEntry
             else
             {
                 _logger.LogInformation("User can't get entry category: entry category {entryCategoryId} not found", input.EntryCategoryId);
-                output = new GetSingleEntryCategoryOutput(Output.OutputResult.Fail, _localizer["Case.EntryCategoryNotFound"]);
+                output = new GetSingleEntryCategoryOutput(Output.OutputResult.FatalFail, _localizer["Case.EntryCategoryNotFound"]);
             }
             return output;
         }
